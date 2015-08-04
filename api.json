@@ -28,7 +28,7 @@
       { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
     ]
   },
-  { "name": "上传文件", "target":"_blank","enctype":"multipart/data", "method": "post", "category": "分类三", "url": "/api5.json", "desc": "接口5",
+  { "name": "上传文件", "target":"_blank","enctype":"multipart/form-data", "method": "post", "category": "分类三", "url": "/api5.json", "desc": "接口5",
     "args": [
       { "name": "phone", "desc": "手机号", "type": "text","required": true},
       { "name": "code", "desc": "验证码", "type": "text","required": true},
