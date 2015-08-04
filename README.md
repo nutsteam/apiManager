@@ -4,6 +4,7 @@
 ## 文件说明
 * api.json api接口的json文件
 * index.html 主页
+* 预览该文件需要放到本地服务器中或者使用ie浏览器打开
 
 ### api.json 格式说明
     [
