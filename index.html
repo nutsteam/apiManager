@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>绿柔网络 配娘api</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="alternate icon" type="image/png" href="assets/i/favicon.png">
+    <link rel="stylesheet" href="assets/css/amazeui.min.css"/>
+    <link rel="stylesheet" href="assets/css/amaze.min.css">
+    <link rel="stylesheet" href="assets/css/api.css">
+</head>
+<body>
+
+<header class="am-topbar am-topbar-fixed-top">
+    <div class="am-container">
+        <h1 class="am-topbar-brand">
+            <a href="#">配娘</a>
+        </h1>
+
+        <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-secondary am-show-sm-only"
+                data-am-collapse="{target: '#collapse-head'}"><span class="am-sr-only">导航切换</span> <span
+                class="am-icon-bars"></span></button>
+
+        <div class="am-collapse am-topbar-collapse" id="collapse-head">
+            <ul class="am-nav am-nav-pills am-topbar-nav">
+                <li class="am-active"><a href="index.html">首页</a></li>
+                <li><a href="apijson.html">API在线生成</a></li>
+                <li class="am-dropdown" data-am-dropdown>
+                    <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+                        下拉菜单 <span class="am-icon-caret-down"></span>
+                    </a>
+                    <ul class="am-dropdown-content">
+                        <li class="am-dropdown-header">标题</li>
+                        <li><a href="#">1. 默认样式</a></li>
+                        <li><a href="#">2. 基础设置</a></li>
+                        <li><a href="#">3. 文字排版</a></li>
+                        <li><a href="#">4. 网格系统</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="am-topbar-right">
+                <button class="am-btn am-btn-secondary am-topbar-btn am-btn-sm"><span class="am-icon-pencil"></span> 注册
+                </button>
+            </div>
+
+            <div class="am-topbar-right">
+                <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"><span class="am-icon-user"></span> 登录
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="get">
+    <div class="am-g">
+        <div class="am-u-lg-12">
+            <h1 class="get-title">绿柔网络&nbsp;&nbsp;&nbsp;配娘&nbsp;&nbsp;&nbsp; API接口文档</h1>
+        </div>
+    </div>
+</div>
+<br/>
+<section class="amz-main">
+    <div class="am-g am-g-fixed">
+        <div class="col-md-3 am-u-md-3">
+            <div class="am-sticky-placeholder">
+                <div id="amz-offcanvas" class="am-offcanvas doc-offcanvas">
+                    <!-- sidebar -->
+                    <section class="amz-sidebar am-offcanvas-bar">
+                        <ul class="am-nav" id="sidebar"></ul>
+                    </section>
+                    <div class="amz-pager am-active" style="top: 498px;"><a href="#up" class="am-icon-caret-up"
+                                                                            data-rel="scrollUp"></a> <a href="#down"
+                                                                                                        class="am-icon-caret-down"
+                                                                                                        data-rel="scrollDown"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="am-hide">
+            <table><tbody id="arg-template">
+                <tr> <td><code>{arg.name}</code></td> <td><code>{arg.required}</code></td> <td>{arg.defaultValue}</td><td>{arg.desc}</td> </tr>
+            </tbody></table>
+        </div>
+        <div class="am-hide">
+            <table><tbody id="returnValue-template">
+                <tr> <td><code>{returnValue.name}</code></td> <td>{returnValue.desc}</td> </tr>
+            </tbody></table>
+        </div>
+        <div class="am-hide" id="form-template">
+            <div class="am-form-group">
+                <label for="{arg.id}" class="am-u-sm-2 am-form-label">{arg.name}</label>
+                <div class="am-u-sm-10">
+                    <input type="{arg.type}" id="{arg.id}" name="{arg.name}" placeholder="{arg.desc}">
+                </div>
+            </div>
+        </div>
+        <div class="am-hide" id="content-template">
+            <section class="am-panel am-panel-default" id="{api.id}">
+                <header class="am-panel-hd">
+                    <h3 class="am-panel-title">{api.name}</h3>
+                </header>
+                <div class="am-panel-bd">
+                    <table class="am-table am-table-bordered am-table-striped">
+                        <thead>
+                        <tr> <th>接口地址</th> <th>方法</th> <th>描述</th> </tr>
+                        </thead>
+                        <tbody>
+                        <tr> <td><code>{api.url}</code></td> <td><code>{api.method}</code></td> <td>{api.desc}</td> </tr>
+                        </tbody>
+                    </table>
+                    <p>参数说明</p>
+                    <table class="am-table am-table-bordered am-table-striped">
+                        <thead>
+                        <tr> <th>参数名称</th> <th>必须</th><th>默认值</th> <th>描述</th> </tr>
+                        </thead>
+                        <tbody><tr><td>{api.args}</td></tr></tbody>
+                    </table>
+
+                    <p>返回值</p>
+                    <table class="am-table am-table-bordered am-table-striped">
+                        <thead>
+                        <tr> <th>参数名称</th> <th>描述</th> </tr>
+                        </thead>
+                        <tbody><tr><td>{api.returnValues}</td></tr></tbody>
+                    </table>
+                    <p>演示</p>
+                    <form class="am-form am-form-horizontal" action="{api.action}" target="{api.target}" enctype="{api.enctype}">{api.forms}
+                        <div class="am-form-group">
+                            <div class="am-u-sm-10 am-u-sm-offset-2">
+                                <input type="submit" class="am-btn am-btn-primary am-btn-sm" value="提交"/>
+                            </div>
+                        </div>
+                        </form>
+                </div>
+            </section>
+        </div>
+        <div class="col-md-9 am-u-md-9 doc-content" id="api-content"></div>
+    </div>
+</section>
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="modal">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">结果json
+            <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+        </div>
+        <div class="am-modal-bd">
+            <pre id="pre" style="text-align: left;overflow-y: scroll;height: 500px"></pre>
+        </div>
+    </div>
+</div>
+<footer class="footer">
+    <p>© 2014 <a href="http://www.yunshipei.com" target="_blank">AllMobilize, Inc.</a> Licensed under <a
+            href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a>. by the AmazeUI Team.</p>
+</footer>
+
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="assets/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="assets/js/jquery.min.js"></script>
+<!--<![endif]-->
+<script src="assets/js/amazeui.min.js"></script>
+<script src="assets/js/jsonformat.js"></script>
+<script>
+    (function(){
+        var temp = $("#content-template").html(),   //html 模版
+                argTemp = $("#arg-template").html(),    //参数模版
+                returnValueTemp = $("#returnValue-template").html(),    //返回值默认
+                formTemp=$("#form-template").html() //表单模版
+                ;
+
+        var html='';
+
+        /**
+         * 复制字符串
+         * @param str   字符串
+         * @param num   复制数量
+         * @returns {string}
+         */
+        function repeat(str,num){
+            var n='';
+            for(var i=0;i<num;i++){
+                n+=str;
+            }
+            return n;
+        }
+
+        /**
+         * 获取返回值
+         * @param obj       返回值对象
+         * @param tempstr   返回值字符串
+         * @param depth     深度
+         * @returns {string|XML|*}
+         */
+        function getReturnValues(obj,tempstr,depth){
+            depth = depth || 0;
+            var rn = obj.name || "",rd=obj.desc || "";
+            if(depth !=0 ){
+                rn && (rn = repeat("&nbsp;",depth*3)+rn);
+            }
+            tempstr += returnValueTemp.replace("{returnValue.name}",rn)
+                    .replace("{returnValue.desc}",rd);
+            if(obj.sub){
+                if(obj.sub instanceof Array){
+                    obj.sub.forEach(function(subRv){
+                        var _depth = depth+1;
+                        tempstr = getReturnValues(subRv,tempstr,_depth);
+                    });
+                }else if(obj.sub instanceof Object){
+                    for(var i in obj.sub){
+                        var _depth = depth+1;
+                        tempstr += returnValueTemp.replace("{returnValue.name}",repeat("&nbsp;",_depth*3)+i)
+                                .replace("{returnValue.desc}","");
+                        if(obj.sub[i] instanceof Array){
+                            _depth = _depth+1;
+                            obj.sub[i].forEach(function(sr){
+                                tempstr = getReturnValues(sr,tempstr,_depth)
+                            })
+                        }
+
+
+                    }
+                    return tempstr;
+                }
+            }
+            return tempstr;
+        }
+
+        /**
+         * 绘制网页
+         * @param data
+         */
+        function render(data){
+            var category={};
+            data.forEach(function(d,index){
+                if(!category[d.category])category[d.category]={};
+                category[d.category][d.name]="";
+
+                //参数，返回值，表单字符串
+                var args = '',returnValues='',forms='';
+                d.args && d.args.forEach(function(a,i){
+                    args+=argTemp.replace("{arg.name}", a.name)
+                            .replace("{arg.required}", a.required || true)
+                            .replace("{arg.defaultValue}", a.defaultValue || "")
+                            .replace("{arg.desc}", a.desc || "");
+                    forms += formTemp.replace(/\{arg\.name\}/g, a.name)
+                            .replace(/\{arg\.id\}/g,a.name+"_"+i+"_"+index)
+                            .replace("{arg.type}", a.type || "text")
+                            .replace("{arg.desc}", a.desc || "")
+                });
+                d.returnValues && d.returnValues.forEach(function(rv){
+                    returnValues = getReturnValues(rv,returnValues);
+                });
+                html += temp.replace("{api.name}", d.name)
+                        .replace("{api.id}", (d.category || "")+"_"+ (d.name || ""))
+                        .replace("{api.url}", d.url)
+                        .replace("{api.method}", d.method || "get")
+                        .replace("{api.desc}", d.desc || "")
+                        .replace("<tr><td>{api.args}</td></tr>", args )
+                        .replace("<tr><td>{api.returnValues}</td></tr>", returnValues)
+                        .replace("{api.forms}",forms)
+                        .replace("{api.target}", d.target || "")
+                        .replace("{api.enctype}", d.enctype || "application/x-www-form-urlencoded")
+                        .replace("{api.action}", d.url)
+
+            });
+
+            renderSidebar(category);
+
+            $("#api-content").html(html);
+
+            bindListener();
+        }
+
+        function renderSidebar(category){
+            var sidebar = '';
+            for(var c in category){
+                sidebar+='<li class="am-nav-header">'+c+'</li>';
+                if(category[c]){
+                    for(var sc in category[c]){
+                        if(sc){
+                            sidebar+='<li><a href="#'+c+"_"+sc+'">'+sc+'</a></li>';
+                        }
+                    }
+                }
+            }
+            $("#sidebar").html(sidebar);
+        }
+
+        function bindListener(){
+            $(".am-form").submit(function(){
+                $.ajax({
+                    url:$(this).attr("action"),
+                    type:$(this).attr("method") || "get",
+                    dataType:"json",
+                    data:$(this).serialize(),
+                    success:function(rs){
+                        $("#pre").html(new JSONFormat().parse(rs))
+                        $("#modal").modal({width:900,height:600})
+                        $(".icon").click(function(){
+                            var $n = $(this).next();
+                            if($(this).hasClass("ex")){
+                                $n.hide();
+                                $(this).removeClass("ex").addClass("co");
+                            }else{
+                                $n.show();
+                                $(this).removeClass("co").addClass("ex");
+                            }
+
+                        });
+                    }
+                });
+                return false;
+            });
+        }
+
+        //加载数据
+        $.get("api.json",{}, function (rs) {
+            render(rs);
+
+        },"json")
+    })();
+
+</script>
+</body>
+</html>

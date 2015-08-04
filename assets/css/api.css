@@ -1,0 +1,41 @@
+.get {
+    background: #1E5B94;
+    color: #fff;
+    text-align: center;
+    padding: 100px 0;
+}
+
+.get-title {
+    font-size: 200%;
+    border: 2px solid #fff;
+    padding: 20px;
+    display: inline-block;
+}
+
+form {
+    font-weight: normal;
+    font-size: 12px;
+}
+
+.am-form input[type=number], .am-form input[type=search], .am-form input[type=text], .am-form input[type=password], .am-form input[type=datetime], .am-form input[type=datetime-local], .am-form input[type=date], .am-form input[type=month], .am-form input[type=time], .am-form input[type=week], .am-form input[type=email], .am-form input[type=url], .am-form input[type=tel], .am-form input[type=color], .am-form select, .am-form textarea, .am-form-field {
+    font-size: 12px;
+}
+
+code {
+    background-color: transparent
+}
+
+.footer p {
+    color: #7f8c8d;
+    margin: 0;
+    padding: 15px 0;
+    text-align: center;
+    background: #2d3e50;
+}
+        
+.api-tbody input,.arg-tbody input,.returnValue-tbody input{
+    width: 100%;
+}
+.icon{ display: inline-block; width: 28px; height: 11px; }
+.ex{background: url("../images/expanded.gif") no-repeat;}
+.co{background: url("../images/collapsed.gif") no-repeat}

@@ -1,0 +1,959 @@
+[
+  { "name": "发送验证码", "method": "get", "category": "用户", "url": "/sendValidCode.json", "desc": "发送验证码。", "target": "",
+    "args": [ { "name": "phoneNo", "required": true, "defaultValue": "", "desc": "手机号", "type": "text"}],
+    "returnValues": [
+      { "name": "data", "desc": "数据", "sub": [ { "name": "codeToken", "desc": "验证码token"}]}, { "name": "result", "desc": "接口 true/false"}, { "name": "statusCode", "desc": "状态码"}, { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "登录", "method": "post", "category": "用户", "url": "/s/u/login.json", "desc": "登录接口", "target": "",
+    "args": [ { "name": "mobilePhone", "required": true, "defaultValue": "", "desc": "手机号 11位"}, { "name": "password", "required": true, "defaultValue": "", "desc": "密码 -6-20为"}],
+    "returnValues": [
+      { "name": "data", "desc": "数据", "sub": [ { "name": "accessToken", "desc": "登录token"}, { "name": "fileAccess", "desc": "图片服务器地址"}, { "name": "user", "desc": "用户对象", "sub": [ { "name": "address", "desc": "地址"}, { "name": "createTime", "desc": "创建日期"}, { "name": "email", "desc": "邮箱"}, { "name": "id", "desc": "用户id"}, { "name": "lastLoginTime", "desc": "最后登录时间"}, { "name": "logo", "desc": "logo头像"}, { "name": "mobilePhone", "desc": "手机号"}, { "name": "nickName", "desc": "昵称"}, { "name": "easemob", "desc": "环信账户", "sub": [ { "name": "easePwd", "desc": "环信密码"}, { "name": "easeUser", "desc": "环信账户"}]}]}]}, { "name": "result", "desc": "接口 true/false"}, { "name": "statusCode", "desc": "状态码"}, { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "退出", "method": "get", "category": "用户", "url": "/s/u/logout.json", "desc": "退出登录", "target": "",
+    "args": [ { "name": "accessToken", "desc": "登录token", "type": "text","required": true}],
+    "returnValues": [ { "name": "result", "desc": "接口 true/false"}, { "name": "statusCode", "desc": "状态码"}, { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}]
+  },
+  { "name": "注册", "method": "post", "category": "用户", "url": "/s/u/register.json", "desc": "注册", "target": "",
+    "args": [
+      { "name": "mobilePhone", "desc": "手机号", "type": "text","required": true},
+      { "name": "password", "desc": "密码", "type": "password","required": true},
+      { "name": "code", "desc": "验证码", "type": "text","required": true},
+      { "name": "codeToken", "desc": "验证码token", "type": "text","required": true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "接口 true/false"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "修改新密码", "method": "post", "category": "用户", "url": "/s/u/newpwd.json", "desc": "修改新密码",
+    "args": [
+      { "name": "phone", "desc": "手机号", "type": "text","required": true},
+      { "name": "code", "desc": "验证码", "type": "text","required": true},
+      { "name": "pwd1", "desc": "密码1", "type": "password","required": true},
+      { "name": "codeToken", "desc": "验证码token", "type": "text","required": true},
+      { "name": "pwd2", "desc": "密码2", "type": "password","required": true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "接口 true/false"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "修改手机号", "method": "post", "category": "用户", "url": "/s/u/modifyMobilePhone.json", "desc": "修改手机号",
+    "args": [
+      { "name": "mobilePhone", "desc": "手机号", "type": "text","required": true},
+      { "name": "code", "desc": "验证码", "type": "text","required": true},
+      { "name": "accessToken", "desc": "登录token", "type": "password","required": true},
+      { "name": "codeToken", "desc": "验证码token", "type": "text","required": true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "接口 true/false"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "用户基本信息", "method": "get", "category": "用户", "url": "/s/u/baseInfo.json", "desc": "用户基本信息",
+    "args": [
+      { "name": "accessToken", "desc": "登录token", "type": "password","required": true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "接口 true/false"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"},
+      {"name":"data","desc":"数据","sub":[
+        { "name": "fileAccess", "desc": "服务器图片地址"},
+        { "name": "user", "desc": "用户数据","sub":[
+          { "name": "address", "desc": "地址"},
+          { "name": "createTime", "desc": "创建时间"},
+          { "name": "email", "desc": "邮箱"},
+          { "name": "id", "desc": "用户id"},
+          { "name": "lastLoginTime", "desc": "最后登录时间"},
+          { "name": "logo", "desc": "头像"},
+          { "name": "mobilePhone", "desc": "手机号"},
+          { "name": "nickName", "desc": "昵称"}
+        ]}
+      ]}
+    ]
+  },
+  { "name": "根据环信用户名获取用户信息", "method": "get", "category": "用户", "url": "/s/u/queryByEasemobUser.json", "desc": "根据环信用户名获取用户信息",
+    "args": [
+      { "name": "easemobUser", "desc": "环信用户名", "type": "text","required": true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "接口 true/false"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"},
+      {"name":"data","desc":"数据","sub":[
+        { "name": "fileAccess", "desc": "服务器图片地址"},
+        { "name": "user", "desc": "用户数据","sub":[
+          { "name": "address", "desc": "地址"},
+          { "name": "createTime", "desc": "创建时间"},
+          { "name": "email", "desc": "邮箱"},
+          { "name": "id", "desc": "用户id"},
+          { "name": "lastLoginTime", "desc": "最后登录时间"},
+          { "name": "logo", "desc": "头像"},
+          { "name": "mobilePhone", "desc": "手机号"},
+          { "name": "nickName", "desc": "昵称"}
+        ]}
+      ]}
+    ]
+  },
+  { "name": "修改用户头像", "method": "post", "category": "用户", "url": "/s/u/modifyLogo.json", "desc": "修改logo","target":"_blank","enctype":"multipart/data",
+    "args": [
+      { "name": "logo", "desc": "用户头像流", "type": "file","required": true},
+      { "name": "accessToken", "desc": "登录token", "type": "text","required": true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "接口 true/false"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"},
+      {"name":"data","desc":"数据","sub":[
+        { "name": "logo", "desc": "新头像地址"}
+      ]}
+    ]
+  },
+  { "name": "更新用户信息", "method": "post", "category": "用户", "url": "/s/u/update.json", "desc": "更新用户信息 为空则不修改。至少有一个不为空",
+    "args": [
+      { "name": "accessToken", "desc": "登录token", "type": "text","required": true},
+      { "name": "password", "desc": "密码", "type": "password","required": false},
+      { "name": "nickName", "desc": "昵称", "type": "text","required": false},
+      { "name": "email", "desc": "邮箱", "type": "text","required": false},
+      { "name": "address", "desc": "地址", "type": "text","required": false}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "接口 true/false"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "城市列表", "method": "get", "category": "商家入口", "url": "/i/c/citylist", "desc": "城市列表",
+    "args": [],
+    "returnValues": [
+      { "name": "result", "desc": "接口 true/false"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"},
+      {"name":"data","sub":[
+        {"name":"hot","desc":"热门城市，数组"},
+        {"name":"map","desc":"省市字典，键为省，value为市","sub":{
+          "北京":[
+              {"name":"city","desc":"市"},
+              {"name":"province","desc":"省"}
+            ]
+          }
+        }
+      ]}
+    ]
+  },
+  { "name": "全国城市列表(json未加密)", "method": "get", "category": "商家入口", "url": "http://files.peiniang.net/commons/locations/city.json", "desc": "全国城市列表(json未加密)",
+    "args": [],
+    "returnValues": [
+      { "name": "version", "desc": "数据版本"},
+      { "name": "map", "desc": "字段格式的数据地址"},
+      { "name": "ios", "desc": "ios版数据地址"},
+      { "name": "android", "desc": "android版数据地址"}
+    ]
+  },
+  { "name": "全国省份列表(json未加密)", "method": "get", "category": "商家入口", "url": "http://files.peiniang.net/commons/locations/province.json", "desc": "全国省份列表(json未加密)",
+    "args": [],
+    "returnValues": [
+      { "name": "version", "desc": "数据版本"},
+      { "name": "array", "desc": "数组地址"}
+    ]
+  },
+  { "name": "全国省市区列表(json未加密)", "method": "get", "category": "商家入口", "url": "http://files.peiniang.net/commons/locations/province.json", "desc": "全国省市区列表(json未加密)",
+    "args": [],
+    "returnValues": [
+      { "name": "version", "desc": "数据版本"},
+      { "name": "array", "desc": "数组地址"}
+    ]
+  },
+  { "name": "检查更新", "method": "post", "category": "商家入口", "url": "/s/update/", "desc": "检查更新",
+    "args": [
+      {"name":"versionCode","desc":"版本code","required":true},
+      {"name":"packageName","desc":"包名","required":true}
+    ],
+    "returnValues": [
+      { "name": "data", "desc": "数据",
+        "sub":[
+          {"name":"description","desc":"更新说明"},
+          {"name":"downloadUrl","desc":"下载地址"},
+          {"name":"isForce","desc":"是否强制升级 1：是 0：否"}
+      ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "汽车品牌与专项服务", "method": "get", "category": "商家入口", "url": "/i/b/list", "desc": "汽车品牌与专项服务",
+    "args": [
+      {"name":"type","desc":"类型(1=汽车品牌 ，2=专项服务 ，3=通用配件)","required":true},
+      {"name":"city","desc":"城市,不要\"市\"字","defaultValue":"深圳","required":true},
+      {"name":"flag","desc":"标记 如果type是2 ，则 flag是通用配件 则查询所有通用配件的数据"},
+      {"name":"showAll","desc":"显示全部品牌/服务 默认是0， 1：显示全部，0：不显示全部，有那些显示那些",
+        "defaultValue":"0"}
+    ],
+    "returnValues": [
+      { "name": "data", "desc": "数据",
+        "sub":[
+          {"name":"fileAccess","desc":"图片服务器地址"},
+          {"name":"list","desc":"品牌数组",
+            "sub":[
+              {"name":"category","desc":"分类名称"},
+              {"name":"createTime","desc":"创建时间"},
+              {"name":"firstLetter","desc":"首字母"},
+              {"name":"id","desc":"品牌id"},
+              {"name":"logo","desc":"logo"},
+              {"name":"name","desc":"品牌服务名称"},
+              {"name":"type","desc":"类型(1=汽车品牌 ，2=专项服务 ，3=通用配件)"}
+          ]}
+        ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "品牌信息", "method": "get", "category": "商家入口", "url": "/i/b/baseInfo.json", "desc": "品牌信息",
+    "args": [
+      {"name":"id","desc":"品牌id","required":true}
+    ],
+    "returnValues": [
+      { "name": "data", "desc": "数据",
+        "sub":[
+          {"name":"brand","desc":"品牌信息","sub":[
+            {"name":"firstLetter","desc":"首字母"},
+            {"name":"id","desc":"品牌id"},
+            {"name":"logo","desc":"头像"},
+            {"name":"name","desc":"品牌名称"},
+            {"name":"type","desc":"品牌类型(1=汽车品牌 ，2=专项服务 ，3=通用配件)"}
+          ]},
+          {"name":"fileAccess","desc":"图片服务器地址"}
+        ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "商家列表", "method": "get", "category": "商家入口", "url": "/i/c/companyList.json", "desc": "商家列表",
+    "args": [
+      {"name":"brandId","desc":"品牌id","required":true},
+      {"name":"city","desc":"城市","required":false,"defaultValue":"深圳"}
+    ],
+    "returnValues": [
+      { "name": "data", "desc": "数据",
+        "sub":[
+          {"name":"companyMap","desc":"公司字典，键为区，值为公司数组","sub":{
+            "宝安区":[
+              {"name":"authentication","desc":"1：已认证 0：未认证"},
+              {"name":"city","desc":"城市"},
+              {"name":"contacts","desc":"联系人"},
+              {"name":"createTime","desc":"创建时间"},
+              {"name":"district","desc":"区"},
+              {"name":"fullName","desc":"公司全名"},
+              {"name":"id","desc":"公司id"},
+              {"name":"mobilePhone","desc":"手机号1"},
+              {"name":"mobilePhone2","desc":"手机号2"},
+              {"name":"name","desc":"公司简称"},
+              {"name":"province","desc":"省"},
+              {"name":"sort","desc":"排序 当已认证后，大于0表示推荐"},
+              {"name":"telephone1","desc":"座机1"},
+              {"name":"telephone2","desc":"座机2"}
+            ]
+          }},
+          {"name":"fileAccess","desc":"图片服务器地址"}
+        ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "商家详情", "method": "get", "category": "商家入口", "url": "/i/c/details", "desc": "商家详情",
+    "args": [
+      {"name":"bid","desc":"品牌id","required":true},
+      {"name":"cid","desc":"公司id","required":true}
+    ],
+    "returnValues": [
+      { "name": "data", "desc": "数据",
+        "sub":[
+          {"name":"easemobUser","desc":"环信用户"},
+          {"name":"companyImages","desc":"公司图片","sub":[
+            {"name":"id","desc":"图片id"},
+            {"name":"url","desc":"大图路径"},
+            {"name":"smallUrl","desc":"小图路径"}
+          ]},
+          {"name":"company","desc":"公司数据","sub":[
+            {"name":"authentication","desc":"1：已认证 0：未认证"},
+            {"name":"city","desc":"城市"},
+            {"name":"contacts","desc":"联系人"},
+            {"name":"createTime","desc":"创建时间"},
+            {"name":"district","desc":"区"},
+            {"name":"fullName","desc":"公司全名"},
+            {"name":"id","desc":"公司id"},
+            {"name":"mobilePhone","desc":"手机号1"},
+            {"name":"mobilePhone2","desc":"手机号2"},
+            {"name":"name","desc":"公司简称"},
+            {"name":"province","desc":"省"},
+            {"name":"sort","desc":"排序 当已认证后，大于0表示推荐"},
+            {"name":"telephone1","desc":"座机1"},
+            {"name":"telephone2","desc":"座机2"}
+          ]},
+          {"name":"businessScope","desc":"业务范围","sub":[
+            {"name":"id","desc":"品牌id"},
+            {"name":"logo","desc":"品牌图片"},
+            {"name":"name","desc":"品牌名称"}
+          ]},
+          {"name":"brand","desc":"品牌","sub":[
+            {"name":"id","desc":"品牌id"},
+            {"name":"logo","desc":"品牌logo"},
+            {"name":"name","desc":"品牌名称"},
+            {"name":"firstLetter","desc":"首字母"}
+          ]},
+          {"name":"fileAccess","desc":"图片服务器地址"}
+        ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "商家详情（网页版）", "method": "get", "category": "商家入口", "url": "/i/c/web_details", "desc": "商家详情（网页版）","target":"_blank",
+    "args": [
+      {"name":"bid","desc":"品牌id","required":true},
+      {"name":"cid","desc":"公司id","required":true}
+    ],
+    "returnValues": []
+  },
+  { "name": "公司基本信息", "method": "get", "category": "商家入口", "url": "/i/c/baseInfo", "desc": "公司基本信息",
+    "args": [
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      { "name": "data", "desc": "数据",
+        "sub":[
+          {"name":"company","desc":"公司信息","sub":[
+              {"name":"authentication","desc":"1：已认证 0：未认证"},
+              {"name":"city","desc":"城市"},
+              {"name":"contacts","desc":"联系人"},
+              {"name":"createTime","desc":"创建时间"},
+              {"name":"district","desc":"区"},
+              {"name":"fullName","desc":"公司全名"},
+              {"name":"id","desc":"公司id"},
+              {"name":"mobilePhone","desc":"手机号1"},
+              {"name":"mobilePhone2","desc":"手机号2"},
+              {"name":"name","desc":"公司简称"},
+              {"name":"province","desc":"省"},
+              {"name":"sort","desc":"排序 当已认证后，大于0表示推荐"},
+              {"name":"telephone1","desc":"座机1"},
+              {"name":"telephone2","desc":"座机2"}
+          ]},
+          {"name":"fileAccess","desc":"图片服务器地址"},
+          {"name":"companyToken","desc":"公司token"},
+          {"name":"companyImageCount","desc":"公司图片数量"},
+          {"name":"authenticationImageCount","desc":"认证图片数量"},
+          {"name":"auth","desc":"认证信息","sub":[
+            {"name":"company_id","desc":"公司id"},
+            {"name":"description","desc":"描述信息"},
+            {"name":"step","desc":"认证步骤"}
+          ]}
+        ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "保存公司信息", "method": "post", "category": "商家入口", "url": "/i/c/submit", "desc": "保存公司信息",
+    "args": [
+      {"name":"id","desc":"公司id，如果为空则表示新增","required":false},
+      {"name":"accessToken","desc":"登录token","required":true},
+      {"name":"contacts","desc":"联系人"},
+      {"name":"name","desc":"公司简称"},
+      {"name":"fullName","desc":"公司全称"},
+      {"name":"mobilePhone","desc":"手机号"},
+      {"name":"mobilePhone2","desc":"手机号2"},
+      {"name":"telephone1","desc":"电话1"},
+      {"name":"telephone2","desc":"电话2"},
+      {"name":"province","desc":"省"},
+      {"name":"city","desc":"市"},
+      {"name":"district","desc":"区"},
+      {"name":"address","desc":"街道地址"},
+      {"name":"longitude","desc":"经度"},
+      {"name":"latitude","desc":"纬度"},
+      {"name":"accountType","desc":"公司类型 1：修理厂 2：配件店 3：服务店 4：通用件店"},
+      {"name":"description","desc":"公司描述"}
+
+    ],
+    "returnValues": [
+      { "name": "data", "desc": "数据",
+        "sub":[
+          {"name":"companyId","desc":"公司id"}
+        ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "查看关联品牌", "method": "get", "category": "商家入口", "url": "/i/c/relationBrands", "desc": "查看关联品牌",
+    "args": [
+      {"name":"companyId","desc":"公司id","required":true},
+      {"name":"accountType","desc":"帐号类型 2：配件店 3：服务店 4：通用配件店","required":true},
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      { "name": "data", "desc": "数据",
+        "sub":[
+          {"name":"relationBrands","desc":"关联品牌","sub":[
+              {"name":"name","desc":"品牌名称"},
+              {"name":"logo","desc":"品牌logo"},
+              {"name":"id","desc":"品牌id"},
+              {"name":"firstLetter","desc":"首字母"},
+              {"name":"type","desc":"品牌类型"}
+          ]},
+          {"name":"fileAccess","desc":"图片服务器地址"}
+        ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "保存关联品牌", "method": "post", "category": "商家入口", "url": "/i/c/saveBrandCompanyRelation", "desc": "保存关联品牌",
+    "args": [
+      {"name":"companyId","desc":"公司id","required":true},
+      {"name":"brandIds","desc":"品牌id，可以多个","required":true},
+      {"name":"accountType","desc":"帐号类型 2：配件店 3：服务店 4：通用配件店","required":true},
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "删除图片", "method": "post", "category": "商家入口", "url": "/i/c/deleteImageById", "desc": "删除图片",
+    "args": [
+      {"name":"companyId","desc":"公司id","required":true},
+      {"name":"imageId","desc":"图片id","required":true},
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "上传图片", "method": "post", "target":"_blank","enctype":"multipart/data", "category": "商家入口", "url": "/i/c/uploadImage", "desc": "上传图片,至少有一个非空。",
+    "args": [
+      {"name":"companyId","desc":"公司id","required":true},
+      {"name":"companyImages","desc":"公司图片","type":"file"},
+      {"name":"businessLicense","desc":"营业执照","type":"file"},
+      {"name":"shopImage","desc":"店面照","type":"file"},
+      {"name":"businessCard","desc":"公司名片","type":"file"},
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "上传LOGO", "method": "post","target":"_blank","enctype":"multipart/data", "category": "商家入口", "url": "/i/c/uploadLogo", "desc": "查看关联品牌",
+    "args": [
+      {"name":"companyId","desc":"公司id","required":true},
+      {"name":"logo","desc":"公司头像","type":"file","required":true},
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      { "name": "data", "desc": "数据",
+        "sub":[
+          {"name":"companyId","desc":"公司id"}
+        ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "获取公司图片", "method": "get", "category": "商家入口", "url": "/i/c/getCompanyImages", "desc": "获取公司图片",
+    "args": [
+      {"name":"companyId","desc":"公司id","required":true},
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      { "name": "data", "desc": "数据",
+        "sub":[
+          {"name":"companyImages","desc":"公司图片","sub":[
+            {"name":"id","desc":"图片id"},
+            {"name":"url","desc":"大图地址"},
+            {"name":"smallUrl","desc":"小图地址"}
+          ]},
+          {"name":"fileAccess","desc":"图片服务器地址"}
+        ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "获取公司认证图片", "method": "get", "category": "商家入口", "url": "/i/c/getImageAuthentication", "desc": "获取公司认证图片",
+    "args": [
+      {"name":"companyId","desc":"公司id","required":true},
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      { "name": "data", "desc": "数据",
+        "sub":[
+          {"name":"businessCard","desc":"名片","sub":[
+            {"name":"id","desc":"图片id"},
+            {"name":"url","desc":"大图地址"},
+            {"name":"smallUrl","desc":"小图地址"}
+          ]},
+          {"name":"fileAccess","desc":"图片服务器地址"}
+        ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "商家认证", "method": "post", "category": "商家入口", "url": "/i/c/verify", "desc": "商家认证",
+    "args": [
+      {"name":"companyId","desc":"公司id","required":true},
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "记录列表", "method": "get", "category": "供求广场", "url": "/c/record/list.json", "desc": "记录列表",
+    "args": [
+      {"name":"city","desc":"城市"},
+      {"name":"categoryId","desc":"分类id"},
+      {"name":"subCategoryId","desc":"子分类id"},
+      {"name":"page","desc":"页码","defaultValue":"1"}
+    ],
+    "returnValues": [
+      {"name":"data","desc":"数据","sub":[
+        { "name": "fileAccess", "desc": "图片服务器地址"},
+        { "name": "records", "desc": "记录","sub":[
+          { "name": "categoryName", "desc": "分类名称"},
+          { "name": "city", "desc": "城市"},
+          { "name": "commentCount", "desc": "评论数量"},
+          { "name": "content", "desc": "内容"},
+          { "name": "createTime", "desc": "创建时间"},
+          { "name": "id", "desc": "记录id"},
+          { "name": "logo", "desc": "头像"},
+          { "name": "nickName", "desc": "昵称"},
+          { "name": "userId", "desc": "用户id"},
+          { "name": "images", "desc": "图片","sub":[
+              { "name": "id", "desc": "图片id"},
+              { "name": "smallUrl", "desc": "小图地址"},
+              { "name": "url", "desc": "大图地址"}
+          ]}
+        ]}
+      ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "查询分类", "method": "get", "category": "供求广场", "url": "/c/record/queryCategories.json", "desc": "查询分类",
+    "args": [],
+    "returnValues": [
+      {"name":"data","desc":"数据","sub":[
+        {"name":"list","desc":"分类数组","sub":[
+            { "name": "id", "desc": "分类id"},
+            { "name": "name", "desc": "分类名称"},
+            { "name": "sub", "desc": "子分类数组"}
+        ]}
+      ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "我评论的记录", "method": "get", "category": "供求广场", "url": "/c/record/myCommendRecord.json", "desc": "我评论的记录",
+    "args": [
+      {"name":"page","desc":"页码","required":false,"defaultValue":"1"},
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      {"name":"data","desc":"数据","sub":[
+        {"name":"records","desc":"评论记录","sub":[
+          { "name": "categoryName", "desc": "分类名称"},
+          { "name": "city", "desc": "城市"},
+          { "name": "commentCount", "desc": "评论数量"},
+          { "name": "content", "desc": "内容"},
+          { "name": "createTime", "desc": "创建时间"},
+          { "name": "id", "desc": "记录id"},
+          { "name": "logo", "desc": "头像"},
+          { "name": "nickName", "desc": "昵称"},
+          { "name": "userId", "desc": "用户id"},
+          { "name": "images", "desc": "图片","sub":[
+            { "name": "id", "desc": "图片id"},
+            { "name": "smallUrl", "desc": "小图地址"},
+            { "name": "url", "desc": "大图地址"}
+          ]}
+        ]},
+        {"name":"fileAccess","desc":"图片服务器"}
+      ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "我发布的记录", "method": "get", "category": "供求广场", "url": "/c/record/myRecord.json", "desc": "我发布的记录",
+    "args": [
+      {"name":"page","desc":"页码","required":false,"defaultValue":"1"},
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      {"name":"data","desc":"数据","sub":[
+        {"name":"records","desc":"评论记录","sub":[
+          { "name": "categoryName", "desc": "分类名称"},
+          { "name": "city", "desc": "城市"},
+          { "name": "commentCount", "desc": "评论数量"},
+          { "name": "content", "desc": "内容"},
+          { "name": "createTime", "desc": "创建时间"},
+          { "name": "id", "desc": "记录id"},
+          { "name": "logo", "desc": "头像"},
+          { "name": "nickName", "desc": "昵称"},
+          { "name": "userId", "desc": "用户id"},
+          { "name": "images", "desc": "图片","sub":[
+            { "name": "id", "desc": "图片id"},
+            { "name": "smallUrl", "desc": "小图地址"},
+            { "name": "url", "desc": "大图地址"}
+          ]}
+        ]},
+        {"name":"fileAccess","desc":"图片服务器"}
+      ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "记录详情", "method": "get", "category": "供求广场", "url": "/c/record/details.json", "desc": "记录详情",
+    "args": [
+      {"name":"id","desc":"记录id","required":true}
+    ],
+    "returnValues": [
+      {"name":"data","desc":"数据","sub":[
+        {"name":"records","desc":"评论记录","sub":[
+          { "name": "categoryName", "desc": "分类名称"},
+          { "name": "city", "desc": "城市"},
+          { "name": "content", "desc": "内容"},
+          { "name": "createTime", "desc": "创建时间"},
+          { "name": "id", "desc": "记录id"},
+          { "name": "logo", "desc": "头像"},
+          { "name": "nickName", "desc": "昵称"},
+          { "name": "userId", "desc": "用户id"}
+        ]},
+        { "name": "commentCount", "desc": "评论数量"},
+        {"name":"fileAccess","desc":"图片服务器"},
+        { "name": "images", "desc": "图片","sub":[
+          { "name": "id", "desc": "图片id"},
+          { "name": "smallUrl", "desc": "小图地址"},
+          { "name": "url", "desc": "大图地址"}
+        ]}
+      ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "记录详情(网页版)", "method": "get", "category": "供求广场", "url": "/c/record/details/{id}.htm", "desc": "记录详情(网页版)",
+    "args": [
+      {"name":"id","desc":"记录id","required":true}
+    ],
+    "returnValues": []
+  },
+  { "name": "删除记录", "method": "post", "category": "供求广场", "url": "/c/record/delete.json", "desc": "删除记录",
+    "args": [
+      {"name":"id","desc":"记录id","required":true},
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "发布记录", "method": "post", "target":"_blank","enctype":"multipart/data", "category": "供求广场", "url": "/c/record/publishRecord.json", "desc": "发布记录",
+    "args": [
+      {"name":"city","desc":"城市","required":true},
+      {"name":"categoryId","desc":"分类id","required":true},
+      {"name":"subCategoryId","desc":"子分类id，如果没有则空"},
+      {"name":"img","desc":"图片，最多三张","type":"file"},
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "查询评论列表", "method": "get", "category": "供求广场", "url": "/c/comment/queryByRecordId.json", "desc": "查询评论列表",
+    "args": [
+      {"name":"recordId","desc":"记录id","required":true},
+      {"name":"page","desc":"页码","required":false}
+    ],
+    "returnValues": [
+      {"name":"data","desc":"数据","sub":[
+        {"name":"comments","desc":"评论列表","sub":[
+          { "name": "city", "desc": "深圳市"},
+          { "name": "content", "desc": "内容"},
+          { "name": "createTime", "desc": "评论时间"},
+          { "name": "id", "desc": "评论id"},
+          { "name": "logo", "desc": "头像"},
+          { "name": "nickName", "desc": "昵称"},
+          { "name": "userId", "desc": "用户id"}
+        ]},
+        { "name": "fileAccess", "desc": "图片服务器id"}
+      ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "发布评论", "method": "post", "target":"_blank","enctype":"multipart/data", "category": "供求广场", "url": "/c/comment/nwComment.json", "desc": "发布评论",
+    "args": [
+      {"name":"city","desc":"城市","required":false},
+      {"name":"content","desc":"评论内容，不能超过100字","required":true},
+      {"name":"recordId","desc":"记录id","required":true},
+      {"name":"img","desc":"评论照片 最多3张","type":"file"},
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "删除评论", "method": "post", "category": "供求广场", "url": "/c/comment/delete.json", "desc": "删除评论",
+    "args": [
+      {"name":"id","desc":"评论id","required":true},
+      {"name":"accessToken","desc":"登录token","required":true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "推荐app", "method": "get", "category": "其他", "url": "/recommend_app.htm", "desc": "推荐app",
+    "args": [
+      {"name":"os","desc":"系统 android/ios","required":true}
+    ],
+    "returnValues": []
+  },
+  { "name": "报价单列表", "method": "get", "category": "询价、报价单", "url": "/order/quotation/queryQuotations.json", "desc": "报价单列表",
+    "args": [
+      {"name":"sellerId","desc":"商家id","required":true},
+      {"name":"page","desc":"页码","required":false,"defaultValue":"1"}
+    ],
+    "returnValues": [
+      {"name":"data","desc":"数据","sub":[
+        {"name":"quotations","desc":"报价单列表","sub":[
+          { "name": "logo", "desc": "商家头像"},
+          { "name": "name", "desc": "商家名称"},
+          { "name": "fullName", "desc": "商家全称"},
+          { "name": "city", "desc": "城市"},
+          { "name": "crateDate", "desc": "创建日期"},
+          { "name": "quotationId", "desc": "报价单id"},
+          { "name": "brandName", "desc": "品牌名称"},
+          { "name": "brandType", "desc": "品牌类型"},
+          { "name": "orderInfoId", "desc": "询价单id"}
+        ]},
+        { "name": "fileAccess", "desc": "图片服务器id"}
+      ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "查询报价单信息", "method": "get", "category": "询价、报价单", "url": "/order/quotation/queryQuotationInfo.json", "desc": "查询报价单信息",
+    "args": [
+      {"name":"quotationId","desc":"报价单id","required":true}
+    ],
+    "returnValues": [
+      {"name":"data","desc":"数据","sub":[
+        {"name":"quotation","desc":"报价单","sub":[
+          { "name": "id", "desc": "报价单id"},
+          { "name": "orderInfoId", "desc": "询价单信息id"},
+          { "name": "sellerId", "desc": "商家id"},
+          { "name": "remark", "desc": "报价单备注"},
+          { "name": "status", "desc": "状态1 等报价;2 已过期;3 已报价；4 已关闭"},
+          { "name": "statusDescription", "desc": "状态描述"},
+          { "name": "createDate", "desc": "创建日期"}
+        ]}
+      ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "查询报价清单", "method": "get", "category": "询价、报价单", "url": "/order/quotation/queryQuotationList.json", "desc": "查询报价清单",
+    "args": [
+      {"name":"sellerId","desc":"商家id","required":true},
+      {"name":"orderInfoId","desc":"询价单id","required":true}
+    ],
+    "returnValues": [
+      {"name":"data","desc":"数据","sub":[
+        {"name":"quotationListMap","desc":"key为配件清单id value为报价清单数组","sub":{
+          "配件清单的id":[
+            { "name": "id", "desc": "报价清单id"},
+            { "name": "orderInfoId", "desc": "询价单信息id"},
+            { "name": "sellerId", "desc": "商家id"},
+            { "name": "partListId", "desc": "配件清单id"},
+            { "name": "price", "desc": "价格"},
+            { "name": "number", "desc": "数量"},
+            { "name": "quality", "desc": "品质(原厂、副厂)"},
+            { "name": "brandName", "desc": "品牌名称"},
+            { "name": "defectsLiabilityPeriod", "desc": "保修期"}
+          ]
+        }}
+      ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "查询配件清单", "method": "get", "category": "询价、报价单", "url": "/order/orderinfo/queryPartList.json", "desc": "查询配件清单",
+    "args": [
+      {"name":"orderInfoId","desc":"询价单信息id","required":true}
+    ],
+    "returnValues": [
+      {"name":"data","desc":"数据","sub":[
+        {"name":"partLists","desc":"配件清单","sub":[
+          { "name": "id", "desc": "配件清单id"},
+          { "name": "orderInfoId", "desc": "询价单信息id"},
+          { "name": "name", "desc": "配件名称"},
+          { "name": "img1", "desc": "图片id"},
+          { "name": "img2", "desc": "图片2"}
+        ]},
+        { "name": "fileAccess", "desc": "图片服务器id"}
+      ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "发送报价清单", "method": "post", "category": "询价、报价单", "url": "/order/quotation/sendQuotation.json", "desc": "发送报价清单",
+    "args": [
+      {"name":"quotationId","desc":"报价单id","required":true},
+      {"name":"remark","desc":"备注","required":true},
+      {"name":"ql.partListId","desc":"备注","required":true},
+      {"name":"ql.price","desc":"配件价格","required":true},
+      {"name":"ql.quality","desc":"品质 原厂、副厂","required":true},
+      {"name":"ql.brandName","desc":"配件名称","required":true},
+      {"name":"ql.defectsLiabilityPeriod","desc":"配件保修期","required":true}
+    ],
+    "returnValues": [
+      {"name":"data","desc":"数据"},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "查询询价单列表", "method": "get", "category": "询价、报价单", "url": "/order/orderinfo/queryOrderInfoList.json", "desc": "查询询价单列表",
+    "args": [
+      {"name":"companyId","desc":"公司id","required":true},
+      {"name":"page","desc":"页码","required":false,"defaultValue":"1"}
+    ],
+    "returnValues": [
+      {"name":"data","desc":"数据","sub":[
+        {"name":"orderInfoList","desc":"询价单列表","sub":[
+          { "name": "id", "desc": "询价单id"},
+          { "name": "brandId", "desc": "品牌id"},
+          { "name": "brandName", "desc": "品牌名称"},
+          { "name": "brandType", "desc": "品牌类型"},
+          { "name": "vin", "desc": "vin"},
+          { "name": "carModelYear", "desc": "汽车年限"},
+          { "name": "displacement", "desc": "汽车排量"},
+          { "name": "remark", "desc": "备注"},
+          { "name": "createTime", "desc": "创建时间"},
+          { "name": "companyId", "desc": "公司id"}
+        ]}
+      ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "查询询价单信息", "method": "get", "category": "询价、报价单", "url": "/order/orderinfo/queryOrderInfo.json", "desc": "查询询价单信息",
+    "args": [
+      {"name":"orderInfoId","desc":"询价单信息id","required":true}
+    ],
+    "returnValues": [
+      {"name":"data","desc":"数据","sub":[
+        {"name":"orderInfo","desc":"询价单信息","sub":[
+          { "name": "id", "desc": "询价单id"},
+          { "name": "brandId", "desc": "品牌id"},
+          { "name": "brandName", "desc": "品牌名称"},
+          { "name": "brandType", "desc": "品牌类型"},
+          { "name": "vin", "desc": "vin"},
+          { "name": "carModelYear", "desc": "汽车年限"},
+          { "name": "displacement", "desc": "汽车排量"},
+          { "name": "remark", "desc": "备注"},
+          { "name": "createTime", "desc": "创建时间"},
+          { "name": "companyId", "desc": "公司id"}
+        ]}
+      ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "保存询价单", "method": "post", "category": "询价、报价单", "url": "/order/orderinfo/saveInquiry.json", "desc": "保存询价单",
+    "args": [
+      {"name":"companyToken","desc":"公司token","required":true},
+      {"name":"brandId","desc":"品牌id","required":true},
+      {"name":"brandName","desc":"品牌名称","required":true},
+      {"name":"brandType","desc":"品牌类型","required":true},
+      {"name":"vin","desc":"车架号","required":true},
+      {"name":"carModelYear","desc":"年款","required":true},
+      {"name":"displacement","desc":"排量","required":true},
+      {"name":"remark","desc":"备注","required":true}
+    ],
+    "returnValues": [
+      {"name":"data","desc":"数据","sub":[
+        {"name":"orderInfoId","desc":"询价单id"}
+      ]},
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "保存配件清单", "method": "post", "target":"_blank","enctype":"multipart/data", "category": "询价、报价单", "url": "/order/orderinfo/savePartList.json", "desc": "保存配件清单",
+    "args": [
+      {"name":"orderInfoId","desc":"询价单id","required":true},
+      {"name":"names","desc":"配件名称 多个","required":true},
+      {"name":"img1","desc":"配件图片 多个","required":false,"type":"file"}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "删除配件清单", "method": "post", "category": "询价、报价单", "url": "/order/orderinfo/deletePartList.json", "desc": "删除配件清单",
+    "args": [
+      {"name":"partListId","desc":"配件清单id","required":true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  },
+  { "name": "发送询价单", "method": "post", "category": "询价、报价单", "url": "/order/quotation/sendInquiry.json", "desc": "发送询价单",
+    "args": [
+      {"name":"orderInfoId","desc":"询价单id","required":true},
+      {"name":"sellerIds","desc":"商家id 多个","required":true},
+      {"name":"companyToken","desc":"公司token","required":true}
+    ],
+    "returnValues": [
+      { "name": "result", "desc": "返回结果 true/false true表示成功，false表示查询失败"},
+      { "name": "statusCode", "desc": "状态码"},
+      { "name": "errorMsg", "desc": "错误信息,如果result=true 则errorMsg为空"}
+    ]
+  }
+]
