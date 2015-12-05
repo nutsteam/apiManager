@@ -178,8 +178,10 @@
 
         var html='',    //
                 currentCategory,//当前分类
-                remoteData//远程数据
+                remoteData,//远程数据
+                category={} //分类数据
                 ;
+
 
         /**
          * 复制字符串
@@ -241,14 +243,13 @@
          * @param data api 数据
          */
         function render(data){
-            var category={};
             data.forEach(function(d,index){
                 if(!category[d.category])category[d.category]={};
                 category[d.category][d.name]="";
                 (!currentCategory) && (currentCategory = d.category);
             });
 
-            renderSidebar(category);
+            renderSidebar();
 
             renderContent(data);
 
@@ -300,7 +301,7 @@
          * 绘制侧边栏
          * @param category 分类数据
          */
-        function renderSidebar(category){
+        function renderSidebar(){
             var sidebar = '';
             for(var c in category) {
                 sidebar += '<li class="am-nav-header" data-name="' + c + '">' + c + '</li>';
@@ -347,6 +348,8 @@
             $(".am-nav-header").click(function(){
                 currentCategory = $(this).data("name");
                 renderContent(remoteData);
+                renderSidebar();
+                bindListener();
             });
         }
 
@@ -356,7 +359,7 @@
          * @param fn 回调
          */
         function loadData(fn){
-            $.get("api.json",{}, function (rs) {
+            $.get("api.json",{t:new Date().getTime()}, function (rs) {
                 remoteData =rs;
                 fn.call(null,remoteData);
             },"json")
