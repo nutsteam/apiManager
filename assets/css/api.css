@@ -39,3 +39,5 @@ code {
 .icon{ display: inline-block; width: 28px; height: 11px; }
 .ex{background: url("../images/expanded.gif") no-repeat;}
 .co{background: url("../images/collapsed.gif") no-repeat}
+
+.am-nav-header{cursor: pointer}

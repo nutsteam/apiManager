@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>绿柔网络 配娘api</title>
+    <title>微客百应 云之美品</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -19,7 +19,7 @@
 <header class="am-topbar am-topbar-fixed-top">
     <div class="am-container">
         <h1 class="am-topbar-brand">
-            <a href="#">配娘</a>
+            <a href="#">云之美品</a>
         </h1>
 
         <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-secondary am-show-sm-only"
@@ -74,10 +74,9 @@
                     <section class="amz-sidebar am-offcanvas-bar">
                         <ul class="am-nav" id="sidebar"></ul>
                     </section>
-                    <div class="amz-pager am-active" style="top: 498px;"><a href="#up" class="am-icon-caret-up"
-                                                                            data-rel="scrollUp"></a> <a href="#down"
-                                                                                                        class="am-icon-caret-down"
-                                                                                                        data-rel="scrollDown"></a>
+                    <div class="amz-pager am-active" style="top: 498px;">
+                        <a href="#up" class="am-icon-caret-up" data-rel="scrollUp"></a>
+                        <a href="#down" class="am-icon-caret-down" data-rel="scrollDown"></a>
                     </div>
                 </div>
             </div>
@@ -177,7 +176,10 @@
                 formTemp=$("#form-template").html() //表单模版
                 ;
 
-        var html='';
+        var html='',    //
+                currentCategory,//当前分类
+                remoteData//远程数据
+                ;
 
         /**
          * 复制字符串
@@ -236,58 +238,76 @@
 
         /**
          * 绘制网页
-         * @param data
+         * @param data api 数据
          */
         function render(data){
             var category={};
             data.forEach(function(d,index){
                 if(!category[d.category])category[d.category]={};
                 category[d.category][d.name]="";
-
-                //参数，返回值，表单字符串
-                var args = '',returnValues='',forms='';
-                d.args && d.args.forEach(function(a,i){
-                    args+=argTemp.replace("{arg.name}", a.name)
-                            .replace("{arg.required}", a.required || true)
-                            .replace("{arg.defaultValue}", a.defaultValue || "")
-                            .replace("{arg.desc}", a.desc || "");
-                    forms += formTemp.replace(/\{arg\.name\}/g, a.name)
-                            .replace(/\{arg\.id\}/g,a.name+"_"+i+"_"+index)
-                            .replace("{arg.type}", a.type || "text")
-                            .replace("{arg.desc}", a.desc || "")
-                });
-                d.returnValues && d.returnValues.forEach(function(rv){
-                    returnValues = getReturnValues(rv,returnValues);
-                });
-                html += temp.replace("{api.name}", d.name)
-                        .replace("{api.id}", (d.category || "")+"_"+ (d.name || ""))
-                        .replace("{api.url}", d.url)
-                        .replace("{api.method}", d.method || "get")
-                        .replace("{api.desc}", d.desc || "")
-                        .replace("<tr><td>{api.args}</td></tr>", args )
-                        .replace("<tr><td>{api.returnValues}</td></tr>", returnValues)
-                        .replace("{api.forms}",forms)
-                        .replace("{api.target}", d.target || "")
-                        .replace("{api.enctype}", d.enctype || "application/x-www-form-urlencoded")
-                        .replace("{api.action}", d.url)
-
+                (!currentCategory) && (currentCategory = d.category);
             });
 
             renderSidebar(category);
 
-            $("#api-content").html(html);
+            renderContent(data);
 
             bindListener();
+
+
         }
 
+        /**
+         * 绘制内容
+         * @param data api数据
+         */
+        function renderContent(data){
+            html = '';
+            data.forEach(function(d,index){
+                if(d.category == currentCategory){
+                    //参数，返回值，表单字符串
+                    var args = '',returnValues='',forms='';
+                    d.args && d.args.forEach(function(a,i){
+                        args+=argTemp.replace("{arg.name}", a.name)
+                                .replace("{arg.required}", a.required || true)
+                                .replace("{arg.defaultValue}", a.defaultValue || "")
+                                .replace("{arg.desc}", a.desc || "");
+                        forms += formTemp.replace(/\{arg\.name\}/g, a.name)
+                                .replace(/\{arg\.id\}/g,a.name+"_"+i+"_"+index)
+                                .replace("{arg.type}", a.type || "text")
+                                .replace("{arg.desc}", a.desc || "")
+                    });
+                    d.returnValues && d.returnValues.forEach(function(rv){
+                        returnValues = getReturnValues(rv,returnValues);
+                    });
+                    html += temp.replace("{api.name}", d.name)
+                            .replace("{api.id}", (d.category || "")+"_"+ (d.name || ""))
+                            .replace("{api.url}", d.url)
+                            .replace("{api.method}", d.method || "get")
+                            .replace("{api.desc}", d.desc || "")
+                            .replace("<tr><td>{api.args}</td></tr>", args )
+                            .replace("<tr><td>{api.returnValues}</td></tr>", returnValues)
+                            .replace("{api.forms}",forms)
+                            .replace("{api.target}", d.target || "")
+                            .replace("{api.enctype}", d.enctype || "application/x-www-form-urlencoded")
+                            .replace("{api.action}", d.url);
+                }
+            });
+            $("#api-content").html(html);
+        }
+
+        /**
+         * 绘制侧边栏
+         * @param category 分类数据
+         */
         function renderSidebar(category){
             var sidebar = '';
-            for(var c in category){
-                sidebar+='<li class="am-nav-header">'+c+'</li>';
-                if(category[c]){
-                    for(var sc in category[c]){
-                        if(sc){
-                            sidebar+='<li><a href="#'+c+"_"+sc+'">'+sc+'</a></li>';
+            for(var c in category) {
+                sidebar += '<li class="am-nav-header" data-name="' + c + '">' + c + '</li>';
+                if (category[c] && currentCategory == c) {
+                    for (var sc in category[c]) {
+                        if (sc) {
+                            sidebar += '<li><a href="#' + c + "_" + sc + '">' + sc + '</a></li>';
                         }
                     }
                 }
@@ -295,6 +315,9 @@
             $("#sidebar").html(sidebar);
         }
 
+        /**
+         * 绑定事件兼听
+         */
         function bindListener(){
             $(".am-form").submit(function(){
                 $.ajax({
@@ -320,13 +343,27 @@
                 });
                 return false;
             });
+
+            $(".am-nav-header").click(function(){
+                currentCategory = $(this).data("name");
+                renderContent(remoteData);
+            });
         }
 
-        //加载数据
-        $.get("api.json",{}, function (rs) {
-            render(rs);
 
-        },"json")
+        /**
+         * 加载数据
+         * @param fn 回调
+         */
+        function loadData(fn){
+            $.get("api.json",{}, function (rs) {
+                remoteData =rs;
+                fn.call(null,remoteData);
+            },"json")
+        }
+
+
+        loadData(render);
     })();
 
 </script>
