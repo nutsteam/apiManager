@@ -16,7 +16,7 @@
 </head>
 <body>
 
-<header class="am-topbar am-topbar-fixed-top">
+<header class="am-topbar ">
     <div class="am-container">
         <h1 class="am-topbar-brand">
             <a href="#">云之美品</a>
@@ -95,7 +95,7 @@
             <div class="am-form-group">
                 <label for="{arg.id}" class="am-u-sm-2 am-form-label">{arg.name}</label>
                 <div class="am-u-sm-10">
-                    <input type="{arg.type}" id="{arg.id}" name="{arg.name}" placeholder="{arg.desc}">
+                    <input type="{arg.type}" id="{arg.id}" name="{arg.name}" value="{arg.defaultValue}" placeholder="{arg.desc}">
                 </div>
             </div>
         </div>
@@ -129,7 +129,7 @@
                         <tbody><tr><td>{api.returnValues}</td></tr></tbody>
                     </table>
                     <p>演示</p>
-                    <form class="am-form am-form-horizontal" action="{api.action}" target="{api.target}" enctype="{api.enctype}">{api.forms}
+                    <form class="am-form am-form-horizontal" method="${api.method}" action="{api.action}" target="{api.target}" enctype="{api.enctype}">{api.forms}
                         <div class="am-form-group">
                             <div class="am-u-sm-10 am-u-sm-offset-2">
                                 <input type="submit" class="am-btn am-btn-primary am-btn-sm" value="提交"/>
@@ -179,7 +179,11 @@
         var html='',    //
                 currentCategory,//当前分类
                 remoteData,//远程数据
-                category={} //分类数据
+                category={}, //分类数据
+                globalVariables={
+                    "os":"android",
+                    "v":11
+                }
                 ;
 
 
@@ -277,6 +281,7 @@
                                 .replace(/\{arg\.id\}/g,a.name+"_"+i+"_"+index)
                                 .replace("{arg.type}", a.type || "text")
                                 .replace("{arg.desc}", a.desc || "")
+                                .replace("{arg.defaultValue}", a.defaultValue || "")
                     });
                     d.returnValues && d.returnValues.forEach(function(rv){
                         returnValues = getReturnValues(rv,returnValues);
@@ -321,8 +326,16 @@
          */
         function bindListener(){
             $(".am-form").submit(function(){
+                var action =  $(this).attr("action");
+                var m = action.match(/\{.*?\}/);
+                if(m!=null){
+                    var name = m[0].replace("{","").replace("}","");
+                    var value = $(this).find("[name='"+name+"']").val();
+                    action = action.replace(m[0],value);
+                }
+                action = action+"?os=android";
                 $.ajax({
-                    url:$(this).attr("action"),
+                    url:action,
                     type:$(this).attr("method") || "get",
                     dataType:"json",
                     data:$(this).serialize(),
@@ -350,6 +363,11 @@
                 renderContent(remoteData);
                 renderSidebar();
                 bindListener();
+            });
+
+            $(".am-panel-bd:eq(1)").toggle();
+            $(".am-panel-hd").click(function(){
+                $(this).siblings().toggle();
             });
         }
 
