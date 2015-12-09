@@ -129,7 +129,7 @@
                         <tbody><tr><td>{api.returnValues}</td></tr></tbody>
                     </table>
                     <p>演示</p>
-                    <form class="am-form am-form-horizontal" method="${api.method}" action="{api.action}" target="{api.target}" enctype="{api.enctype}">{api.forms}
+                    <form class="am-form am-form-horizontal" method="{api.method}" action="{api.action}" target="{api.target}" enctype="{api.enctype}">{api.forms}
                         <div class="am-form-group">
                             <div class="am-u-sm-10 am-u-sm-offset-2">
                                 <input type="submit" class="am-btn am-btn-primary am-btn-sm" value="提交"/>
@@ -365,7 +365,7 @@
                 bindListener();
             });
 
-            $(".am-panel-bd:eq(1)").toggle();
+            //$(".am-panel-bd:eq(1)").toggle();
             $(".am-panel-hd").click(function(){
                 $(this).siblings().toggle();
             });
