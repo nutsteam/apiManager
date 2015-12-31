@@ -177,7 +177,7 @@
                 ;
 
         var html='',    //
-                currentCategory,//当前分类
+                currentCategory = (location.href.split('#')[1])||null,//当前分类
                 remoteData,//远程数据
                 category={}, //分类数据
                 globalVariables={
@@ -185,7 +185,7 @@
                     "v":11
                 }
                 ;
-
+        currentCategory = currentCategory.split('_')[0];
 
         /**
          * 复制字符串
@@ -289,7 +289,7 @@
                     html += temp.replace("{api.name}", d.name)
                             .replace("{api.id}", (d.category || "")+"_"+ (d.name || ""))
                             .replace("{api.url}", d.url)
-                            .replace("{api.method}", d.method || "get")
+                            .replace(/\{api\.method\}/g, d.method || "get")
                             .replace("{api.desc}", d.desc || "")
                             .replace("<tr><td>{api.args}</td></tr>", args )
                             .replace("<tr><td>{api.returnValues}</td></tr>", returnValues)
