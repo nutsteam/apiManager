@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>微客百应 云之美品</title>
+    <title>API 接口管理文档</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -19,7 +19,7 @@
 <header class="am-topbar ">
     <div class="am-container">
         <h1 class="am-topbar-brand">
-            <a href="#">云之美品</a>
+            <a href="#">接口管理文档</a>
         </h1>
 
         <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-secondary am-show-sm-only"
@@ -185,7 +185,7 @@
                     "v":11
                 }
                 ;
-        currentCategory = currentCategory.split('_')[0];
+        currentCategory = currentCategory && (currentCategory.split('_')[0]);
 
         /**
          * 复制字符串
