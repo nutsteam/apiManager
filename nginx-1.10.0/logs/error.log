@@ -1,0 +1,4 @@
+2016/05/12 16:38:42 [notice] 3476#1936: signal process started
+2016/05/12 16:38:42 [error] 3476#1936: OpenEvent("Global\ngx_stop_11940") failed (2: The system cannot find the file specified)
+2016/05/12 16:39:34 [notice] 4916#10504: signal process started
+2016/05/12 16:39:34 [error] 4916#10504: OpenEvent("Global\ngx_stop_11940") failed (2: The system cannot find the file specified)
