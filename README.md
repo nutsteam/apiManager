@@ -8,6 +8,7 @@
 * 该系统不兼容ie8及以下浏览器
 * 或者打开 nginx-1.10.0/nginx.exe 然后浏览器访问 http://localhost:8888 即可
 * 如果需要数据库支持，可以使用 [RAP](https://github.com/thx/RAP)
+
 ### api.json 格式说明
     [
         {
