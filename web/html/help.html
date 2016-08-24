@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>在线帮助-小幺鸡</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <meta name="keywords" content="小幺鸡,接口,api,接口管理,接口文档"/>
+    <meta name="description" content="小幺鸡在线接口管理系统，提升开发效率降低接口错误率。"/>
+    <link rel="shortcut icon" type="image/x-ico" href="favicon.ico">
+</head>
+<body id="app">
+<!-- #include "includes/header.html" -->
+<header>
+    <div class="top">
+        <div class="cb mc">
+            <template v-if="user.id">
+                <div class="user-action logged fr">
+                    <a class="item" href="dashboard">进入工作台</a>
+                    <a class="item" v-on:click="logout">退出</a>
+                </div>
+            </template>
+            <template v-else>
+                <div class="user-action fr">
+                    <a class="item" href="login.html">登陆</a>
+                    <a class="item" href="register.html">注册</a>
+                    <a class="item thirdly"><i class="iconfont icon-qq"></i></a>
+                    <a class="item thirdly"><i class="iconfont icon-weibo"></i></a>
+                    <a class="item thirdly"><i class="iconfont icon-github"></i></a>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    <div class="header mc cb">
+        <a href="" class="logo fl"><img src="assets/img/logo/full.png"></a>
+        <nav class="fl">
+            <ul class="cb">
+                <li><a href="index.html">主页</a> </li>
+                <li><a href="dashboard/#!/project/demo">在线演示</a> </li>
+                <li><a href="http://git.oschina.net/zhoujingjie/apiManager" target="_blank">码云</a></li>
+                <li><a href="about.html">关于我们</a> </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<!-- end include -->
+<div class="help-bg"></div>
+<div class="mc help-content">
+    <br/><br/><br/>
+    <h3>如果解决跨域访问？</h3>
+    <br/>
+    <div>
+        <p>1.服务器提供<a href="http://baike.baidu.com/item/jsonp" target="_blank">JSONP</a> 支持</p>
+        <p>2.服务器提供<a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS" target="_blank">CORS</a> 支持</p>
+        <p>3.下载由小幺鸡提供的Chrome浏览器插件。<a href="xiaoyaoji.crx" target="_blank">下载</a> </p>
+    </div>
+
+</div>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<!-- #include "includes/footer.html" -->
+<footer class="ta-c">
+    <div>
+        <a href="">首页</a>
+        <a href="">码云</a>
+        <a href="help.html">在线帮助</a>
+        <a href="about.html">关于我们</a>
+    </div>
+    小幺鸡@2016<a href="http://www.miitbeian.gov.cn/" target="_blank">蜀ICP备16012366号</a>
+</footer>
+<script src="assets/jquery/jquery.min.js"></script>
+<script src="assets/toastr/toastr.min.js"></script>
+<script src="assets/pace/pace.min.js"></script>
+<script src="../build/common.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="../build/index.js"></script>
+<!-- end include -->
+</body>
+</html>

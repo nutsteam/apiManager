@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>小幺鸡API可视化管理系统</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-ico" href="favicon.ico">
+</head>
+<body class="login-register-body" id="login">
+<div class="login-form mc">
+    <validator name="form">
+    <form class="form" v-on:submit.prevent>
+        <div class="ta-c logo"><a href="/"><img src="assets/img/logo/full.png"></a> </div>
+        <div class="item">
+            <input type="text" initial="off" autofocus v-model="email" tabindex="1" maxlength="45" v-validate:email="['required','email']"  class="text" placeholder="邮箱"/>
+            <p v-cloak class="tip" v-if="$form.email.invalid">{{$form.email.errors[0].message}}</p>
+        </div>
+        <div class="item">
+            <input type="password" initial="off" tabindex="2" v-model="password" v-validate:password="{required:true}" class="text" placeholder="密码"/>
+            <p v-cloak class="tip" v-if="$form.password.invalid">{{$form.password.errors[0].message}}</p>
+        </div>
+        <div class="item">
+            <input type="submit" v-on:click="submit" tabindex="3" id="login-btn" class="btn" value="登陆"/>
+        </div>
+    </form>
+    </validator>
+    <div class="long-line"></div>
+    <!--<div class="login-third ta-c">
+        <a v-on:click="qq"><i class="iconfont icon-qq"></i></a>
+        <a id="weibo"><i class="iconfont icon-weibo"></i></a>
+        <a id="github"><i class="iconfont icon-github"></i></a>
+    </div>--><br/>
+    <div class="ta-c">
+        <a href="forget.html">忘记密码</a>
+        <a href="register.html">免费注册</a>
+    </div>
+</div>
+<script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" data-appid="101333549" data-callback="true" charset="utf-8"></script>
+<script src="assets/jquery/jquery.min.js"></script>
+<script src="assets/toastr/toastr.min.js"></script>
+<script src="assets/pace/pace.min.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="../build/common.js"></script>
+<script src="../build/login.js"></script>
+</body>
+</html>

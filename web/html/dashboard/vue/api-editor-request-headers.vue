@@ -1,0 +1,44 @@
+<template>
+    <div class="div-table-line" v-for="item in requestHeaders">
+        <template v-if="editing">
+        <ul class="cb">
+            <li class="col-sm-1">
+                <i class="iconfont icon-close" v-on:click="removeRequestHeadersRow(item,requestHeaders)"></i>
+                <!--<i class="iconfont icon-tianjia" v-on:click="insertRequestHeadersRow(item)"></i>-->
+            </li>
+            <li class="col-sm-3 input"><input type="text" class="text name" v-model="item.name" value="{{item.name}}"></li>
+            <li class="col-sm-2"><select v-model="item.require">
+                <option value="false">false</option>
+                <option value="true">true</option>
+            </select></li>
+            <li class="col-sm-4 input"><input type="text" class="text" v-model="item.description" value="{{item.description}}"></li>
+            <li class="col-sm-2 input"><input type="text" class="text" v-model="item.defaultValue" value="{{item.defaultValue}}"></li>
+        </ul>
+        </template>
+        <template v-else>
+        <ul class="cb api-row-{{requestHeaders.index}}">
+            <li class="col-sm-3 name">{{item.name}}
+            </li>
+            <li class="col-sm-2">{{item.require}}</li>
+            <li class="col-sm-5">{{item.description}}</li>
+            <li class="col-sm-2">{{item.defaultValue}}</li>
+        </ul>
+        </template>
+
+        <div class="sub">
+            <request-headers-vue v-bind:request-headers.sync="item.children" v-bind:editing="editing"></request-headers-vue>
+        </div>
+    </div>
+</template>
+<script>
+    export default{
+        methods: {
+            removeRequestHeadersRow: function (item, dom) {
+                dom.$remove(item)
+            },
+            insertRequestHeadersRow(dom){
+                dom.children.push({require: 'false', children: []});
+            }
+        }
+    }
+</script>
