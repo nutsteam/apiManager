@@ -9,7 +9,7 @@
 ## [在线demo](http://www.xiaoyaoji.com.cn/) （推荐使用在线系统）
 	
 ## 文件夹说明
-* web 文件夹是前端静态页面 基于nodejs，webpack gulp
+* web 文件夹是前端静态页面 基于nodejs，webpack gulp，vuejs,jqueryjs开发完成
 * api 文件夹是后台代码；基于mybatis+mysql+ [mangoframework](https://github.com/zhoujingjie/mangoframework)
     * mangoframework 类似于springMVC的web框架 文档信息还在编写中
 
