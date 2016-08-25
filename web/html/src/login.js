@@ -9,21 +9,22 @@ function qqlogin(openId,accessToken){
 }
 new Vue({
     el:'#login',
-    data:{password:null,email:null},
+    data:{password:null,email:null,params:{}},
     created:function(){
         if(location.search){
-            var m = location.search.match(/status=(\w+)/);
-            if(m && m.length==2){
-                switch(m[1]){
-                    case "expired":
-                        toastr.warning('会话已过期');
-                        break;
-                    case "success":
-                        toastr.success('操作成功');
-                        break;
-                }
+            this.params=utils.getQueryParams(location.search);
+            switch(this.params['status']){
+                case "expired":
+                    toastr.warning('会话已过期');
+                    break;
+                case "success":
+                    toastr.success('操作成功');
+                    break;
             }
         }
+        $('#email').focus();
+            setTimeout(function(){
+        },100);
     },
     methods:{
         submit:function(){
@@ -31,12 +32,17 @@ new Vue({
             if(!this.$form.valid){
                 return false;
             }
+            var self =this;
             utils.post('/user/login.json',{
                 email:this.email,password:this.password
             },function (rs) {
                 utils.token(rs.data.token);
                 utils.user(rs.data.user);
-                location.href=utils.config.ctx+'/dashboard';
+                if(self.params['refer']){
+                    location.href=self.params['refer']
+                }else{
+                    location.href=utils.config.ctx+'/dashboard';
+                }
             });
         },
         qq: function () {

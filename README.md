@@ -10,8 +10,7 @@
 	
 ## 文件夹说明
 * web 文件夹是前端静态页面 基于nodejs，webpack gulp，vuejs,jqueryjs开发完成
-* api 文件夹是后台代码；基于mybatis+mysql+ [mangoframework](https://github.com/zhoujingjie/mangoframework)
-    * mangoframework 类似于springMVC的web框架 文档信息还在编写中
+* api 文件夹是项目API包，使用java开发，运行在tomcat7.x以上版本。
 
 ## 兼容性
 * 静态页系统暂时只兼容chrome，其他浏览器未测试。
@@ -20,20 +19,28 @@
 
 ## 使用说明
 ### API
- * 修改src/main/resource/config.properties 中的数据库配置信息，如果要启用QQ登陆，需要配置qq信息
+ * api.war修改为api.zip 用压缩软件打开并且解压放在tomcat webapps目录下 需要修改tomcat默认端口，防止与静态页面的端口冲突
+ * 修改WEB-INF/classes/config.properties 中的数据库配置信息，
+    * 如果要启用QQ，微博登陆，需要配置QQ和微博开发者信息
+    * 需要修改sql连接地址与账户密码
+    * 如果需要发邮件则需要配置邮件服务器地址
+    * config.properties未单独做中文编码处理，为防止乱码，中文需要改为unicode
  * 导入sql/sql.sql 文件到mysql中，
+ * 启动tomcat，浏览器运行 http://localhost:端口/api/index.html 能正常显示Hello XiaoYaoJi API 则表示可用。
  
 ### WEB
- * 修改web/html/assets/js/config.js 中的配置信息
-    * window.root ：api接口地址
-    * window.ctx : 文件夹相对路径
- * 运行: 打开web目录
-    * dos: webpack --watch
-    * dos: webpack-dev-server
-    * 然后浏览器访问http://localhost:8080
-
- * 如果想要直接使用则 拷贝dist目录下到服务器根目录下即可。 （同样需要修改assets/js/config.js ）
-
+ * 开发版
+    * npm install 下载项目依赖包 
+    * webpack --watch 编译并且监听文件改动
+    * webpack-dev-server 运行项目 
+    * 浏览器访问http://localhost:8080/html/
+    * 修改html/assets/js/config.js配置
+        * window.root : 接口地址
+        * window.ctx : 静态页面相对路径
+ * 已编译版本
+    * 复制dist目录下的已编译代码到 tomcat /webapps/ROOT 下，
+    * 修改html/assets/js/config.js配置
+    * 浏览器访问http://localhost:tomcat端口/
 
 ### 效果
 ![基本](img/basic.png)

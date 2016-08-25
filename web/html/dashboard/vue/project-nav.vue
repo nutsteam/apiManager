@@ -1,6 +1,6 @@
 <template>
+    <li class="fl db-back db-item" v-if="path.indexOf('/profile')==0"><a v-link="'/'"><i class="iconfont icon-left"></i>返回控制台 </a></li>
     <template v-if="$parent.showProject">
-    <!--<li class="fl db-back db-item" v-show="pageName"><a v-on:click='back'><i class="iconfont icon-left"></i> 返回</a></li>-->
     <li class="fl db-item"><a class="page-name">{{pageName}}</a></li>
     <li class="fl db-item"><a v-link="'/project/'+projectId+'/members'" v-on:click="pageName='成员管理'">成员管理</a></li>
     <li class="fl db-item"><a v-link="'/project/'+projectId+'/settings'" v-on:click="pageName='项目设置'">项目设置</a></li>
@@ -36,9 +36,9 @@
                     </div>
                 </div>
             </li>
-            <!--<li  class="db-item"><a v-link="'/profile'"><i class="iconfont icon-user"></i>个人中心</a></li>
+            <li  class="db-item"><a v-link="'/profile'"><i class="iconfont icon-user"></i>个人中心</a></li>
             <li class="db-item"><a v-link="'/profile/security'"><i class="iconfont icon-setting"></i>安全设置</a></li>
-            <li class="db-item"><a v-link="'/profile/relation'"><i class="iconfont icon-relation"></i>关联账户</a></li>-->
+            <!--<li class="db-item"><a v-link="'/profile/relation'"><i class="iconfont icon-relation"></i>关联账户</a></li>-->
             <li class="db-item"><a v-on:click.stop.prevent="logout"><i class="iconfont icon-logout"></i>退出登录</a></li>
         </ul>
     </li>
@@ -63,8 +63,13 @@
     </li>
 </template>
 <script>
+    document.addEventListener('route.click',function(e){
+        data.path = e.detail.path;
+        console.log(data.path)
+    });
     import utils from '../../src/utils.js';
     var data={
+        path:'',
         status:{
             show:''
         },
@@ -80,6 +85,15 @@
         data:function(){
             return data;
         },
+        watch:{
+            "path":function(value){
+                if(value && value.indexOf('/profile')==0){
+                    $('body').addClass('profile');
+                }else{
+                    $('body').removeClass('profile');
+                }
+            }
+        },
         methods: {
             go:function(path){
                 this.$route.router.go({path:'/project'+this.projectId+path})
@@ -91,7 +105,6 @@
             },
             logout: function () {
                 utils.logout();
-                location.href=utils.config.ctx+"/";
             }
         }
     }

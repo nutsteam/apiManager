@@ -31,6 +31,7 @@ var utils={
     logout:function(){
         localStorage.setItem("token","");
         localStorage.setItem("user","");
+        location.href=utils.config.ctx+"/";
     },
     toJSON:function(data){
         if(data === undefined)
@@ -85,6 +86,16 @@ var utils={
             .replace(/\"/g,"&quot;")
             .replace(/\'/g,"&apos;")
 
+    },
+     getQueryParams(qs) {
+        qs = qs.split('+').join(' ');
+        var params = {},
+            tokens,
+            re = /[?&]?([^=]+)=([^&]*)/g;
+        while (tokens = re.exec(qs)) {
+            params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+        }
+        return params;
     }
 };
 $._ajax_=$.ajax;
@@ -112,7 +123,7 @@ $.ajax = function(params){
         }else if(rs.code == -2){
             if(location.href.indexOf('/project/demo') != -1)
                 return false;
-            location.href=utils.config.ctx+'/login.html?status=expired';
+            location.href=utils.config.ctx+'/login.html?status=expired&refer='+encodeURIComponent(location.href);
         }else{
             toastr.error(rs.errorMsg);
         }

@@ -1,4 +1,4 @@
-@import "//at.alicdn.com/t/font_1471933838_806995.css";
+@import "//at.alicdn.com/t/font_1472038010_4546952.css";
 @import "button.css";
 @import "../toastr/toastr.min.css";
 @import "../pace/pace.min.css";
@@ -25,6 +25,9 @@ li{
 }
 div,p{
     box-sizing: border-box;
+}
+img{
+    border: none;
 }
 .cb:after{
     clear: both;
@@ -66,7 +69,7 @@ input,textarea{
     border: 1px solid #C3C3C3;
     box-sizing: border-box;
 }
-.text.k1{
+.text.k1,.btn.k1{
     padding: 10px;
 }
 .text:focus{
@@ -113,14 +116,20 @@ body.modal-open{
     width: 300px;
     margin: 100px auto;
 }
-.modal-layout1 .title{
+.modal-layout1 .title,.modal-layout2 .title{
     font-size: 24px;
     font-weight:bold;
     margin: 0 0 50px 0;
     text-align: center;
+    padding: 0!important;
 }
-.modal-layout1 .actions{
+.modal-layout1 .actions,.modal-layout2 .actions{
     margin-top: 30px;
+}
+
+.modal-layout2{
+    width: 350px;
+    margin: 100px auto;
 }
 
 .form .item{
@@ -986,7 +995,21 @@ section{
 .dlc2 .db-left-content{
     left: 60px;
 }
-
+.dbl-projects{
+    display: block;
+}
+body.profile .dbl-projects{
+    display: none;
+}
+.dbl-userinfo{
+    display: none;
+}
+body.profile .dbl-userinfo{
+    display: block;
+}
+.db-left .dbl-userinfo .db-item{
+    padding-left: 55px;
+}
 .dashboard.max .db-main{
     padding: 0;
 }
@@ -1142,7 +1165,7 @@ section{
     top: 50px;
 }
 .db-item-sub a{
-    width: 150px;
+    /*width: 150px;*/
     height: 40px;
     line-height: 40px;
 }
@@ -1162,7 +1185,7 @@ section{
 .db-nav-sub-profile{
     margin: 10px 0;
     line-height: 25px;
-    width: 140px;
+    width: 180px;
     overflow: hidden;
 }
 .db-nav-profile-name{
@@ -1176,13 +1199,13 @@ section{
 .db-item .db-profile-info{
     background: #fff!important;
     color: #666;
-    width: 230px;
+    width: 280px;
 }
 .db-item.profile .db-item{
     background: #f9f9f9;
 }
 .db-item.profile .db-item a{
-    padding-left: 25px;
+    padding-left: 30px;
 }
 .db-nav-msg-box{
     padding: 0 10px;

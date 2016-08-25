@@ -24,6 +24,7 @@ gulp.task('build', function(){
         .pipe(minifyCss())
         .pipe(gulp.dest(targetPath+'/assets'))
     gulp.src(['./html/dashboard/*.html'])
+		.pipe(minifyHtml())
         .pipe(gulp.dest(targetPath+'/dashboard'))
     gulp.src(['./html/test/**'])
         .pipe(gulp.dest(targetPath+'/test'))
@@ -32,7 +33,7 @@ gulp.task('build', function(){
     gulp.src(['./build/*.js'])
         //.pipe(jsmin())
         .pipe(gulp.dest(targetPath+'/build'));
-	gulp.src(['./html/xiaoyaoji.crx'])
+	gulp.src(['./xiaoyaoji.crx'])
         //.pipe(jsmin())
         .pipe(gulp.dest(targetPath));
 })

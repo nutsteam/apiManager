@@ -1,11 +1,13 @@
+<!--[if lt IE 9]> <script>location.href='unsupport.html'</script> <![endif]-->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>小幺鸡API可视化管理系统</title>
+    <title>登陆 - 小幺鸡</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <meta name="keywords" content="" />
-    <meta name="description" content="" />
+    <link rel="alternate" hreflang="zh-hans" href="http://www.xiaoyaoji.com.cn/" />
+    <meta name="keywords" content="小幺鸡,接口,api,接口管理,接口文档" />
+    <meta name="description" content="小幺鸡在线接口管理系统，提升开发效率降低接口错误率。" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="shortcut icon" type="image/x-ico" href="favicon.ico">
 </head>
@@ -15,7 +17,7 @@
     <form class="form" v-on:submit.prevent>
         <div class="ta-c logo"><a href="/"><img src="assets/img/logo/full.png"></a> </div>
         <div class="item">
-            <input type="text" initial="off" autofocus v-model="email" tabindex="1" maxlength="45" v-validate:email="['required','email']"  class="text" placeholder="邮箱"/>
+            <input type="text" initial="off" v-model="email" id="email" tabindex="1" maxlength="45" v-validate:email="['required','email']"  class="text" placeholder="邮箱"/>
             <p v-cloak class="tip" v-if="$form.email.invalid">{{$form.email.errors[0].message}}</p>
         </div>
         <div class="item">
@@ -45,5 +47,6 @@
 <script src="assets/js/config.js"></script>
 <script src="../build/common.js"></script>
 <script src="../build/login.js"></script>
+<script type="text/javascript" src="http://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500160333"></script>
 </body>
 </html>

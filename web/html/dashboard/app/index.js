@@ -44,3 +44,8 @@ router.start({
 		App,ProjectLeft,ProjectNav
 	}
 }, '#dashboard');
+var evt =document.createEvent('Event');
+evt.initEvent('route.click',true,false);
+router.afterEach(function(transition){
+    document.dispatchEvent(new CustomEvent('route.click',{detail:{path:transition.to.path}}));
+});

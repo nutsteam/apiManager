@@ -1,25 +1,48 @@
 <template>
     <div class="db-left-content dlc1 bg">
         <div class="ta-c logo"><a v-link="'/welcome'"><img src="../../assets/img/logo/full.png"></a></div>
-        <div class="db-left-search">
-            <div class="cb">
-                <div class="fl"><i class="iconfont icon-sousuo"></i></div>
-                <div class="fl">
-                    <input type="text" v-model="filter" value="{{filter}}" placeholder="快速查找项目">
+        <div class="dbl-projects hide">
+            <div class="db-left-search">
+                <div class="cb">
+                    <div class="fl"><i class="iconfont icon-sousuo"></i></div>
+                    <div class="fl">
+                        <input type="text" v-model="filter" value="{{filter}}" placeholder="快速查找项目">
+                    </div>
                 </div>
             </div>
+            <div class="line"></div>
+            <br/>
+            <ul>
+                <li class="db-item"><a v-link="{path:'/add'}" class="bd-add">
+                    <i class="iconfont icon-add-circle"></i>添加项目</a></li>
+                <li class="line"></li>
+                <li class="bd-project-title">我的项目</li>
+                <li class="db-item" v-for="item in projects | filterBy filter in 'name'">
+                    <a v-link="{ path: '/project/'+item.id,params:{name:item.name}}"><i class="iconfont icon-projects"></i>{{item.name}}</a>
+                </li>
+            </ul>
         </div>
-        <div class="line"></div>
-        <br/>
-        <ul>
-            <li class="db-item"><a v-link="{path:'/add'}" class="bd-add"><i
-                    class="iconfont icon-add-circle"></i>添加项目</a></li>
-            <li class="line"></li>
-            <li class="bd-project-title">我的项目</li>
-            <li class="db-item" v-for="item in projects | filterBy filter in 'name'">
-                <a v-link="{ path: '/project/'+item.id,params:{name:item.name}}"><i class="iconfont icon-projects"></i>{{item.name}}</a>
-            </li>
-        </ul>
+        <div class="dbl-userinfo">
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <ul>
+                <li class="db-item">
+                    <a v-link="{ path: '/profile'}"><i class="iconfont icon-projects"></i>个人信息</a>
+                </li>
+                <li class="db-item">
+                    <a v-link="{ path: '/profile/security'}"><i class="iconfont icon-safe"></i>安全设置</a>
+                </li>
+                <li class="db-item">
+                    <a v-link="{ path: '/profile/relation'}"><i class="iconfont icon-relation"></i>关联账户</a>
+                </li>
+                <li class="db-item">
+                    <a v-on:click.stop.prevent="logout"><i class="iconfont icon-logout"></i>退出登录</a>
+                </li>
+
+            </ul>
+        </div>
     </div>
     <div class="dlc2 bg">
         <div class="db-left-bar">
@@ -85,6 +108,10 @@
                 }
             }
         },
-        methods: {}
+        methods: {
+            logout:function(){
+                utils.logout();
+            }
+        }
     }
 </script>
