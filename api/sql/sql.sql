@@ -3,13 +3,13 @@ Navicat MySQL Data Transfer
 
 Source Server         : tencent
 Source Server Version : 50544
-Source Database       : api_dev
+Source Database       : api
 
 Target Server Type    : MYSQL
 Target Server Version : 50544
 File Encoding         : 65001
 
-Date: 2016-08-24 16:37:10
+Date: 2016-08-25 12:32:40
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -230,6 +230,7 @@ DROP TABLE IF EXISTS `user_third`;
 CREATE TABLE `user_third` (
   `id` varchar(60) NOT NULL,
   `userid` char(12) NOT NULL,
+  `type` char(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
