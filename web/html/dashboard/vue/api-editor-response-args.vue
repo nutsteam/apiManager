@@ -15,6 +15,7 @@
                 <select v-model="item.type">
                     <option value="string">string</option>
                     <option value="number">number</option>
+                    <option value="boolean">boolean</option>
                     <option value="object">object</option>
                     <option value="array">array</option>
                     <option value="array[number]">array[number]</option>
@@ -30,9 +31,9 @@
         </template>
         <template v-else>
         <ul class="cb api-row-{{responseArgs.index}}">
-            <li class="col-sm-3 name">{{item.name}}</li>
-            <li class="col-sm-2">{{item.require}}</li>
-            <li class="col-sm-7">{{item.description}}</li>
+            <li class="col-sm-2 name">{{item.name}}</li>
+            <li class="col-sm-1">{{item.require}}</li>
+            <li class="col-sm-9">{{item.description}}</li>
         </ul>
         </template>
 

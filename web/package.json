@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack --progress --colors --watch",
+    "watch": "webpack-dev-server --hot --progress --colors",
+    "dist": "NODE_ENV=production webpack --progress --colors"
   },
   "author": "zhoujingjie",
   "license": "TODO",
@@ -28,7 +30,7 @@
     "gulp-uglify": "^1.5.4",
     "gulp-usemin": "^0.3.23",
     "html-loader": "^0.4.3",
-    "jquery.cookie": "^1.4.1",
+    "html-webpack-plugin": "^2.22.0",
     "node-sass": "^3.8.0",
     "sass-loader": "^4.0.0",
     "style-loader": "^0.13.1",

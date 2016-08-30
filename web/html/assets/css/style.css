@@ -1,4 +1,4 @@
-@import "//at.alicdn.com/t/font_1472038010_4546952.css";
+@import "//at.alicdn.com/t/font_1472477673_0723448.css";
 @import "button.css";
 @import "../toastr/toastr.min.css";
 @import "../pace/pace.min.css";
@@ -539,7 +539,7 @@ nav ul{
 nav ul li{
     float: left;
     font-size: 20px;
-    margin-right: 100px;
+    margin-right: 70px;
 }
 section{
     height: 100%;
@@ -576,6 +576,48 @@ section{
 .m-sec1-go a:hover{
     background: #FFF;
     color: #48ACCA;
+}
+
+.m-sec3{
+    font-size: 14px;
+    background: #f0f0f0;
+    padding: 80px 0;
+    color: #333;
+    line-height: 25px;
+}
+.m-sec3 .ta-c{
+    font-size: 20px;
+}
+.m-sec3 .about-list{
+    width: 240px;
+    margin-top:20px;
+}
+.m-sec3 .about-list .m-sec1-go a{
+    color: #000;
+    border-color: #000;
+}
+.m-sec-contact{
+    padding: 80px 0;
+    background-color: #31b0d5;
+    color: #fff;
+    font-size: 14px;
+}
+.m-sec-contact ul{
+    width: 900px;
+}
+
+.m-sec-contact li{
+    float: left;
+    width: 300px;
+    text-align: center;
+}
+.m-sec-contact li i{
+    font-size: 80px;
+    cursor: inherit;
+}
+.m-sec-contact li a{
+    color: #fff;
+    text-decoration: underline;
 }
 .user-info{
     font-size: 16px;
@@ -676,7 +718,9 @@ section{
     font-size: 18px;
 }
 .apis{
-
+}
+.apis li{
+    position: relative;
 }
 .api-container{
     background: #fff;
@@ -738,7 +782,26 @@ section{
     min-width:20px;
     display: inline-block;
 }
-
+.api-item-actions{
+    position: absolute;
+    padding:10px 0;
+    box-shadow: 0 5px 5px #ccc;
+    background-color: #fff;
+    z-index: 2;
+    right: 0;
+    top: 35px;
+}
+.api-item-actions div{
+    line-height: 20px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.api-item-actions div i{
+    font-size: 12px;
+}
+.api-item-actions div:hover{
+    background-color: #f0f0f0;
+}
 
 .api-editing .api-module-item i.icon-bianji,.api-editing .api-module-item i.icon-close{
     display: inline-block;
@@ -762,9 +825,9 @@ section{
     min-width: 800px;
 }
 
-@media screen and (min-width:1440px){
+@media screen and (min-width:1240px){
     .api-content{
-        width: 1000px;
+        width: 1100px;
     }
 }
 @media screen and(min-width: 1800px) {
@@ -785,6 +848,7 @@ section{
 .api-content .api-update-time{
     color: #666;
     margin-top: 5px;
+    white-space:nowrap;
 }
 
 .api-details-title{
@@ -815,14 +879,29 @@ section{
 }
 .api-example{
     width: 100%;
-    height:200px;
+    height:150px;
     padding: 5px;
     box-sizing: border-box;
 }
 .api-base-info p{
     line-height: 20px;
 }
-
+#api-edit-details{
+    position: relative;
+    padding-bottom: 50px;
+}
+.api-btn-save{
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left:0;
+}
+.api-btn-save .btn{
+    padding: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 100%;
+}
 
 #api-edit-box{
     width: 100%;
@@ -875,36 +954,16 @@ section{
 .api-plugin-tip p{
     margin: 5px 0;
 }
-/***************************/
-.long-line{
-    height:1px;
-    background: #ccc;
+.api-name .api-actions i{
+    font-size: 12px;
+    color: #888;
+    margin-left: 0;
+    margin-right: 1px;
 }
-.about-whoami{
-    text-align: center;
-    font-size: 28px;
-    padding: 150px 0;
-    background: url(../img/about.png) center no-repeat;
-    color: #ffffff;
-    background-size: cover;
-}
-.about-desc{
-    font-size: 14px;
-    background: #fff;
-    padding: 40px 0;
-    color: #333;
-    line-height: 25px;
-}
-.about-desc .ta-c{
-    font-size: 20px;
-}
-.about-list{
-    width: 220px;
-    margin-top:20px;
+.api-name .api-actions i:hover{
+    color: #000;
 }
 
-
-/*********************/
 .login-register-body{
     background-color: #f8f6f2;
 }
@@ -979,7 +1038,7 @@ section{
     left:0;
     height: 100%;
     overflow-y: auto;
-    z-index: 9;
+    z-index: 101;
     background-color: #fff;
 }
 .dlc2{
@@ -1021,7 +1080,7 @@ body.profile .dbl-userinfo{
     height: 100%;
     width: 100%;
     overflow-y: auto;
-    z-index: 8;
+    z-index: 100;
 }
 .db-left-bar{
     background-color: #2e2d2b;
@@ -1029,7 +1088,7 @@ body.profile .dbl-userinfo{
     width: 60px;
     height: 100%;
     position: fixed;
-    z-index: 10;
+    z-index: 99;
     left: 0;
     top: 0;
     overflow-y: auto;
@@ -1165,7 +1224,7 @@ body.profile .dbl-userinfo{
     top: 50px;
 }
 .db-item-sub a{
-    /*width: 150px;*/
+    width: 150px;
     height: 40px;
     line-height: 40px;
 }
@@ -1428,6 +1487,12 @@ body.profile .dbl-userinfo{
     padding: 5px 0;
     background-color: #DBDBDB;
 }
+.help-content{
+    width: 800px;
+}
 .help-content h3{
     font-size: 18px;
+}
+.help-content a{
+    color: #00a0e9;
 }

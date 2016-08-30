@@ -1,8 +1,27 @@
 var webpack = require('webpack');
 var path = require("path");
-var commonsPlugin = new webpack.optimize.CommonsChunkPlugin('common.js', ['dashboard','login','forget','index','register','findpassword']);
+var commonsPlugin = new webpack.optimize.CommonsChunkPlugin('common.js', [
+    'dashboard','login','findpassword',
+    'index','register','forget']
+);
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 // var ExtractTextPlugin = require("extract-text-webpack-plugin");
-
+var jquery=require('jquery');
+var plugins=[commonsPlugin,new webpack.HotModuleReplacementPlugin(),new  webpack.optimize.UglifyJsPlugin({compress:{warnings:false}})
+];
+var fs =require('fs');
+var files = fs.readdirSync('./html');
+files.forEach(function(item){
+        if(item.match('.ejs')!=null){
+            plugins.push(new HtmlWebpackPlugin({
+                filename:'../html/'+item.replace('.ejs','.html'),
+                template:'./html/'+item,
+                inject:false
+            }));
+        }
+    });
+//console.log("plugins.length:"+plugins.length)
+var isDev=process.env.NODE_ENV!=='production';
 module.exports = {
     entry:{
         'dashboard':'./html/dashboard/app/index.js',
@@ -13,13 +32,13 @@ module.exports = {
         'index':'./html/src/index.js'
     },
     output: {
-        path: path.join(__dirname, 'build'),
-        publicPath: "../../../build/",
-        filename: '[name].js', 
-        chunkFilename: '[id].js',
+        path: path.join(__dirname, 'built'),
+        publicPath: isDev?"/built/":'//www.xiaoyaoji.com.cn/built/',
+        filename: '[name].js',
+        chunkFilename: '[id].[hash].js',
     },
     resolve:{
-        extensions:['', '.js', '.jsx', 'css', 'vue']
+        extensions:['', '.js', 'css', 'vue']
     },
     module:{
         loaders:[
@@ -35,17 +54,15 @@ module.exports = {
                 test: /\.css$/,
                 //loader: ExtractTextPlugin.extract("style-loader", "css-loader")
                 loader: 'style-loader!css-loader'
-            },{
-                test: /\.scss$/,
-                //loader: ExtractTextPlugin.extract("style-loader", "css-loader!sass-loader")
-                loader: 'style-loader!css-loader!sass-loader'
-
-            },{
-                test: /\.(png|jpg|gif)$/,
-                loader: 'url-loader?limit=8192'
-            },{
+            }
+            ,{
+               test: /\.(png|jpg|gif)$/,
+                //loader: 'url-loader?limit=1024'
+                loader:'file-loader'
+            }
+            ,{
                 test: /\.woff/,
-                loader: 'url-loader?limit=10000&minetype=application/font-woff'
+                loader: 'file-loader'
             },{
                 test: /\.ttf/,
                 loader: 'file-loader'
@@ -57,7 +74,7 @@ module.exports = {
                 loader: 'file-loader'
             },{
                 test:/\.html$/,
-                loader:'html-loader'
+                loader:'html-loader?interpolate'
             }
         ]
     },
@@ -65,7 +82,5 @@ module.exports = {
         presets: ['es2015', 'stage-2'],
         plugins: ['transform-runtime']
     },
-	plugins:[
-		commonsPlugin,
-    ]
+	plugins:plugins
 };

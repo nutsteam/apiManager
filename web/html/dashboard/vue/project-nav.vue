@@ -13,10 +13,10 @@
                     class="iconfont icon-shanchu"></i>项目转让</a></li>
             <li class="db-item"><a v-link="'/project/'+projectId+'/release'" v-on:click="pageName='解散项目'"><i
                     class="iconfont icon-shanchu"></i>删除项目</a></li>
-            <li class="db-item"><a v-link="'/project/'+projectId+'/export'" v-on:click="pageName='项目导出'"><i class="iconfont icon-shanchu"></i>导出项目</a>
+            <!--<li class="db-item"><a v-link="'/project/'+projectId+'/export'" v-on:click="pageName='项目导出'"><i class="iconfont icon-shanchu"></i>导出项目</a>
             </li>
             <li class="db-item"><a v-link="'/project/'+projectId+'/record'" v-on:click="pageName='操作记录'"><i class="iconfont icon-shanchu"></i>操作记录</a>
-            </li>
+            </li>-->
         </ul>
     </li>
     </template>
@@ -65,7 +65,6 @@
 <script>
     document.addEventListener('route.click',function(e){
         data.path = e.detail.path;
-        console.log(data.path)
     });
     import utils from '../../src/utils.js';
     var data={

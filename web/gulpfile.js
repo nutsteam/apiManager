@@ -10,33 +10,82 @@ var targetPath = 'dist';
 var jsmin = require('gulp-jsmin');
 
 gulp.task('clean', function(){
-    return gulp.src('./dist',{read:false}).pipe(clean())
+	return gulp.src('./dist',{read:false}).pipe(clean());
+});
+var fs =require('fs');
+gulp.task('html',['clean'],function(){
+	fs.readdirSync('./html').forEach(function(item){
+		if(item.match('.html$')){
+			gulp.src('./html/'+item)
+				.pipe(usemin({
+					html: [ minifyHtml() ],
+					index: [rev()],
+					about: [rev()],
+					common: [rev()],
+					forget: [rev()],
+					register: [rev()],
+					login: [rev()],
+					findpassword: [rev()]
+				}))
+				.pipe(gulp.dest(targetPath))
+		}
+	});
+
+	gulp.src('./html/favicon.ico')
+		.pipe(gulp.dest(targetPath));
+
+
+	return gulp.src(['./html/dashboard/index.html'])
+		.pipe(usemin({
+			html:[minifyHtml()],
+			common:[rev()]
+		}))
+		.pipe(gulp.dest(targetPath+'/dashboard'));
+});
+
+gulp.task('assets',['clean'],function(){
+	return gulp.src(['html/assets/**/*.!(css)'])
+		.pipe(gulp.dest(targetPath+'/assets'))
+});
+
+gulp.task('css',['clean'],function(){
+	return gulp.src(['./html/assets/**/*.css'])
+		.pipe(minifyCss())
+		.pipe(gulp.dest(targetPath+'/assets'))
+});
+gulp.task('test',['clean'],function(){
+	return gulp.src(['./html/test/**'])
+		.pipe(gulp.dest(targetPath+'/test'))
+});
+
+gulp.task('js',['clean'],function(){
+	return gulp.src(['./built/*.js'])
+	//.pipe(jsmin())
+		.pipe(gulp.dest(targetPath+'/built'));
+});
+
+gulp.task('notJs',['clean'],function(){
+	return gulp.src(['./built/*.!(js)'])
+		.pipe(gulp.dest(targetPath+'/built'));
+});
+
+gulp.task('extension',['clean'],function(){
+	return gulp.src(['./html/extension/**'])
+		.pipe(gulp.dest(targetPath+'/extension'));
+});
+
+
+
+
+
+gulp.task('build',['html','assets','css','test','js','notJs','extension']);
+gulp.task('production',function(){
+	gulp.src(targetPath+'/assets/js/config.js',{read:false}).pipe(clean())
+	gulp.src('./config.js')
+		.pipe(gulp.dest(targetPath+'/assets/js/'));
 })
 
-gulp.task('build', function(){
-    gulp.src('./dist').pipe(clean());
-    gulp.src(['./html/*.html'])
-        .pipe(minifyHtml())
-        .pipe(gulp.dest(targetPath+'/'))
-    gulp.src(['html/assets/**/*.!(css)'])
-        .pipe(gulp.dest(targetPath+'/assets'))
-    gulp.src(['./html/assets/**/*.css'])
-        .pipe(minifyCss())
-        .pipe(gulp.dest(targetPath+'/assets'))
-    gulp.src(['./html/dashboard/*.html'])
-		.pipe(minifyHtml())
-        .pipe(gulp.dest(targetPath+'/dashboard'))
-    gulp.src(['./html/test/**'])
-        .pipe(gulp.dest(targetPath+'/test'))
-    gulp.src(['./build/*.!(js)'])
-        .pipe(gulp.dest(targetPath+'/build'));
-    gulp.src(['./build/*.js'])
-        //.pipe(jsmin())
-        .pipe(gulp.dest(targetPath+'/build'));
-	gulp.src(['./xiaoyaoji.crx'])
-        //.pipe(jsmin())
-        .pipe(gulp.dest(targetPath));
-})
-gulp.task('default',['clean'],function(){
-    gulp.start('build')
+
+gulp.task('default',['build'],function(){
+    gulp.start('production')
 })

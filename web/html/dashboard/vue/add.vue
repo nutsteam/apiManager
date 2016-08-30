@@ -94,7 +94,7 @@
                     <div class="item">
                         <div class="col-sm-2 label"></div>
                         <div class="col-sm-10">
-                            <a v-link="'/project/'+id" class="btn btn-primary">进入项目</a>
+                            <a v-link="{path:'/project/'+id,query:{'n':'y'}}" class="btn btn-primary">进入项目</a>
                         </div>
                     </div>
 

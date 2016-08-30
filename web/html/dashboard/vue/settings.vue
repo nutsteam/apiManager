@@ -76,7 +76,7 @@
                 var project=this.project;
                 var self = this;
                 utils.post('/project/'+this.project.id+".json",this.project,function(rs){
-                    self.project(project);
+                    self.project = project;
                    toastr.success('修改成功');
                 })
             }

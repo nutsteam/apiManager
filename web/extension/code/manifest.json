@@ -1,0 +1,35 @@
+{
+  "manifest_version": 2,
+  "name": "小幺鸡",
+  "description": "简单好用的在线接口文档管理系统",
+  "icons":{
+    "16":"icon_16.png",
+    "48":"icon_48.png",
+    "128":"icon_128.png"
+  },
+  "version": "1.3",
+  "homepage_url":"http://www.xiaoyaoji.com.cn",
+  "browser_action": {
+    "default_icon": "icon_128.png",
+	"default_popup": "popup.html",
+    "default_title":"小幺鸡接口管理"
+  },
+  "content_scripts":[
+  	 {
+      "matches": ["http://*.xiaoyaoji.com.cn/*","*://*/*","*://xiaoyaoji.com.cn/*"],
+      "js": ["script/jquery.min.js","script/script.js"],
+      "run_at":"document_end"
+    },
+    {
+      "matches":["*://*.xiaoyaoji.com.cn/*","*://xiaoyaoji.com.cn/*","http://localhost/*"],
+      "js":["script/site.js"],
+      "run_at":"document_end"
+    }
+  ],
+  "permissions": [
+    "tabs",
+    "alarms",
+    "notifications",
+	"*://*/*"
+  ]
+}

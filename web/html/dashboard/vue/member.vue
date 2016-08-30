@@ -36,7 +36,7 @@
                     <div class="col-sm-2 label">邀请同事</div>
                     <div class="col-sm-10">
                         <ul class="cb dbv-chose-users">
-                            <li v-for="item in projectUsers" v-on:click="inviteByUserId(item.id,$event)">
+                            <li v-for="item in projectUsers" v-on:click="inviteByUserId(item,$event)">
                                 <div class="dbv-user-icon">
                                     <img class="img" v-bind:src="item.avatar" v-if="item.avatar">
                                     <div class="img ta-c word" v-else>{{item.nickname.substring(0,3)}}</div>
@@ -138,8 +138,11 @@
                     data.users.$remove(item);
                 });
             },
-            inviteByUserId:function(userId,e){
-                utils.post('/project/'+this.id+"/invite.json",{userId:userId},function(rs){
+            inviteByUserId:function(user,e){
+                var self=this;
+                utils.post('/project/'+this.id+"/invite.json",{userId:user.id},function(rs){
+                    toastr.success('添加成功');
+                    self.users.push(user);
                     $(e.target).parents("li").addClass("active");
                 });
             },

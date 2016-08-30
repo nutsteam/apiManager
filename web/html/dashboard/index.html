@@ -1,12 +1,13 @@
-<!--[if lt IE 9]> <script>location.href='../unsupport.html'</script> <![endif]-->
+<!--[if lt IE 9]>
+<script>location.href = '../unsupport.html'</script> <![endif]-->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <title>小幺鸡API可视化管理系统</title>
     <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/toastr/toastr.min.css">
-    <link rel="stylesheet" href="../assets/pace/pace.min.css">
+    <link rel="stylesheet" href="../assets/editor.md/css/editormd.min.css">
+    <link rel="stylesheet" href="../assets/editor.md/css/editormd.preview.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="shortcut icon" type="image/x-ico" href="../favicon.ico">
 </head>
@@ -43,8 +44,20 @@
 <script src="../assets/toastr/toastr.min.js"></script>
 <script src="../assets/pace/pace.min.js"></script>
 <script src="../assets/js/config.js"></script>
-<script src="../../build/common.js"></script>
-<script src="../../build/dashboard.js"></script>
-<script type="text/javascript" src="http://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500160333"></script>
+<!-- build:common ../built/common.js -->
+<script src="../../built/common.js"></script>
+<!-- endbuild -->
+<!-- build:dashboard ../built/bashboard.js -->
+<script src="../../built/dashboard.js"></script>
+<!-- endbuild -->
+<script src="../assets/editor.md/editormd.min.js"></script>
+<script src="../assets/editor.md/lib/marked.min.js"></script>
+<script src="../assets/editor.md/lib/prettify.min.js"></script>
+
+<script src="https://s95.cnzz.com/z_stat.php?id=1260226777&web_id=1260226777" language="JavaScript"></script>
+<script>
+    //声明_czc对象:
+    window._czc = _czc || [];
+</script>
 </body>
 </html>

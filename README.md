@@ -1,12 +1,12 @@
 # 小幺鸡接口管理页面
    author：zhoujingjie cn_bboy@163.com
    ![LOGO](http://www.xiaoyaoji.com.cn/assets/img/logo/full.png)
+
 ## 特点
    * 在线接口测试 目前支持 json,text,html,xml,jsonp,Websocket
-   * 可视化编辑
+   * markdown编辑器
    
-   
-## [在线demo](http://www.xiaoyaoji.com.cn/) （推荐使用在线系统）
+### [在线demo](http://www.xiaoyaoji.com.cn/) （推荐使用在线系统）
 	
 ## 文件夹说明
 * web 文件夹是前端静态页面 基于nodejs，webpack gulp，vuejs,jqueryjs开发完成

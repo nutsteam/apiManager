@@ -35,10 +35,10 @@
         </template>
         <template v-else>
             <ul class="cb  api-row-{{requestArgs.index}}">
-                <li class="col-sm-3 name">{{item.name}}</li>
-                <li class="col-sm-2">{{item.require}}</li>
-                <li class="col-sm-2">{{item.type}}</li>
-                <li class="col-sm-3">{{item.description}}</li>
+                <li class="col-sm-2 name">{{item.name}}</li>
+                <li class="col-sm-1">{{item.require}}</li>
+                <li class="col-sm-1">{{item.type}}</li>
+                <li class="col-sm-6">{{item.description}}</li>
                 <li class="col-sm-2">{{item.defaultValue}}</li>
             </ul>
         </template>
@@ -56,7 +56,7 @@
             insertRequestArgsRow(dom,index){
                 //console.log(dom)
                 dom.children.index = index;
-                dom.children.push({require:'false',children:[]})
+                dom.children.push({require:'true',children:[]})
             }
         }
     }
