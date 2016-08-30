@@ -18,9 +18,14 @@
 
 ## 使用说明
 ### 文件夹说明
-   api : 接口
-   web 
-
+ api : 接口
+ web : 静态页面
+    - extension:浏览器扩展
+    - config.js 一些页面配置
+    - gulp.js   gulp构建器
+    - html 网页源码
+    - package.json 
+    - webpack.config.js webpack配置
 
 ### API
  * api.zip 用压缩软件打开并且解压放在tomcat webapps目录下 需要修改tomcat默认端口，防止与静态页面的端口冲突
