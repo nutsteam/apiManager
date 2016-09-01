@@ -1,0 +1,1 @@
+webpackJsonp([15],[function(e,t,u){"use strict";function o(e){return e&&e.__esModule?e:{"default":e}}var a=u(1),l=o(a),n=u(10),d=o(n);new l["default"]({el:"#app",data:{user:d["default"].user()},methods:{logout:function(){d["default"].logout(),location.reload()}}})}]);
