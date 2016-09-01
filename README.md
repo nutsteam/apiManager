@@ -48,6 +48,10 @@
       * window.root : 接口地址
       * window.ctx : 静态页面相对路径
   * 构建发布版：gulp;
+  * 发布后 dist目录就是编译后的静态页面
+
+#### web 直接使用编译好的版本
+    * 复制dist到本地服务器中根目录，修改 /assets/js/config.js 里面的window.root的地址为你部署api后的访问地址
 
 ### 效果
 ![基本](img/basic.png)
