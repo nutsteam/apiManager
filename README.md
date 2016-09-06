@@ -37,6 +37,9 @@
  * 导入sql/xiaoyaoji.sql 文件导入到mysql中，
  * 启动tomcat，浏览器运行 http://localhost:端口/api/index.html 能正常显示Hello XiaoYaoJi API 则表示可用。
  
+#### API 依赖jar  org.mangoframework.core 1.2.3
+     项目及使用说明都在这：https://github.com/zhoujingjie/mangoframework
+     或者直接下载附件中的jar
 ### WEB
   * npm install 下载项目依赖包 
   * npm run build 编译并且监听文件改动
