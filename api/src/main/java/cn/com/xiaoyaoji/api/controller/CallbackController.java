@@ -1,6 +1,22 @@
 package cn.com.xiaoyaoji.api.controller;
 
+import cn.com.xiaoyaoji.api.annotations.Ignore;
+import cn.com.xiaoyaoji.api.ex._HashMap;
+import cn.com.xiaoyaoji.api.thirdly.Github;
+import cn.com.xiaoyaoji.api.thirdly.QQ;
+import cn.com.xiaoyaoji.api.thirdly.Weibo;
+import cn.com.xiaoyaoji.api.thirdly.github.User;
+import cn.com.xiaoyaoji.api.thirdly.qq.AccessToken;
+import cn.com.xiaoyaoji.api.utils.ConfigUtils;
+import cn.com.xiaoyaoji.api.view.JspView;
+import org.apache.log4j.Logger;
+import org.mangoframework.core.annotation.Get;
 import org.mangoframework.core.annotation.RequestMapping;
+import org.mangoframework.core.dispatcher.Parameter;
+import org.mangoframework.core.view.ResultView;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author zhoujingjie
@@ -8,61 +24,84 @@ import org.mangoframework.core.annotation.RequestMapping;
  */
 @RequestMapping("callback")
 public class CallbackController {
-    /*
-    @Ignore
-    @Get("qq")
-    public Object qqCallback(Parameter parameter) throws QQConnectException, IOException {
-        HttpServletRequest request = parameter.getRequest();
-        //PrintWriter out = parameter.getResponse().getWriter();
-        AccessToken accessTokenObj = (new Oauth()).getAccessTokenByRequest(request);
-    
-        String accessToken = null, openID = null;
-        long tokenExpireIn = 0L;
-    
-        if (accessTokenObj.getAccessToken().equals("")) {
-            // 我们的网站被CSRF攻击了或者用户取消了授权
-            // 做一些数据统计工作
-            System.out.print("没有获取到响应参数");
-            return new StringView("invalid code");
-        } else {
-            accessToken = accessTokenObj.getAccessToken();
-            tokenExpireIn = accessTokenObj.getExpireIn();
-    
-            request.getSession().setAttribute("qq_access_token", accessToken);
-            request.getSession().setAttribute("qq_token_expirein", String.valueOf(tokenExpireIn));
-    
-            // 利用获取到的accessToken 去获取当前用的openid -------- start
-            OpenID openIDObj = new OpenID(accessToken);
-            openID = openIDObj.getUserOpenID();
-            return new RedirectView(request.getContextPath() + "/login/thirdly?type=qq&openid=" + openID);
-        }
-    }*/
+    private static Logger logger = Logger.getLogger(CallbackController.class);
+    private Set<String> states = new HashSet<String>() {{
+        add("login");
+        add("relation");
+    }};
 
-    /*
     @Ignore
-    @Get("weibo")
-    public RedirectView weibo(Parameter parameter) throws WeiboException {
+    @Get(value = "qq", template = "/third-party")
+    public Object qqCallback(Parameter parameter) {
         String code = parameter.getParamString().get("code");
-        AssertUtils.notNull(code,"无效请求");
-        weibo4j.Oauth oauth = new weibo4j.Oauth();
-        weibo4j.http.AccessToken accessToken = oauth.getAccessTokenByCode(code);
-        String token = accessToken.getAccessToken();
-        Users users = new Users(token);
-        User user= users.showUserById(accessToken.getUid());
-        Thirdparty thirdparty = new Thirdparty();
-        thirdparty.setId(user.getId());
-        thirdparty.setNickName(user.getName());
-        thirdparty.setLogo(user.getAvatarLarge());
-        org.xiqiguguai.service.data.bean.User myUser = ServiceFactory.instance().loginByThirdparty(thirdparty);
-        UserUtils.setUser(parameter,myUser);
-        String referer = (String)parameter.getRequest().getSession().getAttribute("referer");
-        if(referer != null) {
-            parameter.getRequest().getSession().setAttribute("referer",null);
-            return new RedirectView(referer);
+        String state = parameter.getParamString().get("state");
+        logger.info("callback qq -> code:"+code+" state:"+state);
+        if (states.contains(state)) {
+            QQ qq = new QQ();
+            AccessToken accessToken = qq.getAccessToken(code, ConfigUtils.getProperty("qq.redirect_uri"));
+            String openId = qq.getOpenid(accessToken.getAccess_token());
+            return new _HashMap<>()
+                    .add("openId", openId)
+                    .add("type", "qq")
+                    .add("state", state)
+                    .add("accessToken", accessToken.getAccess_token());
         }
-        String redirectURL = parameter.getRequest().getContextPath()+"/";
-        return new RedirectView(redirectURL);
+
+        return illegalView();
     }
-    */
+
+    private ResultView illegalView() {
+        JspView view = new JspView("/WEB-INF/jsp", ".jsp");
+        view.setTemplate("/illegal");
+        view.setData(new _HashMap<>().add("errorMsg", "非法请求"));
+        return view;
+    }
+
+
+    @Ignore
+    @Get(value = "weibo", template = "/third-party")
+    public Object weibo(Parameter parameter) {
+        String code = parameter.getParamString().get("code");
+        String state = parameter.getParamString().get("state");
+        logger.info("callback weibo -> code:"+code+" state:"+state);
+        if (states.contains(state)) {
+            Weibo weibo = new Weibo();
+            cn.com.xiaoyaoji.api.thirdly.weibo.AccessToken accessToken = weibo.getAccessToken(ConfigUtils.getProperty("weibo.appkey"), ConfigUtils.getProperty("weibo.appsecret"), code, ConfigUtils.getProperty("weibo.redirect_uri"));
+            return new _HashMap<>()
+                    .add("type", "weibo")
+                    .add("state", state)
+                    .add("accessToken", accessToken.getAccess_token())
+                    .add("uid", accessToken.getUid());
+        }
+        return illegalView();
+    }
+
+    @Ignore
+    @Get(value = "weibo/cancel")
+    public Object weiboCancel(Parameter parameter) {
+        logger.info("callback weibo cancel");
+        return null;
+    }
+
+
+    @Ignore
+    @Get(value = "github", template = "/third-party")
+    public Object github(Parameter parameter) {
+        String code = parameter.getParamString().get("code");
+        String state = parameter.getParamString().get("state");
+        logger.info("callback github -> code:"+code+" state:"+state);
+        if (states.contains(state)) {
+            Github github = new Github();
+            cn.com.xiaoyaoji.api.thirdly.AccessToken accessToken = github.getAccessToken(ConfigUtils.getProperty("github.clientid"),ConfigUtils.getProperty("github.secret"),code,ConfigUtils.getProperty("github.redirect_uri"));
+            User user = github.getUser(accessToken.getAccess_token());
+            return new _HashMap<>()
+                    .add("type", "github")
+                    .add("gitid",user.getId())
+                    .add("state", state)
+                    .add("accessToken", accessToken.getAccess_token());
+        }
+        return illegalView();
+    }
+
 
 }

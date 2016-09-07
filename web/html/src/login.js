@@ -33,41 +33,20 @@ new Vue({
                 return false;
             }
             var self =this;
-            utils.post('/user/login.json',{
+            utils.post('/login.json',{
                 email:this.email,password:this.password
             },function (rs) {
-                utils.token(rs.data.token);
-                utils.user(rs.data.user);
-                if(self.params['refer']){
-                    location.href=self.params['refer']
-                }else{
-                    location.href=utils.config.ctx+'/dashboard';
-                }
+                utils.login.success(rs.data.token,rs.data.user,self.params['refer']);
             });
         },
         qq: function () {
-            var interval = 0;
-            if (!QC.Login.check()) {
-                QC.Login.showPopup({appId: 101333549});
-                window.clearInterval(interval);
-                interval = setInterval(function () {
-                    if (QC.Login.check()) {
-                        window.clearInterval(interval);
-                        QC.Login.getMe(function (openId, accessToken) {
-                            qqlogin(openId,accessToken);
-                        })
-                    }
-                }, 300);
-            } else {
-                QC.Login.getMe(function (openId, accessToken) {
-                    QC.Login.getMe(function (openId, accessToken) {
-                        qqlogin(openId,accessToken);
-                    })
-                })
-            }
+            utils.login.qq();
         },
         weibo:function(){
-
+            utils.login.weibo();
+        },
+        github:function(){
+            utils.login.github();
         }
     }
 });

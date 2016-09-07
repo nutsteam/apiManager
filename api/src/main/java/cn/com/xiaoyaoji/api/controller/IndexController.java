@@ -12,12 +12,6 @@ import org.mangoframework.core.view.RedirectView;
  */
 @RequestMapping("/")
 public class IndexController {
-   /* @Ignore
-    @Get(template = "/index")
-    public Object get() {
-        return null;
-    }
-*/
     @Ignore
     @Get(value = "/login", template = "/login")
     public Object login() {

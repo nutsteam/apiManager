@@ -71,7 +71,7 @@
             if(project.name == this.projectName){
                utils.delete('/project/'+id+'.json',function(rs){
                   toastr.success('删除成功');
-                  self.$route.router.go({path:'/welcome'})
+                  self.$route.router.go({path:'/'})
                   self.$parent.reloadProject=true;
                })
             }else{

@@ -24,7 +24,7 @@ public class AssertUtils {
         if (keys != null && keys.length > 0) {
             for(String key:keys){
                 if(org.apache.commons.lang3.StringUtils.isBlank(parameter.getParamString().get(key))){
-                    if(parameter.getParamFile().get(key) == null)
+                    if(parameter.getParamFile().get(key) == null || parameter.getParamFile().get(key).size()==0)
                         throw new InvalidArgumentException("missing "+key);
                 }
             }

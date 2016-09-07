@@ -10,8 +10,8 @@
                 <input type="text" class="text name" v-model="item.name" value="{{item.name}}">
             </li>
             <li class="col-sm-2"><select v-model="item.require">
-                <option value="false">false</option>
                 <option value="true">true</option>
+                <option value="false">false</option>
             </select></li>
             <li class="col-sm-2">
                 <select v-model="item.type">
@@ -36,7 +36,7 @@
         <template v-else>
             <ul class="cb  api-row-{{requestArgs.index}}">
                 <li class="col-sm-2 name">{{item.name}}</li>
-                <li class="col-sm-1">{{item.require}}</li>
+                <li class="col-sm-1">{{item.require || 'false'}}</li>
                 <li class="col-sm-1">{{item.type}}</li>
                 <li class="col-sm-6">{{item.description}}</li>
                 <li class="col-sm-2">{{item.defaultValue}}</li>

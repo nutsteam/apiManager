@@ -30,3 +30,9 @@ Vue.validator('maxlength',{
 });
 
 
+Vue.filter('html',function(value){
+    if(value){
+        return value.replace(/\n/g,'<br/>')
+    }
+    return '';
+});

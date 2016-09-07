@@ -1,14 +1,15 @@
 <template>
 <div class="db-export">
     <ul class="cb">
-        <li><i class="iconfont icon-excel"></i> <p>导出EXCEL</p></li>
-        <li><i class="iconfont icon-json"></i> <p>导出JSON</p></li>
-        <li><i class="iconfont icon-sql"></i> <p>导出SQL</p></li>
+        <li v-on:click="pdf"><i class="iconfont icon-pdf"></i> <p>导出PDF</p></li>
+        <!--<li><i class="iconfont icon-json"></i> <p>导出JSON</p></li>-->
+        <!--<li><i class="iconfont icon-sql"></i> <p>导出SQL</p></li>-->
     </ul>
 </div>
 </template>
 
 <script>
+    import utils from '../../src/utils.js';
     export default {
         data(){
             return {
@@ -28,6 +29,11 @@
                     self.project=rs.data.project;
                 });
                 self.$parent.projectId=this.$route.params.id;
+            }
+        },
+        methods:{
+            pdf:function(){
+                 location.href=utils.config.root+'/project/'+this.project.id+'/export.pdf?token='+utils.token();
             }
         }
     }

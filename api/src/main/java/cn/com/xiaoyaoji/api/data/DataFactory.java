@@ -14,10 +14,12 @@ import cn.com.xiaoyaoji.api.ex.SQLBuildResult;
 import cn.com.xiaoyaoji.api.handler.IntegerResultHandler;
 import cn.com.xiaoyaoji.api.handler.StringResultHandler;
 import cn.com.xiaoyaoji.api.utils.*;
+import cn.com.xiaoyaoji.api.utils.StringUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
+import org.apache.commons.lang3.*;
 import org.apache.log4j.Logger;
 
 /**
@@ -212,31 +214,27 @@ public class DataFactory implements Data {
     }
 
     @Override
-    public User createUserByThirdparty(final Thirdparty thirdparty) {
-        return process(new Handler<User>() {
+    public int bindUserWithThirdParty(final Thirdparty thirdparty) {
+        return process(new Handler<Integer>() {
             @Override
-            public User handle(Connection connection, QueryRunner qr) throws SQLException {
-                User user = new User();
-                user.setId(StringUtils.id());
-                user.setType(User.Type.USER);
-                user.setCreatetime(new Date());
-                user.setNickname(thirdparty.getNickName());
-                user.setAvatar(thirdparty.getLogo());
-                user.setStatus(User.Status.VALID);
+            public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
+                User user = getById(User.class,thirdparty.getUserId());
+                AssertUtils.notNull(user,"无效用户");
+                //检查是否绑定
+                int rs = qr.query(connection,"select count(id) from "+TableNames.USER_THIRD+" where userId=? and type=? and id =?",new IntegerResultHandler(),thirdparty.getUserId(),thirdparty.getType(),thirdparty.getId());
+                if(rs == 1)
+                    return rs;
                 // 创建第三方
                 StringBuilder thirdSql = new StringBuilder("insert into ");
                 thirdSql.append(TableNames.USER_THIRD);
-                thirdSql.append(" (id,userid) values(?,?)");
-                int rs = qr.update(connection, thirdSql.toString(), thirdparty.getId(), user.getId());
-                if (rs == 1) {
-                    // 创建用户
-                    SQLBuildResult sb = SqlUtils.generateInsertSQL(user);
-                    rs = qr.update(connection, sb.getSql(), sb.getParams());
-                    if (rs == 1) {
-                        return user;
+                thirdSql.append(" (id,userid,type) values(?,?,?)");
+                rs = qr.update(connection, thirdSql.toString(), thirdparty.getId(), thirdparty.getUserId(),thirdparty.getType());
+                if(rs>0){
+                    if(org.apache.commons.lang3.StringUtils.isBlank(user.getAvatar())){
+
                     }
                 }
-                return null;
+                return rs;
             }
         });
     }
@@ -673,6 +671,16 @@ public class DataFactory implements Data {
                     }
                 }
                 return rs;
+            }
+        });
+    }
+
+    @Override
+    public int removeUserThirdPartyRelation(final String userId, final String type) {
+        return process(new Handler<Integer>() {
+            @Override
+            public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
+                return qr.update(connection,"delete from "+TableNames.USER_THIRD+" where userId=? and type=?",userId,type);
             }
         });
     }

@@ -16,7 +16,8 @@ files.forEach(function(item){
             plugins.push(new HtmlWebpackPlugin({
                 filename:'../html/'+item.replace('.ejs','.html'),
                 template:'./html/'+item,
-                inject:false
+                inject:false,
+                hash:false
             }));
         }
     });
@@ -33,7 +34,7 @@ module.exports = {
     },
     output: {
         path: path.join(__dirname, 'built'),
-        publicPath: isDev?"/built/":'//www.xiaoyaoji.com.cn/built/',
+        publicPath: '/built/',
         filename: '[name].js',
         chunkFilename: '[id].[hash].js',
     },
@@ -74,7 +75,7 @@ module.exports = {
                 loader: 'file-loader'
             },{
                 test:/\.html$/,
-                loader:'html-loader?interpolate'
+                loader:'html-loader?interpolate&minimize=false'
             }
         ]
     },

@@ -8,8 +8,8 @@
             </li>
             <li class="col-sm-3 input"><input type="text" class="text name" v-model="item.name" value="{{item.name}}"></li>
             <li class="col-sm-2"><select v-model="item.require">
-                <option value="false">false</option>
                 <option value="true">true</option>
+                <option value="false">false</option>
             </select></li>
             <li class="col-sm-4 input"><input type="text" class="text" v-model="item.description" value="{{item.description}}"></li>
             <li class="col-sm-2 input"><input type="text" class="text" v-model="item.defaultValue" value="{{item.defaultValue}}"></li>
@@ -19,7 +19,7 @@
         <ul class="cb api-row-{{requestHeaders.index}}">
             <li class="col-sm-2 name">{{item.name}}
             </li>
-            <li class="col-sm-1">{{item.require}}</li>
+            <li class="col-sm-1">{{item.require || 'false' }}</li>
             <li class="col-sm-7">{{item.description}}</li>
             <li class="col-sm-2">{{item.defaultValue}}</li>
         </ul>

@@ -52,7 +52,8 @@ var gdata={
         moveCopySelectModuleId:null,
         moveCopySelectFolderId:null,
         moveCopyId:null,
-        hostBefore:''
+        resultActive:'content',
+        env:'dev'
     },
     error:{
         projectNotExists:false,
@@ -65,6 +66,7 @@ var gdata={
     moduleName:'',
     showGuide:true,
     modules:[],
+    project:{},
     currentApi:{result:null},
     currentModule:{},
     currentFolder:null,
@@ -86,6 +88,8 @@ export default{
         data:function(transition){
             this.$parent.$data.pageName='接口列表';
             this.id = transition.to.params.id;
+            this.flag.env = localStorage.getItem('env') || 'dev';
+
             var self =this;
             //如果实时会出现获取不到的问题
             setTimeout(function(){
@@ -99,11 +103,9 @@ export default{
                 new Result().resolve(e.detail,self.currentApi.contentType);
             });
             document.addEventListener('result.complete', function(e) {
-                self.status.apiLoading = false;
-                if(e.detail.type !='success'){
-                    self.currentApi.result = '<div class="db-api-error">'+e.detail.text+'</div>';
-                }
+                xhrComplete(self,e);
             });
+            //ajax请求错误时触发
             document.addEventListener('result.error', function(e) {
                 // do whatever is necessary
                 console.log("result.error");
@@ -113,6 +115,21 @@ export default{
             $(document).click(function(){
                 self.flag.actionId = null;
             });
+            (function(){
+                var clipboard = new Clipboard('#api-result-copy', {
+                    target: function() {
+                        return document.querySelector('#api-result-content');
+                    }
+                });
+                clipboard.on('success', function(e) {
+                    //console.log(e);
+                });
+                clipboard.on('error', function(e) {
+                    console.log(e);
+                });
+            })();
+
+
         },
         activate:function(transition){
             this.$parent.showProject =true;
@@ -123,6 +140,15 @@ export default{
         deactivate:function(){
             this.$parent.showProject =false;
             $('.dashboard').removeClass('max')
+        }
+    },
+    computed:{
+        "requestURL":function(){
+            if(this.flag.env == 'dev'){
+                return (this.currentModule.devHost || '') + this.currentApi.url;
+            }else{
+                return (this.currentModule.host || '') + this.currentApi.url;
+            }
         }
     },
     watch:{
@@ -174,7 +200,7 @@ export default{
         },
         "status.loading":function(value){
             if(!value){
-                document.title=this.currentModule.name || '';
+                document.title=(this.project.name|| '') + '-' + (this.currentModule.name || '');
                 if(window.editor && window.editor){
                     window.editor.editor.remove();
                     window.editor = null;
@@ -189,7 +215,7 @@ export default{
         },
         "editing":function(value){
             if(value){
-                if(!window.editor){
+                if(!window.editor && this.showGuide){
                     var desc=this.currentModule.description;
                     initEditor(desc,this);
                 }
@@ -197,10 +223,32 @@ export default{
                 renderViewBox(this.currentModule.description);
             }
         },
+        "showGuide":function(value){
+            if(value && this.editing){
+                if(!window.editor){
+                    var desc=this.currentModule.description;
+                    initEditor(desc,this);
+                }
+            }
+        },
         "currentApi.result":function(value){
             if(this.currentApi.id){
-                this.results[this.currentApi.id]=value;
+                if(!this.results[this.currentApi.id]){
+                    this.results[this.currentApi.id]={};
+                }
+                this.results[this.currentApi.id].content=value;
             }
+        },
+        "currentApi.resultHeaders":function(value){
+            if(this.currentApi.id){
+                if(!this.results[this.currentApi.id]){
+                    this.results[this.currentApi.id]={};
+                }
+                this.results[this.currentApi.id].headers=value;
+            }
+        },
+        "flag.env":function(value){
+            localStorage.setItem('env',value);
         }
     },
     data:function(){
@@ -305,6 +353,9 @@ export default{
             if(!item.responseArgs){
                 item.responseArgs = []
             }
+            if(!item.resultHeaders){
+                item.resultHeaders="";
+            }
             if(item.requestArgs.constructor.name =='String'){
                 item.requestArgs = JSON.parse(gdata.currentApi.requestArgs);
             }
@@ -314,8 +365,16 @@ export default{
             if(item.requestHeaders.constructor.name =='String'){
                 item.requestHeaders = JSON.parse(gdata.currentApi.requestHeaders);
             }
-            item.result=this.results[item.id] || '';
-
+            if(this.results[item.id]){
+                item.result=this.results[item.id].content;
+                item.resultHeaders=this.results[item.id].headers;
+            }else{
+                //必须需要
+                item.result=undefined;
+                item.resultHeaders=undefined;
+                item.resultStatusCode=undefined;
+                item.resultRunTime=undefined;
+            }
             initDefaultData(item.requestHeaders);
             initDefaultData(item.requestArgs);
             initDefaultData(item.responseArgs);
@@ -371,9 +430,13 @@ export default{
                 }
             });
         },
+        apiSaveHostDescription:function(){
+            this.currentModule.description = window.editor.getMarkdown();
+            saveModule({host:this.currentModule.host,devHost:this.currentModule.devHost,description:window.editor.getMarkdown()});
+        },
         apiSubmit:function(){
             var self = this;
-            var url = (this.currentModule.host || '') + this.currentApi.url;
+            var url = this.requestURL;
             var args = getRequestArgs();
             //替换id
             if(this.currentApi.urlArgs!=null && this.currentApi.urlArgs.length>0){
@@ -412,24 +475,31 @@ export default{
                 headers:headers,
                 type:self.currentApi.requestMethod,
                 data:args,
+                beforeSend:function(xhr){
+                    xhr.beginTime = Date.now();
+                },
                 dataType:self.currentApi.contentType,
                 jsonpCallback:self.currentApi.contentType=='JSONP'?'callback':undefined,
-                complete(xhr,type){
-                    self.status.apiLoading = false;
-                    if(type !='success'){
+                complete(xhr,status ){
+                    var e = {
+                        type:status,
+                        text:('status:'+xhr.status +' readyState:'+xhr.readyState +'  errorText:'+ msg),
+                        headers:xhr.getAllResponseHeaders(),
+                        status:xhr.status || 0,
+                        useTime:Date.now() - xhr.beginTime
+                    };
+                    if(status !='success'){
                         var msg=(xhr.responseText || xhr.statusText);
-                        if(type == 'error'){
+                        if(status == 'error'){
                             msg= ('status:'+xhr.status +' readyState:'+xhr.readyState +'  errorText:'+ msg);
                         }
-                        self.currentApi.result = '<div class="db-api-error">'+msg+'</div>';
+                        e.text=msg
                     }
+                    xhrComplete(self,{detail:e});
                 },
                 success(rs){
                     new Result().resolve(rs,self.currentApi.contentType);
                     //self.result = rs;
-                },
-                error(){
-                    console.log(arguments)
                 }
             };
             switch (this.currentApi.dataType){
@@ -455,7 +525,8 @@ export default{
                 delete params['complete'];
                 delete params['success'];
                 delete params['error'];
-                if(this.currentApi.contentType == 'BINARY'){
+                delete params['beforeSend'];
+                if(this.currentApi.dataType == 'BINARY'){
                     params.data='#binaryBody';
                 }
                 var ce = new CustomEvent('request',{
@@ -463,7 +534,7 @@ export default{
                 });
                 document.dispatchEvent(ce);
             }else{
-                $._ajax_(params);
+                $.ajax(params);
             }
         },
         moduleDelete:function(item){
@@ -496,7 +567,7 @@ export default{
             this.currentModule = item;
             this.currentApi = {};
             this.showGuide = true;
-            if(window.editor && this.editing){
+            if(window.editor){
                 if(!item.description){
                     item.description= item.name;
                 }
@@ -504,11 +575,6 @@ export default{
             }
             if(!this.editing){
                 renderViewBox(this.currentModule.description);
-            }
-        },
-        moduleHostChange:function(){
-            if(this.currentModule.host != this.flag.hostBefore){
-                saveModule({host:this.currentModule.host});
             }
         },
         moduleSave:function(){
@@ -567,10 +633,6 @@ export default{
             this.flag.import="responseArgs";
         },
         importOk(){
-            this.$validate(true);
-            if (this.$if.invalid) {
-                return false;
-            }
             if(!this.importValue){
                 toastr.error('导入内容为空');
                 return false;
@@ -739,11 +801,25 @@ function parseImportData(data, temp) {
                 } else if (v.constructor.name == 'Boolean') {
                     t.type = 'boolean'
                 }
-                t.require='false';
+                t.require='true';
                 temp.push(t);
             }
         }
     }
+}
+
+function xhrComplete(self,e){
+
+    self.status.apiLoading = false;
+    if(!e.detail){
+        e.detail = {};
+    }
+    if(e.detail.type !='success'){
+        self.currentApi.result = '<div class="db-api-error">'+e.detail.text+'</div>';
+    }
+    self.currentApi.resultHeaders = e.detail.headers || '';
+    self.currentApi.resultStatusCode = e.detail.status || 0;
+    self.currentApi.resultRunTime = e.detail.useTime || 0;
 }
 
 function Result(){
@@ -859,23 +935,10 @@ function initEditor(value,vueInstance){
         imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
         imageUploadURL : "./php/upload.php",
         onload : function() {
-            this.gotoLine(1);
-            var delay=null;
-            this.on('change',function() {
-                console.log(1111)
-                window.clearTimeout(delay);
-                var self=this;
-                var value = self.getMarkdown();
-                var description = vueInstance.currentModule.description;
-                var id = vueInstance.currentModule.id;
-                if(value != description){
-                    vueInstance.currentModule.description = value;
-                    delay = setTimeout(function(){
-                        saveModule({description: value,id:id});
-                    },1500);
-                }
-
-            });
+            var self = this;
+            setTimeout(function(){
+                self.gotoLine(1);
+            },100);
         }
     });
 }
@@ -923,6 +986,7 @@ function reget(self){
                 self.error.projectNotExists = true;
                 return;
             }
+            gdata.project = rs.data.project;
             if(rs.data.modules.length>0){
                 gdata.modules = rs.data.modules;
                 gdata.currentModule =gdata.modules[0];

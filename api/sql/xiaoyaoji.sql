@@ -107,6 +107,7 @@ CREATE TABLE `module` (
   `id` char(14) NOT NULL DEFAULT '',
   `name` varchar(50) DEFAULT NULL,
   `host` varchar(100) DEFAULT NULL,
+  `devHost` varchar(100) DEFAULT NULL,
   `description` text,
   `lastUpdateTime` datetime DEFAULT NULL,
   `projectId` char(14) DEFAULT NULL,

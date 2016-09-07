@@ -26,13 +26,13 @@
     - html 网页源码
     - package.json 
     - webpack.config.js webpack配置
-
+##开发版本
 ### API
  * api.zip 用压缩软件打开并且解压放在tomcat webapps目录下 需要修改tomcat默认端口，防止与静态页面的端口冲突
  * 修改WEB-INF/classes/config.properties 中的数据库配置信息，
-    * 如果要启用QQ，微博登陆，需要配置QQ和微博开发者信息
-    * 需要修改sql连接地址与账户密码
-    * 如果需要发邮件则需要配置邮件服务器地址
+    * 修改api/WEB-INF/classes/config.properties中的数据库配置信息。
+    * 如果需要使用第三方登录,需要配置对应的地址
+    * 如果需要使用邮件发送,需要配置sendcloud邮箱配置信息
     * config.properties未单独做中文编码处理，为防止乱码，中文需要改为unicode
  * 导入sql/xiaoyaoji.sql 文件导入到mysql中，
  * 启动tomcat，浏览器运行 http://localhost:端口/api/index.html 能正常显示Hello XiaoYaoJi API 则表示可用。
@@ -42,19 +42,31 @@
      或者直接下载附件中的jar
 ### WEB
   * npm install 下载项目依赖包 
-  * npm run build 编译并且监听文件改动
-  * npm run build 运行项目 
-  * 编译代码 npm run dist;
-  * 发布 gulp;
-  * 浏览器访问http://localhost:8080/html/
+  * npm run watch 编译并且监听文件改动
+  * npm run server 运行开发项目-文件夹 (用于开发过程中)
+  * 浏览器访问http://localhost:8080/ 可以看到正在开发中的项目
+
+  * npm run build 编译项目,并且生成built文件夹
+  * gulp 将built文件夹及html文件夹代码打包到dist文件夹中;
+  * npm run dist-server 运行dist文件夹下的项目(也就是编译后的项目,一般用于上线前最后测试。)
+  * 浏览器访问http://localhost:8080/ 可以看到编译打包后的项目
+
   * 修改html/assets/js/config.js配置
       * window.root : 接口地址
       * window.ctx : 静态页面相对路径
-  * 构建发布版：gulp;
-  * 发布后 dist目录就是编译后的静态页面
 
-#### web 直接使用编译好的版本
+
+## 直接使用
+#### API
+    * 导入api/sql/xiaoyaoji.sql 到mysql中。mysql需要5.5以上
+    * 解压api/target/api.war 并将解压后的文件夹复制到tomcat/webapps目录下。
+    * 修改api/WEB-INF/classes/config.properties中的数据库配置信息。
+    * 如果需要使用第三方登录,需要配置对应的地址
+    * 如果需要使用邮件发送,需要配置sendcloud邮箱配置信息
+#### WEB
     * 复制dist到本地服务器中根目录，修改 /assets/js/config.js 里面的window.root的地址为你部署api后的访问地址
+
+
 
 ### 效果
 ![基本](img/basic.png)

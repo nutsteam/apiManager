@@ -69,16 +69,28 @@ public class ServiceFactory {
     }
 
     public User login(String email, String password) {
-        return DataFactory.instance().login(email,password);
+        User user = DataFactory.instance().login(email,password);
+        if(user != null){
+            initUserThirdlyBinds(user);
+            user.setPassword(null);
+        }
+        return user;
     }
 
     public User loginByThirdparty(Thirdparty thirdparty) {
         User user = DataFactory.instance().getUserByThirdId(thirdparty.getId());
-        if(user == null){
-            user = DataFactory.instance().createUserByThirdparty(thirdparty);
+        if(user != null){
+            user.setPassword(null);
+            initUserThirdlyBinds(user);
         }
         return user;
     }
+
+    public int bindUserWithThirdParty(Thirdparty thirdparty) {
+        return DataFactory.instance().bindUserWithThirdParty(thirdparty);
+    }
+
+
 
     public List<Module> getModules(String projectId) {
         return ResultUtils.list(DataFactory.instance().getModules(projectId));
@@ -214,5 +226,9 @@ public class ServiceFactory {
 
     public int copyFolder(String folderId, String moduleId) {
         return DataFactory.instance().copyFolder(folderId,moduleId);
+    }
+
+    public int unbindUserThirdPartyRelation(String userId, String type) {
+        return DataFactory.instance().removeUserThirdPartyRelation(userId,type);
     }
 }

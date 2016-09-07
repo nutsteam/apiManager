@@ -10,6 +10,8 @@ public class Thirdparty {
     private String nickName;
     private String logo;
     private String type;
+    private String email;
+    private String userId;
     public static class Type{
         public static String QQ="QQ";
         public static String WEIBO="WEIBO";
@@ -46,5 +48,21 @@ public class Thirdparty {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

@@ -9,6 +9,11 @@ export default {
             require(['../vue/welcome.vue'],resolve)
         }
     },
+    '/':{
+        component:function(resolve){
+            require(['../vue/welcome.vue'],resolve)
+        }
+    },
     '/project/:id/quit':{
         component:function (resolve) {
             require(['../vue/quit.vue'],resolve)

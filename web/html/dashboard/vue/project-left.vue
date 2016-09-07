@@ -1,6 +1,6 @@
 <template>
     <div class="db-left-content dlc1 bg">
-        <div class="ta-c logo"><a v-link="'/welcome'"><img src="../../assets/img/logo/full.png"></a></div>
+        <div class="ta-c logo"><a v-link="'/'"><img src="../../assets/img/logo/full.png"></a></div>
         <div class="dbl-projects hide">
             <div class="db-left-search">
                 <div class="cb">
@@ -46,7 +46,7 @@
     </div>
     <div class="dlc2 bg">
         <div class="db-left-bar">
-            <div class="logo ta-c"><a v-link="'/welcome'"><img src="../../assets/img/logo/full-white.png"></a></div>
+            <div class="logo ta-c"><a v-link="'/'"><img src="../../assets/img/logo/full-white.png"></a></div>
             <br/>
             <br/>
             <br/>

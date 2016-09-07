@@ -64,12 +64,12 @@
         <init-param>
             <!-- 用户名 -->
             <param-name>loginUsername</param-name>
-            <param-value>admin</param-value>
+            <param-value>test</param-value>
         </init-param>
         <init-param>
             <!-- 密码 -->
             <param-name>loginPassword</param-name>
-            <param-value>admin</param-value>
+            <param-value>test</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

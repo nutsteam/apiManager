@@ -3,6 +3,8 @@ package cn.com.xiaoyaoji.api.controller;
 import java.util.Date;
 import java.util.List;
 
+import cn.com.xiaoyaoji.api.data.bean.Thirdparty;
+import cn.com.xiaoyaoji.api.thirdly.QQ;
 import org.mangoframework.core.annotation.Get;
 import org.mangoframework.core.annotation.Post;
 import org.mangoframework.core.annotation.RequestMapping;
@@ -18,6 +20,7 @@ import cn.com.xiaoyaoji.api.ex.Result;
 import cn.com.xiaoyaoji.api.ex._HashMap;
 import cn.com.xiaoyaoji.api.service.ServiceFactory;
 import cn.com.xiaoyaoji.api.utils.*;
+import org.mangoframework.core.exception.InvalidArgumentException;
 
 /**
  * @author zhoujingjie
@@ -26,26 +29,7 @@ import cn.com.xiaoyaoji.api.utils.*;
 @RequestMapping("/user")
 public class UserController {
 
-    @Ignore
-    @Post("login")
-    public Object login(Parameter parameter) {
-        String email = parameter.getParamString().get("email");
-        String password = parameter.getParamString().get("password");
-        AssertUtils.notNull(email, "用户名为空");
-        AssertUtils.notNull(password, "密码为空");
-        password = StringUtils.password(password);
-        User user = ServiceFactory.instance().login(email, password);
-        AssertUtils.notNull(user, "用户名或密码错误");
-        if (user.getStatus().equals(User.Status.INVALID)) {
-            return new Result(Result.ERROR, "invalid status");
-        }
-        // AssertUtils.isTrue(User.Type.ADMIN.equals(user.getType()),"无权访问");
-        ServiceFactory.instance().initUserThirdlyBinds(user);
-        user.setPassword(null);
-        String token = MemoryUtils.token();
-        MemoryUtils.putUser(token, user);
-        return new _HashMap<>().add("token", token).add("user", user);
-    }
+
 
     /**
      * 修改
@@ -56,7 +40,7 @@ public class UserController {
     @Post("{id}")
     public Object update(@RequestParam("id") String id, Parameter parameter) {
         User temp = MemoryUtils.getUser(parameter);
-        AssertUtils.isTrue(id.equals(temp.getId()),"无操作权限");
+        AssertUtils.isTrue(id.equals(temp.getId()), "无操作权限");
         User user = BeanUtils.convert(User.class, parameter.getParamString());
         user.setPassword(null);
         user.setCreatetime(null);
@@ -66,7 +50,6 @@ public class UserController {
         AssertUtils.isTrue(rs > 0, "操作失败");
         return rs;
     }
-
 
     @Ignore
     @Post("register")
@@ -130,7 +113,7 @@ public class UserController {
         fp.setId(StringUtils.id());
         int rs = DataFactory.instance().insert(fp);
         AssertUtils.isTrue(rs > 0, "操作失败");
-        MailUtils.findPassWord(fp.getId(), email);
+        MailUtils.findPassword(fp.getId(), email);
         return rs;
     }
 
@@ -140,16 +123,17 @@ public class UserController {
      * @return
      */
     @Post("password")
-    public Object updatePassword(Parameter parameter){
-        User user =MemoryUtils.getUser(parameter);
+    public Object updatePassword(Parameter parameter) {
+        User user = MemoryUtils.getUser(parameter);
         User temp = new User();
         temp.setId(user.getId());
-        String password=parameter.getParamString().get("password");
+        String password = parameter.getParamString().get("password");
         temp.setPassword(StringUtils.password(password));
         int rs = ServiceFactory.instance().update(temp);
-        AssertUtils.isTrue(rs>0,"操作失败");
+        AssertUtils.isTrue(rs > 0, "操作失败");
         return rs;
     }
+
     /**
      * 找回密码2
      *
@@ -184,8 +168,8 @@ public class UserController {
         String email = parameter.getParamString().get("email");
         AssertUtils.notNull(email, "邮箱为空");
         AssertUtils.isTrue(StringUtils.isEmail(email), "邮箱格式错误");
-        MailUtils.sendEmail("验证码", "您的验证码是:" + code, email);
-        MemoryUtils.put(parameter.getParamString().get("token"),"emailCaptcha",code);
+        MailUtils.sendCaptcha(code, email);
+        MemoryUtils.put(parameter.getParamString().get("token"), "emailCaptcha", code);
         return true;
     }
 
@@ -202,19 +186,92 @@ public class UserController {
         String email = parameter.getParamString().get("email");
         AssertUtils.notNull(email, "邮箱为空");
         AssertUtils.isTrue(StringUtils.isEmail(email), "邮箱格式错误");
-        String token =parameter.getParamString().get("token");
-        String captcha = (String) MemoryUtils.get(token,"emailCaptcha");
+        String token = parameter.getParamString().get("token");
+        String captcha = (String) MemoryUtils.get(token, "emailCaptcha");
         AssertUtils.isTrue(code.equals(captcha), "验证码错误");
-        //检查邮箱是否存在
-        AssertUtils.isTrue(!ServiceFactory.instance().checkEmailExists(email),"该邮箱已存在");
+        // 检查邮箱是否存在
+        AssertUtils.isTrue(!ServiceFactory.instance().checkEmailExists(email), "该邮箱已存在");
         User user = MemoryUtils.getUser(parameter);
         User temp = new User();
         temp.setId(user.getId());
         temp.setEmail(email);
         int rs = ServiceFactory.instance().update(temp);
         AssertUtils.isTrue(rs > 0, "操作失败");
-        MemoryUtils.put(token,"emailCaptcha","");
+        MemoryUtils.put(token, "emailCaptcha", "");
         return rs;
     }
 
+    /**
+     * 绑定第三方
+     * @param parameter
+     * @return
+     */
+    @Post("bind")
+    public Object bind(Parameter parameter){
+        AssertUtils.notNull(parameter,"type","accessToken");
+        String type = parameter.getParamString().get("type");
+        String accessToken = parameter.getParamString().get("accessToken");
+        User user = MemoryUtils.getUser(parameter);
+        Thirdparty thirdparty = new Thirdparty();
+        thirdparty.setUserId(user.getId());
+        switch (type){
+            case "qq":
+                String openId = parameter.getParamString().get("openId");
+                AssertUtils.notNull(openId,"missing openId");
+                thirdparty.setId(openId);
+                thirdparty.setType(Thirdparty.Type.QQ);
+                break;
+            case "weibo":
+                String uid = parameter.getParamString().get("uid");
+                AssertUtils.notNull(uid,"missing uid");
+                thirdparty.setId(uid);
+                thirdparty.setType(Thirdparty.Type.WEIBO);
+                break;
+            case "github":
+                String gitid = parameter.getParamString().get("gitid");
+                AssertUtils.notNull(gitid,"missing gitid");
+                thirdparty.setId(gitid);
+                thirdparty.setType(Thirdparty.Type.GITHUB);
+                break;
+            default:
+                throw new InvalidArgumentException("invalid type ");
+        }
+        int rs = ServiceFactory.instance().bindUserWithThirdParty(thirdparty);
+        AssertUtils.isTrue(rs>0,"操作失败");
+        switch (type){
+            case "qq":
+                user.setBindQQ(true);
+                break;
+            case "weibo":
+                user.setBindWeibo(true);
+                break;
+            case "github":
+                user.setBindGithub(true);
+                break;
+        }
+        return new _HashMap<>()
+                .add("user",user)
+                ;
+    }
+
+    @Post("unbind/{type}")
+    public Object unbind(Parameter parameter,@RequestParam("type")String type){
+        User user = MemoryUtils.getUser(parameter);
+        int rs = ServiceFactory.instance().unbindUserThirdPartyRelation(user.getId(),type);
+        AssertUtils.isTrue(rs>0,"操作失败");
+        switch (type.toLowerCase()){
+            case "qq":
+                user.setBindQQ(false);
+                break;
+            case "weibo":
+                user.setBindWeibo(false);
+                break;
+            case "github":
+                user.setBindGithub(false);
+                break;
+        }
+        return new _HashMap<>()
+                .add("user",user)
+                ;
+    }
 }

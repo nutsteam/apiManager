@@ -3,16 +3,48 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>小幺鸡，简单好用的接口文档管理系统</title>
+    <title>小幺鸡，简单好用的接口文档管理工具</title>
     <link rel="stylesheet" href="./assets/css/style.css">
     <link rel="alternate" hreflang="zh-hans" href="//www.xiaoyaoji.com.cn/" />
-    <meta name="keywords" content="小幺鸡,接口,api,接口管理,接口文档" />
-    <meta name="description" content="小幺鸡简单好用的在线文档管理系统，支持JSON,WebSocket在线测试,提升开发效率降低接口错误率。" />
+    <meta name="keywords" content="小幺鸡,接口工具,接口平台,api,api管理,api测试,接口文档,接口演示,rest,restful,rest api,接口测试,postman,文档管理,websocket在线测试" />
+    <meta name="description" content="简单好用的在线文档管理工具，支持restapi、websocket在线测试,支持markdown编辑器,提升开发效率降低接口错误率。" />
     <link rel="shortcut icon" type="image/x-ico" href="./favicon.ico">
     <!--<script src="assets/js/browser.js"></script>-->
 </head>
 <body id="app">
-<header> <div class=top> <div class="cb mc"> <template v-if=user.id> <div class="user-action logged fr"> <a class=item href=dashboard>进入工作台</a> <a class=item v-on:click=logout>退出</a> </div> </template> <template v-else> <div class="user-action fr"> <a class=item href=login.html>登陆</a> <a class=item href=register.html>注册</a> <a class="item thirdly"><i class="iconfont icon-qq"></i></a> <a class="item thirdly"><i class="iconfont icon-weibo"></i></a> <a class="item thirdly"><i class="iconfont icon-github"></i></a> </div> </template> </div> </div> <div class="header mc cb"> <a href=index.html class="logo fl"><img src=/built/cc7ad20ab73b9cf7a1377320ec8a6ab1.png></a> <nav class=fl> <ul class=cb> <li><a href=index.html>主页</a> </li> <li><a href=dashboard/#!/project/demo>在线演示</a> </li> <li><a href=http://git.oschina.net/zhoujingjie/apiManager target=_blank>码云</a></li> <li><a href=help.html>在线帮助</a> </li> </ul> </nav> </div> </header>
+<header>
+    <div class="top">
+        <div class="cb mc">
+            <template v-if="user.id">
+                <div class="user-action logged fr">
+                    <a class="item" href="dashboard">进入工作台</a>
+                    <a class="item" v-on:click="logout">退出</a>
+                </div>
+            </template>
+            <template v-else>
+                <div class="user-action fr">
+                    <a class="item" href="login.html">登陆</a>
+                    <a class="item" href="register.html">注册</a>
+                    <a class="item thirdly" v-on:click="qq"><i class="iconfont icon-qq"></i></a>
+                    <a class="item thirdly" v-on:click="weibo"><i class="iconfont icon-weibo"></i></a>
+                    <a class="item thirdly" v-on:click="github"><i class="iconfont icon-github"></i></a>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    <div class="header mc cb">
+        <a href="index.html" class="logo fl"><img alt="小幺鸡" src="/built/cc7ad20ab73b9cf7a1377320ec8a6ab1.png"></a>
+        <nav class="fl">
+            <ul class="cb">
+                <li><a href="index.html">主页</a> </li>
+                <li><a href="dashboard/#!/project/demo">在线演示</a> </li>
+                <li><a href="http://git.oschina.net/zhoujingjie/apiManager" rel="nofollow" target="_blank">码云</a></li>
+                <li><a href="help.html">在线帮助</a> </li>
+            </ul>
+        </nav>
+    </div>
+</header>
 <section class="m-sec1">
     <div class="m-sec1-desc ta-c">小幺鸡，简单好用的在线接口管理系统</div>
     <div class="ta-c m-sec1-go"><a href="dashboard">立即使用</a></div>
@@ -65,6 +97,26 @@
 
     </ul>
 </section>
-<footer class=ta-c> <div> <a href=index.html>首页</a> <a href=http://git.oschina.net/zhoujingjie/apiManager>码云</a> <a href=help.html>在线帮助</a> </div> 小幺鸡@2016<a href=http://www.miitbeian.gov.cn/ target=_blank>蜀ICP备16012366号</a> <div style=display:none> <script src=assets/jquery/jquery.min.js></script> <script src=assets/toastr/toastr.min.js></script> <script src=assets/pace/pace.min.js></script> <script src=assets/js/config.js></script> <script src=../built/common.js></script> <script src="https://s95.cnzz.com/z_stat.php?id=1260226777&web_id=1260226777" language=JavaScript></script> </div> <script src=../built/index.js></script> </footer>
+<footer class="ta-c">
+    <div>
+        <a href="index.html">首页</a>
+        <a href="http://git.oschina.net/zhoujingjie/apiManager">码云</a>
+        <a href="help.html">在线帮助</a>
+    </div>
+    小幺鸡@2016<a href="http://www.miitbeian.gov.cn/" target="_blank">蜀ICP备16012366号</a>
+    <div style="display: none">
+<script src="assets/jquery/jquery.min.js"></script>
+<script src="assets/toastr/toastr.min.js"></script>
+<script src="assets/pace/pace.min.js"></script>
+<script src="assets/js/config.js"></script>
+<!-- build:common built/common.js -->
+<script src="../built/common.js"></script>
+<!-- endbuild -->
+<script src="https://s95.cnzz.com/z_stat.php?id=1260226777&web_id=1260226777" language="JavaScript"></script>
+</div>
+    <!-- build:index built/index.js -->
+    <script src="../built/index.js"></script>
+    <!-- endbuild -->
+</footer>
 </body>
 </html>

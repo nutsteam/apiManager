@@ -23,7 +23,7 @@
                             <li>
                                 <div class="api-name api-description cb" v-bind:class="{'active':showGuide}"
                                      v-on:click="apiDescClick">
-                                    <span>接口说明</span>
+                                    <span>接口设置</span>
                                     <span class="fr api-actions">
                                         <i class="iconfont icon-list" v-on:click="collapse=!collapse"></i>
                                     </span>
@@ -70,15 +70,26 @@
                     </div>
                     <div class="api-content fl">
                         <div id="api-edit-description" class="api-doc-desc" v-bind:class="{'hide':!showGuide}">
-                            <p class="api-details-title">接口地址域名</p>
+                            <p class="api-details-title">接口地址前缀</p>
+                            <p class="api-details-title second">开发环境</p>
                             <div class="form-text">
-                                <input type="text" debounce="500" v-on:focus="flag.hostBefore=currentModule.host" v-on:blur="moduleHostChange"
+                                <input type="text" debounce="500"
                                        v-model="currentModule.host" class="text" value="{{currentModule.host}}"
-                                       placeholder="接口地址域名如：http://example.com">
+                                       placeholder="开发环境地址如：http://www.example.com">
+                            </div>
+                            <p class="api-details-title second">测试环境</p>
+                            <div class="form-text">
+                                <input type="text" debounce="500"
+                                       v-model="currentModule.devHost" class="text" value="{{currentModule.devHost}}"
+                                       placeholder="测试环境地址如：http://test.example.com">
                             </div>
                             <div class="api-details-title">接口说明</div>
                             <!--<script type="text/plain" id="myEditor" style="width:960px;height:500px;"></script>-->
                             <div id="editorBox"></div>
+
+                            <div class="api-btn-save ta-c">
+                                <button class="btn btn-danger" v-on:click="apiSaveHostDescription">保存修改</button>
+                            </div>
                         </div>
                         <div id="api-edit-details" v-bind:class="{'hide':showGuide}">
                             <div id="api-edit-content" class="form">
@@ -100,13 +111,8 @@
                                     </div>
                                 </div>
                                 <div class="item">
-                                    <div class="col-sm-2 label">请求地址</div>
-                                    <div class="col-sm-3 full-text"
-                                         v-show="currentModule.host"
-                                         v-if="currentApi.protocol!='WEBSOCKET'"
-                                         style="word-break: break-all">{{currentModule.host}}
-                                    </div>
-                                    <div class="col-sm-7">
+                                    <div class="col-sm-2 label">请求地址(不包含地址前缀)</div>
+                                    <div class="col-sm-9">
                                         <input type="text" v-model="currentApi.url" class="text"
                                                value="{{currentApi.url}}">
                                     </div>
@@ -349,8 +355,6 @@
                         <textarea rows="15" class="k1 text" v-model="importValue" initial="off"
                                   v-bind:autofocus="status.importModal"
                                   tabindex="1" placeholder="请粘贴导入的数据"></textarea>
-                            <div class="tip" v-if="$if.importValue.invalid">{{$if.errors[0].message}}</div>
-
                             <div class="ta-c actions">
                                 <button class="btn btn-default-box middle" tabindex="3"
                                         v-on:click="status.importModal=false">
@@ -453,16 +457,18 @@
                                 <span class="api-update-time fr">更新时间: <span id="api-update-time">{{currentModule.lastUpdateTime}}</span></span>
                             </div>
                             <div id="api-doc-desc" class="api-doc-desc" v-show="showGuide">
-                                <!--<div class="api-no-module">请先创建module</div>-->
-                                <div class="apis-module-host" v-show="currentModule.host">域名前缀：{{currentModule.host}}</div>
+                                <template v-if="currentModule.host || currentModule.devHost">
+                                    <p class="api-details-title">接口地址前缀</p>
+                                    <p class="api-details-title second" v-if="currentModule.host">开发环境：{{currentModule.host}}</p>
+                                    <p class="api-details-title second" v-if="currentModule.devHost">测试环境：{{currentModule.devHost}}</p>
+                                </template>
                                 <div id="view-box" v-show="currentModule.description"></div>
                             </div>
                             <div id="api-details" class="api-details" v-show="!showGuide">
                                 <p class="api-details-title">基本信息</p>
                                 <div class="api-base-info api-edit-box">
                                     <p v-if="currentApi.protocol">请求类型: {{currentApi.protocol}}</p>
-                                    <p v-if="currentModule.host || currentApi.url">请求地址:
-                                        {{currentModule.host}}{{currentApi.url}}</p>
+                                    <p v-if="currentModule.host || currentApi.url">接口地址:{{currentApi.url}}</p>
                                     <p v-if="currentApi.requestMethod">请求方式: {{currentApi.requestMethod}}</p>
                                     <p v-if="currentApi.dataType">数据类型: {{currentApi.dataType}}</p>
                                     <p v-if="currentApi.contentType">响应类型: {{currentApi.contentType}}</p>
@@ -475,9 +481,9 @@
                                     <p class="api-details-title">请求头</p>
                                     <div class="div-table">
                                         <ul class="div-table-header div-table-line cb">
-                                            <li class="col-sm-1">参数名称</li>
+                                            <li class="col-sm-2">参数名称</li>
                                             <li class="col-sm-1">是否必须</li>
-                                            <li class="col-sm-8">描述</li>
+                                            <li class="col-sm-7">描述</li>
                                             <li class="col-sm-2">默认值</li>
                                         </ul>
                                         <request-headers-vue
@@ -521,6 +527,16 @@
                                     </div>
                                 </template>
                                 <p class="api-details-title">演示</p>
+                                <div class="api-details-title second cb">请求地址：{{requestURL}}
+                                    <div class="fr">
+                                        <label>
+                                            <input type="radio" value="product" v-model="flag.env"> 线上环境
+                                        </label>
+                                        <label>
+                                            <input type="radio" value="dev" v-model="flag.env"> 开发环境
+                                        </label>
+                                    </div>
+                                </div>
                                 <template v-if="!currentApi.protocol || currentApi.protocol == 'HTTP'">
                                     <template v-if="currentApi.requestHeaders && currentApi.requestHeaders.length>0">
                                         <form class="api-test form" id="header-form">
@@ -594,8 +610,28 @@
                                         </div>
                                     </form>
                                     <!--<p class="api-details-title">结果数据</p>-->
-                                    <div id="api-result">
-                                        <pre>{{{currentApi.result}}}</pre>
+                                    <div class="api-result-tabs cb" v-show="currentApi.result">
+                                        <a class="tab fl active" v-on:click="flag.resultActive='content'" v-bind:class="{'active':(flag.resultActive=='content')}">Body</a>
+                                        <a class="tab fl" v-on:click="flag.resultActive='headers'" v-bind:class="{'active':(flag.resultActive=='headers')}">Headers</a>
+                                        <a class="tab fr">Time: {{currentApi.resultRunTime}} ms</a>
+                                        <a class="tab fr">StatusCode: {{currentApi.resultStatusCode}}</a>
+                                    </div>
+                                    <div id="api-result" v-show="currentApi.result">
+                                        <i v-show="!!currentApi.result" id="api-result-copy" class="iconfont icon-copy"></i>
+                                        <pre v-show="flag.resultActive=='content'" id="api-result-content">{{{currentApi.result}}}</pre>
+                                        <div v-show="flag.resultActive=='headers'" id="api-result-headers">
+                                            <div class="api-result-headers-list" v-show="currentApi.resultHeaders">
+                                                {{{currentApi.resultHeaders | html}}}
+                                            </div>
+                                            <div v-else class="api-result-headers-list">
+                                                <div v-if="extVer>=1.4">
+                                                    No header for you
+                                                </div>
+                                                <div v-else>
+                                                    请下载或升级浏览器插件。
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="ta-c api-plugin-tip" v-if="!extVer">

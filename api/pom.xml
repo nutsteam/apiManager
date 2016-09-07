@@ -8,6 +8,15 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
     <artifactId>api</artifactId>
+    <description>小幺鸡,简单好用的在线接口文档管理工具</description>
+    <url>http://www.xiaoyaoji.com.cn</url>
+    <developers>
+        <developer>
+            <name>zhoujingjie</name>
+            <url>http://git.oschina.net/zhoujingjie</url>
+            <email>cn_bboy@163.com</email>
+        </developer>
+    </developers>
     <dependencies>
      <dependency>
             <groupId>javax.servlet</groupId>
@@ -29,7 +38,7 @@
         <dependency>
             <groupId>org.mangoframework</groupId>
             <artifactId>mango-core</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.4</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -83,12 +92,18 @@
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
         </dependency>
+
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-email</artifactId>
-            <version>1.4</version>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.8.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.9</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>api</finalName>

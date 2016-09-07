@@ -34,7 +34,7 @@
         <template v-if="!loading && users.length<=1">
             <div class="ta-c api-error-tip" v-cloak v-else>
                 <i class="iconfont icon-api" style="font-size: 120px"></i>
-                <p style="font-size: 24px">该项目暂无其他同事</p>
+                <p style="font-size: 24px">该项目暂无其他成员</p>
             </div>
         </template>
     </div>

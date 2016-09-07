@@ -20,6 +20,7 @@ public class Module {
     private String id;
     private String name;
     private String host;
+    private String devHost;
     private String description;
     private Date lastUpdateTime;
     private Date createTime;
@@ -98,5 +99,13 @@ public class Module {
 
     public void setFolders(List<InterfaceFolder> folders) {
         this.folders = folders;
+    }
+
+    public String getDevHost() {
+        return devHost;
+    }
+
+    public void setDevHost(String devHost) {
+        this.devHost = devHost;
     }
 }

@@ -3,6 +3,7 @@ package cn.com.xiaoyaoji.api.view;
 import java.net.URLEncoder;
 
 import cn.com.xiaoyaoji.api.ex.NotLoginException;
+import cn.com.xiaoyaoji.api.utils.ConfigUtils;
 import org.mangoframework.core.dispatcher.Parameter;
 
 /**
@@ -17,9 +18,11 @@ public class JspView extends org.mangoframework.core.view.JspView {
     @Override
     public void handleException(Parameter parameter, Throwable throwable) throws Exception {
         if(throwable instanceof NotLoginException){
-            String url = URLEncoder.encode(parameter.getRequest().getRequestURL().toString(),"UTF-8");
-            //parameter.getResponse().sendRedirect(parameter.getRequest().getContextPath()+"/login.html?target="+url);
-            parameter.getResponse().sendRedirect("/");
+            String loginUrl = ConfigUtils.getProperty("login.url");
+            if(loginUrl == null){
+                loginUrl = parameter.getContextPath();
+            }
+            parameter.getResponse().sendRedirect(loginUrl);
         }else {
             super.handleException(parameter, throwable);
         }

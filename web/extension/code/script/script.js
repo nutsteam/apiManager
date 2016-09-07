@@ -6,6 +6,7 @@ evt.initEvent('result.error',true,false);
 evt.initEvent('result.complete',true,false);
 
 document.addEventListener('request', function (e) {
+
     var params = e.detail;
     if(params.processData==false){
         if(params.contentType=='application/octet-stream'){
@@ -48,9 +49,20 @@ document.addEventListener('request', function (e) {
         document.dispatchEvent(new CustomEvent('result.error',{detail:rs}));
     };
     params.complete = function(xhr,type){
+        var useTime = Date.now() - xhr.beginTime;
         document.dispatchEvent(new CustomEvent('result.complete',{detail:{
-            type:type,text:(xhr.responseText || xhr.statusText)
+            type:type,
+            text:(xhr.responseText || xhr.statusText),
+            headers:xhr.getAllResponseHeaders(),
+            readyState:xhr.readyState,
+            responseText:xhr.responseText,
+            status:xhr.status,
+            statusText:xhr.statusText,
+            useTime:useTime
         }}));
+    };
+    params.beforeSend = function (xhr) {
+        xhr.beginTime= Date.now();
     };
     $.ajax(params);
     return false;

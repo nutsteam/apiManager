@@ -13,12 +13,6 @@ const router = window.router = new Router({
     history:false
 });
 router.map(RouteConfig);
-/*
-
-router.redirect({
-'*': '/welcome'
-});
-*/
 Vue.config.debug = true;
 var App = Vue.extend({
     methods:{

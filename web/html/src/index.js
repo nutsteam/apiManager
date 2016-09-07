@@ -9,6 +9,15 @@ new Vue({
         logout:function(){
             utils.logout();
             location.reload();
+        },
+        qq: function () {
+            utils.login.qq();
+        },
+        weibo:function(){
+            utils.login.weibo();
+        },
+        github:function(){
+            utils.login.github();
         }
     }
 });

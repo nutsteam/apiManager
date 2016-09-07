@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "webpack --progress --colors --watch",
-    "watch": "webpack-dev-server --hot --progress --colors",
-    "dist": "NODE_ENV=production webpack --progress --colors"
+    "watch": "webpack --progress --colors --watch",
+    "server": "webpack-dev-server --content-base html  --hot --progress --colors",
+    "build": "NODE_ENV=production webpack --progress --colors",
+    "dist-server": "webpack-dev-server --content-base dist --progress --colors"
   },
   "author": "zhoujingjie",
   "license": "TODO",
@@ -31,6 +32,7 @@
     "gulp-usemin": "^0.3.23",
     "html-loader": "^0.4.3",
     "html-webpack-plugin": "^2.22.0",
+    "jquery": "^3.1.0",
     "node-sass": "^3.8.0",
     "sass-loader": "^4.0.0",
     "style-loader": "^0.13.1",

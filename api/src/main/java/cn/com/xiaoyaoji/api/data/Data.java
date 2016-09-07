@@ -32,7 +32,7 @@ public interface Data {
 
     User getUserByThirdId(String thirdId);
 
-    User createUserByThirdparty(Thirdparty thirdparty);
+    int bindUserWithThirdParty(Thirdparty thirdparty);
 
 
     List<Module> getModules(String projectId);
@@ -86,6 +86,8 @@ public interface Data {
     void initUserThirdlyBinds(User user);
 
     int copyFolder(String folderId, String moduleId);
+
+    int removeUserThirdPartyRelation(String userId, String type);
 
     //void test();
 }

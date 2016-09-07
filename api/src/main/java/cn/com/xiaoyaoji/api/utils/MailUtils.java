@@ -1,74 +1,63 @@
 package cn.com.xiaoyaoji.api.utils;
 
-import java.net.URL;
-
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.mail.*;
-import org.apache.commons.mail.resolver.DataSourceUrlResolver;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.log4j.Logger;
+
+import cn.com.xiaoyaoji.api.ex._HashMap;
+
+import com.alibaba.fastjson.JSON;
 
 /**
  * @author: zhoujingjie
  * @Date: 16/8/21
  */
 public class MailUtils {
-    public static String sendEmail(String subject, String msg, String to) {
-        try {
-            Email email = new SimpleEmail();
-            email.setHostName(ConfigUtils.getProperty("mail.smtp"));
-            email.setSmtpPort(Integer.parseInt(ConfigUtils.getProperty("mail.smtp.port")));
-            email.setAuthenticator(new DefaultAuthenticator(ConfigUtils.getProperty("mail.username"), ConfigUtils.getProperty("mail.password")));
-            email.setSSLOnConnect(true);
-            email.setFrom("system@xiaoyaoji.com.cn","小幺鸡系统通知-验证码");
-            email.setSubject(subject);
-            email.setMsg(msg);
-            email.setCharset("UTF-8");
-            email.addTo(to);
-            return email.send();
-        } catch (EmailException e) {
-            throw new RuntimeException(e.getMessage(), e);
+    private static Logger logger = Logger.getLogger(MailUtils.class);
+    private static String TEMPLATE_URL = "http://sendcloud.sohu.com/webapi/mail.send_template.json";
+
+    public static void sendCaptcha(String code, String to) {
+        String vars = JSON.toJSONString(new _HashMap<>().add("to", new String[] { to }).add("sub", new _HashMap<>().add("%captcha%", new String[] { code })));
+        NameValuePair[] pairs = new NameValuePair[] { new NameValuePair("api_user", ConfigUtils.getProperty("sendcloud.system.apiuser")),
+                new NameValuePair("api_key", ConfigUtils.getProperty("sendcloud.apikey")),
+                new NameValuePair("from", ConfigUtils.getProperty("sendcloud.system.from")), new NameValuePair("fromname", "小幺鸡系统通知"),
+                new NameValuePair("subject", "小幺鸡系统通知-验证码"), new NameValuePair("substitution_vars", vars), new NameValuePair("use_maillist", "false"),
+                new NameValuePair("template_invoke_name", "captcha"), };
+        String rs = HttpUtils.post(TEMPLATE_URL, pairs);
+        if (rs.contains("error")) {
+            throw new RuntimeException(rs);
         }
+        logger.debug(rs);
     }
 
-    public static String sendHtmlMail(String subject, String html, String msg, String to, String link) {
-        try {
-            // define you base URL to resolve relative resource locations
-            URL url = new URL(link);
-
-            // create the email message
-            ImageHtmlEmail email = new ImageHtmlEmail();
-            email.setCharset("UTF-8");
-            email.setDataSourceResolver(new DataSourceUrlResolver(url));
-            email.setHostName(ConfigUtils.getProperty("mail.smtp"));
-            email.setSmtpPort(Integer.parseInt(ConfigUtils.getProperty("mail.smtp.port")));
-            email.setAuthenticator(new DefaultAuthenticator(ConfigUtils.getProperty("mail.username"), ConfigUtils.getProperty("mail.password")));
-            email.setSSLOnConnect(true);
-            email.addTo(to);
-            email.setFrom(ConfigUtils.getProperty("mail.from"),ConfigUtils.getProperty("mail.from.name") );
-            email.setSubject(subject);
-
-            // set the html message
-            email.setHtmlMsg(html);
-
-            // set the alternative message
-            email.setTextMsg(msg);
-            // send the email
-            return email.send();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
-    public static String findPassWord(String id, String to) {
+    public static void findPassword(String id, String to) {
         String url = "http://www.xiaoyaoji.com.cn/findpassword.html?token=" + Base64.encodeBase64String((id + "!" + to).getBytes());
-        String text = "请复制URL到浏览器上打开进行后续操作 " + url;
-        String html = "<a href=\"" + url + "\">点击找回密码进行后续操作</a> 如果该链接不能点击" + text;
-        return sendHtmlMail("找回密码", html, text, to, "http://www.xiaoyaoji.com.cn");
+        String vars = JSON.toJSONString(new _HashMap<>().add("to", new String[] { to }).add("sub", new _HashMap<>().add("%url%", new String[] { url })));
+        NameValuePair[] pairs = new NameValuePair[] { new NameValuePair("api_user", ConfigUtils.getProperty("sendcloud.system.apiuser")),
+                new NameValuePair("api_key", ConfigUtils.getProperty("sendcloud.apikey")),
+                new NameValuePair("from", ConfigUtils.getProperty("sendcloud.system.from")), new NameValuePair("fromname", "小幺鸡系统通知"),
+                new NameValuePair("subject", "小幺鸡系统通知-找回密码"), new NameValuePair("substitution_vars", vars),
+                new NameValuePair("template_invoke_name", "find_password"), };
+        String rs = HttpUtils.post(TEMPLATE_URL, pairs);
+        if (rs.contains("error")) {
+            throw new RuntimeException(rs);
+        }
+        logger.debug(rs);
     }
-    /*
-    public static String newEmail(String id,String to){
-        String url = "http://www.xiaoyaoji.com/findpassword.html?token="+id;
-        String text = "请复制URL到浏览器上打开进行后续操作 " + url;
-        String html = " 请验证您的邮箱<br/><a href=\"" + url + "\">验证</a><br/>如果该链接不能点击" + text;
-        return sendHtmlMail("找回密码", html, text, to, "http://www.xiaoyaoji.com.cn");
-    }*/
+
+    public static void market(String... to) {
+
+        String vars = JSON.toJSONString(new _HashMap<>().add("to", to));
+        NameValuePair[] pairs = new NameValuePair[] { new NameValuePair("api_user", ConfigUtils.getProperty("sendcloud.market.apiuser")),
+                new NameValuePair("api_key", ConfigUtils.getProperty("sendcloud.apikey")),
+                new NameValuePair("from", ConfigUtils.getProperty("sendcloud.market.from")), new NameValuePair("fromname", "小幺鸡邀请你使用"),
+                new NameValuePair("subject", "朋友,给你推荐一款接口文档管理工具"), new NameValuePair("substitution_vars", vars),
+                new NameValuePair("template_invoke_name", "market_1"), };
+        String rs = HttpUtils.post(TEMPLATE_URL, pairs);
+        if (rs.contains("error")) {
+            throw new RuntimeException(rs);
+        }
+        logger.debug(rs);
+    }
+
 }
