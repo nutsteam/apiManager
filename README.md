@@ -28,13 +28,12 @@
     - webpack.config.js webpack配置
 ##开发版本
 ### API
- * api.zip 用压缩软件打开并且解压放在tomcat webapps目录下 需要修改tomcat默认端口，防止与静态页面的端口冲突
- * 修改WEB-INF/classes/config.properties 中的数据库配置信息，
-    * 修改api/WEB-INF/classes/config.properties中的数据库配置信息。
+ * api/src下面为源码，基于maven项目构建。
+ * 修改api/src/main/resources/config.properties 中的数据库配置信息，
     * 如果需要使用第三方登录,需要配置对应的地址
     * 如果需要使用邮件发送,需要配置sendcloud邮箱配置信息
     * config.properties未单独做中文编码处理，为防止乱码，中文需要改为unicode
- * 导入sql/xiaoyaoji.sql 文件导入到mysql中，
+ * 导入api/sql/xiaoyaoji.sql 文件导入到mysql中，
  * 启动tomcat，浏览器运行 http://localhost:端口/api/index.html 能正常显示Hello XiaoYaoJi API 则表示可用。
  
 #### API 依赖jar  org.mangoframework.core 1.2.3
