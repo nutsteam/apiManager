@@ -22,7 +22,7 @@ files.forEach(function(item){
         }
     });
 //console.log("plugins.length:"+plugins.length)
-var isDev=true;
+var isDev=false;
 module.exports = {
     entry:{
         'dashboard':'./html/dashboard/app/index.js',

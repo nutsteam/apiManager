@@ -83,6 +83,7 @@ gulp.task('production',function(){
 	gulp.src(targetPath+'/assets/js/config.js',{read:false}).pipe(clean())
 	gulp.src('./config.js')
 		.pipe(gulp.dest(targetPath+'/assets/js/'));
+	gulp.src('extension/xiaoyaoji.crx').pipe(gulp.dest(targetPath+'/extension/'));
 })
 
 
