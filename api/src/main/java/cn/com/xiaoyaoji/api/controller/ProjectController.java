@@ -521,7 +521,7 @@ public class ProjectController {
                                 section.add(table);
                             }
                         }
-                        String responseArg = in.getRequestHeaders();
+                        String responseArg = in.getResponseArgs();
                         if(org.apache.commons.lang3.StringUtils.isNotBlank(responseArg)){
                             List<RequestResponseArgs> responseArgs = JSON.parseObject(responseArg, new TypeReference<List<RequestResponseArgs>>(){});
                             if(responseArgs.size()>0) {
