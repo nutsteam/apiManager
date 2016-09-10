@@ -61,7 +61,7 @@ public interface Data {
 
     int deleteProject(String id);
 
-    List<User> searchUsers(String key,String... excludeIds);
+    List<User> searchUsers(String key, String... excludeIds);
 
     boolean checkEmailExists(String email);
 
@@ -88,6 +88,8 @@ public interface Data {
     int copyFolder(String folderId, String moduleId);
 
     int removeUserThirdPartyRelation(String userId, String type);
+
+    int createProject(Project project);
 
     //void test();
 }

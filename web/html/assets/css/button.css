@@ -271,6 +271,21 @@ a.btn.disabled,fieldset[disabled] a.btn {
     color: #f0ad4e;
     background-color: #fff
 }
+.btn-orange{
+    color: #fff;
+    border-color: orangered;
+    background-color: orangered;
+}
+.btn-orange.focus,.btn-orange:focus{
+    color: #fff;
+    border-color: #FF5819;
+    background-color: #FF5819;
+}
+.btn-orange:hover{
+    color: #fff;
+    border-color: #B23000;
+    background-color: #B23000;
+}
 
 .btn-danger {
     color: #fff;

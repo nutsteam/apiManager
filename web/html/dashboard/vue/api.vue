@@ -1,9 +1,13 @@
 <template>
     <template v-if="!status.loading">
+        <div class="api-modules-tab ta-c">
+            <a class="api-module api-module-item" v-bind:class="{'active':editing}" v-on:click="editing=true">编辑模式</a>
+            <a class="api-module api-module-item" v-bind:class="{'active':!editing}" v-on:click="editing=false">浏览模式</a>
+        </div>
         <div v-show="editing">
             <div class="api-modules">
-                <div class="cb">
-                    <ul id="api-modules">
+                <div class="cb api-modules-container">
+                    <ul id="api-modules" >
                         <li data-id="{{item.id}}" v-for="item in modules" class="api-module fl api-module-item"
                             v-bind:class="{'active':currentModule.id == item.id}">
                             <span v-on:click="moduleClick(item)">{{item.name}}</span>
@@ -12,7 +16,6 @@
                         </li>
                         <li class="api-module fl api-module-plus" v-on:click="moduleNew">
                             <i class="icon-tianjia iconfont"></i></li>
-                        <li class="api-module fr api-cancel" v-on:click="editing=false"><span>返回 </span></li>
                     </ul>
                 </div>
             </div>
@@ -64,31 +67,31 @@
                                 </div>
                             </li>
                             <li v-on:click="folderNew">
-                                <div class="api-name api-folder-new"><i class="icon-tianjia iconfont"></i> 添加分类</div>
+                                <div class="api-name api-folder-new"><i class="icon-tianjia iconfont"></i> 创建分类</div>
                             </li>
                         </ul>
                     </div>
                     <div class="api-content fl">
                         <div id="api-edit-description" class="api-doc-desc" v-bind:class="{'hide':!showGuide}">
                             <p class="api-details-title">接口地址前缀</p>
-                            <p class="api-details-title second">开发环境</p>
+                            <p class="api-details-title second">线上环境</p>
                             <div class="form-text">
                                 <input type="text" debounce="500"
                                        v-model="currentModule.host" class="text" value="{{currentModule.host}}"
-                                       placeholder="开发环境地址如：http://www.example.com">
+                                       placeholder="线上环境地址如：http://www.example.com">
                             </div>
-                            <p class="api-details-title second">测试环境</p>
+                            <p class="api-details-title second">开发环境</p>
                             <div class="form-text">
                                 <input type="text" debounce="500"
                                        v-model="currentModule.devHost" class="text" value="{{currentModule.devHost}}"
-                                       placeholder="测试环境地址如：http://test.example.com">
+                                       placeholder="开发环境地址如：http://test.example.com">
                             </div>
-                            <div class="api-details-title">接口说明</div>
+                            <div class="api-details-title">接口描述</div>
                             <!--<script type="text/plain" id="myEditor" style="width:960px;height:500px;"></script>-->
                             <div id="editorBox"></div>
 
                             <div class="api-btn-save ta-c">
-                                <button class="btn btn-danger" v-on:click="apiSaveHostDescription">保存修改</button>
+                                <button class="btn btn-orange" v-on:click="apiSaveHostDescription">保存修改</button>
                             </div>
                         </div>
                         <div id="api-edit-details" v-bind:class="{'hide':showGuide}">
@@ -112,8 +115,8 @@
                                 </div>
                                 <div class="item">
                                     <div class="col-sm-2 label">请求地址(不包含地址前缀)</div>
-                                    <div class="col-sm-9">
-                                        <input type="text" v-model="currentApi.url" class="text"
+                                    <div class="col-sm-10">
+                                        <input type="text" placeholder="如:/api/test" v-model="currentApi.url" class="text"
                                                value="{{currentApi.url}}">
                                     </div>
                                 </div>
@@ -262,7 +265,7 @@
                                         <li class="col-sm-3">参数名称</li>
                                         <li class="col-sm-2">是否必须</li>
                                         <li class="col-sm-2">类型</li>
-                                        <li class="col-sm-2">描述</li>
+                                        <li class="col-sm-4">描述</li>
                                     </ul>
                                     <response-args-vue v-bind:response-args="currentApi.responseArgs"
                                                        v-bind:editing="editing"></response-args-vue>
@@ -283,7 +286,7 @@
                                 <button class="btn btn-primary" v-on:click="apiSave">保存修改</button>
                             </div>-->
                             <div class="api-btn-save ta-c">
-                                <button class="btn btn-danger" v-on:click="apiSave">保存修改</button>
+                                <button class="btn btn-orange" v-on:click="apiSave">保存修改</button>
                             </div>
                         </div>
                     </div>
@@ -407,15 +410,12 @@
         <div v-show="!editing">
             <template v-if="!error.projectNotExists">
                 <div class="api-modules">
-                    <div class="cb">
+                    <div class="cb api-modules-container">
                         <ul>
                             <li v-for="item in modules"
                                 class="api-module fl api-module-item"
                                 v-bind:class="{'active':currentModule.id == item.id}"><span
                                     v-on:click="moduleClick(item)">{{item.name}}</span>
-                            </li>
-                            <li class="api-module fr api-cancel" v-on:click="editing=true">
-                                <span>编辑</span>
                             </li>
                         </ul>
                     </div>
@@ -437,7 +437,7 @@
                                     {{currentModule.folders = []}}
                                 </template>
                                 <li v-for="item in currentModule.folders">
-                                    <div class="api-name api-folder" v-bind:click="{'open':!collapse}" v-on:click="folderClick">
+                                    <div class="api-name api-folder" v-bind:class="{'open':!collapse}" v-on:click="folderClick">
                                         <span>{{item.name}}</span>
                                     </div>
                                     <ul class="apis-nav apis-nav-sub" v-bind:class="{'hide':collapse}">
@@ -453,16 +453,20 @@
                         </div>
                         <div class="api-content fl">
                             <div class="cb">
-                                <h3 class="apis-module-name fl" id="api-headline">接口说明</h3>
+                                <h3 class="apis-module-name fl" id="api-headline">接口信息</h3>
                                 <span class="api-update-time fr">更新时间: <span id="api-update-time">{{currentModule.lastUpdateTime}}</span></span>
                             </div>
                             <div id="api-doc-desc" class="api-doc-desc" v-show="showGuide">
                                 <template v-if="currentModule.host || currentModule.devHost">
                                     <p class="api-details-title">接口地址前缀</p>
-                                    <p class="api-details-title second" v-if="currentModule.host">开发环境：{{currentModule.host}}</p>
-                                    <p class="api-details-title second" v-if="currentModule.devHost">测试环境：{{currentModule.devHost}}</p>
+                                    <p class="api-details-title second" v-if="currentModule.host">线上环境：{{currentModule.host}}</p>
+                                    <p class="api-details-title second" v-if="currentModule.devHost">开发环境：{{currentModule.devHost}}</p>
                                 </template>
                                 <div id="view-box" v-show="currentModule.description"></div>
+                                <div v-show="!currentModule.description" class="ta-c api-error-tip">
+                                    <i class="iconfont icon-info" style="font-size: 120px"></i>
+                                    <p style="font-size: 24px">该模块还没有描述信息</p>
+                                </div>
                             </div>
                             <div id="api-details" class="api-details" v-show="!showGuide">
                                 <p class="api-details-title">基本信息</p>
@@ -545,7 +549,7 @@
                                                 <div class="col-sm-2 label">{{item.name}}</div>
                                                 <div class="col-sm-8">
                                                     <input type="text" name="{{item.name}}"
-                                                           value="{{item.defaultValue}}"
+                                                           value="{{item.testValue || item.defaultValue}}"
                                                            placeholder="{{item.description}}" class="text">
                                                 </div>
                                             </div>
@@ -572,7 +576,7 @@
                                                     <input data-type="{{item.type}}"
                                                            type="{{item.type=='file'?'file':'text'}}"
                                                            name="{{item.name}}"
-                                                           value="{{item.defaultValue}}"
+                                                           value="{{item.testValue || item.defaultValue}}"
                                                            placeholder="{{item.description}}"
                                                            v-bind:class="{'text':item.type!='file'}">
                                                 </div>

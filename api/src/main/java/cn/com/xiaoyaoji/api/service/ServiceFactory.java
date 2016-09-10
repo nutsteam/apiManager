@@ -231,4 +231,8 @@ public class ServiceFactory {
     public int unbindUserThirdPartyRelation(String userId, String type) {
         return DataFactory.instance().removeUserThirdPartyRelation(userId,type);
     }
+
+    public int createProject(Project project) {
+        return DataFactory.instance().createProject(project);
+    }
 }

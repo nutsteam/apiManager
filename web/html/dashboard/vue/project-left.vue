@@ -88,7 +88,7 @@
         projects:[],
         filter:''
     };
-    function load(){
+    function load(self){
         utils.get('/project/list.json',{},function(rs){
             data.projects=rs.data.projects;
         });
@@ -98,12 +98,12 @@
             return data;
         },
         created:function(){
-            load();
+            load(this);
         },
         watch:{
             "reloadProject":function(value){
                 if(value){
-                    load();
+                    load(this);
                     this.reloadProject = false;
                 }
             }

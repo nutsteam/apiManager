@@ -10,7 +10,7 @@ Vue.use(Router);
 
 const router = window.router = new Router({
     root:utils.config.ctx+'/dashboard',
-    history:false
+    history:utils.config.vue.history
 });
 router.map(RouteConfig);
 Vue.config.debug = true;

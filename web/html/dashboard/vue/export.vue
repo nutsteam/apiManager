@@ -1,7 +1,7 @@
 <template>
 <div class="db-export">
     <ul class="cb">
-        <li v-on:click="pdf"><i class="iconfont icon-pdf"></i> <p>导出PDF</p></li>
+        <li v-on:click="pdf" id="export-pdf"><i class="iconfont icon-pdf"></i> <p>导出PDF</p></li>
         <!--<li><i class="iconfont icon-json"></i> <p>导出JSON</p></li>-->
         <!--<li><i class="iconfont icon-sql"></i> <p>导出SQL</p></li>-->
     </ul>
@@ -13,7 +13,7 @@
     export default {
         data(){
             return {
-                project:{}
+                project:null
             }
         },
         route:{
@@ -33,7 +33,10 @@
         },
         methods:{
             pdf:function(){
-                 location.href=utils.config.root+'/project/'+this.project.id+'/export.pdf?token='+utils.token();
+                if(this.project){
+                    _czc.push(["_trackEvent",'接口','导出',this.project.name,this.project.id,'export-pdf']);
+                    location.href=utils.config.root+'/project/'+this.project.id+'/export.pdf?token='+utils.token();
+                }
             }
         }
     }

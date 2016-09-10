@@ -224,11 +224,13 @@ public class DataFactory implements Data {
                 int rs = qr.query(connection,"select count(id) from "+TableNames.USER_THIRD+" where userId=? and type=? and id =?",new IntegerResultHandler(),thirdparty.getUserId(),thirdparty.getType(),thirdparty.getId());
                 if(rs == 1)
                     return rs;
+                //删除第三方
+                rs = qr.update(connection,"delete from "+TableNames.USER_THIRD+" where type=? and id=?",thirdparty.getType(),thirdparty.getId());
                 // 创建第三方
                 StringBuilder thirdSql = new StringBuilder("insert into ");
                 thirdSql.append(TableNames.USER_THIRD);
                 thirdSql.append(" (id,userid,type) values(?,?,?)");
-                rs = qr.update(connection, thirdSql.toString(), thirdparty.getId(), thirdparty.getUserId(),thirdparty.getType());
+                rs += qr.update(connection, thirdSql.toString(), thirdparty.getId(), thirdparty.getUserId(),thirdparty.getType());
                 if(rs>0){
                     if(org.apache.commons.lang3.StringUtils.isBlank(user.getAvatar())){
 
@@ -681,6 +683,26 @@ public class DataFactory implements Data {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
                 return qr.update(connection,"delete from "+TableNames.USER_THIRD+" where userId=? and type=?",userId,type);
+            }
+        });
+    }
+
+    @Override
+    public int createProject(final Project project) {
+        return process(new Handler<Integer>() {
+            @Override
+            public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
+                SQLBuildResult sb = SqlUtils.generateInsertSQL(project);
+                int rs = qr.update(connection,sb.getSql(),sb.getParams());
+                ProjectUser pu = new ProjectUser();
+                pu.setUserId(project.getUserId());
+                pu.setId(StringUtils.id());
+                pu.setCreateTime(new Date());
+                pu.setProjectId(project.getId());
+                pu.setStatus(ProjectUser.Status.ACCEPTED);
+                sb = SqlUtils.generateInsertSQL(pu);
+                rs += qr.update(connection,sb.getSql(),sb.getParams());
+                return rs;
             }
         });
     }

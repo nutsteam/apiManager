@@ -29,9 +29,9 @@
                     <div class="item">
                         <div class="col-sm-2 label">项目公开性</div>
                         <div class="col-sm-10">
-                            <p><input type="radio" v-model="project.permission" value="PUBLIC" id="dvnr-private"><label
+                            <p><input type="radio" v-model="project.permission" value="PUBLIC" id="dvnr-private"> <label
                                     for="dvnr-private">私有项目（只有加入项目后的成员才能看见）</label></p>
-                            <p><input type="radio" v-model="project.permission" value="PRIVATE" id="dvnr-public"><label
+                            <p><input type="radio" v-model="project.permission" value="PRIVATE" id="dvnr-public"> <label
                                     for="dvnr-public">公开项目（所有用户均能看见）</label></p>
                             <div class="tip"></div>
                         </div>
@@ -56,7 +56,7 @@
                         <div class="rect4"></div>
                         <div class="rect5"></div>
                     </div>
-                    <div class="item" v-if="users && users.length>0">
+                    <div class="item" v-if="users && users.length>1">
                         <div class="col-sm-2 label">邀请同事</div>
                         <div class="col-sm-10">
                             <ul class="cb dbv-chose-users">

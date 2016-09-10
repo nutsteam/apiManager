@@ -57,14 +57,18 @@
 
 
 ## 直接使用
+   * 下载附件中的最新版本的zip包
+   * 包里面文件夹有
+        * api: 接口
+        * html: 静态页面
+### 需要修改的地
 #### API
-    * 导入api/sql/xiaoyaoji.sql 到mysql中。mysql需要5.5以上
-    * 解压api/target/api.war 并将解压后的文件夹复制到tomcat/webapps目录下。
+    * 导入api/sql/xiaoyaoji-MMdd.sql 到mysql中。mysql需要5.5以上
     * 修改api/WEB-INF/classes/config.properties中的数据库配置信息。
     * 如果需要使用第三方登录,需要配置对应的地址
     * 如果需要使用邮件发送,需要配置sendcloud邮箱配置信息
 #### WEB
-    * 复制dist到本地服务器中根目录，修改 /assets/js/config.js 里面的window.root的地址为你部署api后的访问地址
+    * 复制html内容到本地服务器中根目录，修改 /assets/js/config.js 里面的window.root的地址为你部署api后的访问地址
 
 
 

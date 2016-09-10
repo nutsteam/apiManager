@@ -2,7 +2,8 @@ import "./vue.ex";
 var utils = {
     config: {
         root: window.root,
-        ctx: window.ctx
+        ctx: window.ctx,
+        vue:window._vue_
     },
     push: function (data, item) {
         if (data === undefined) {
@@ -17,13 +18,13 @@ var utils = {
             return localStorage.getItem("token") || '';
         }
     },
-    user: function (user) {
-        if (user) {
-            localStorage.setItem("user", JSON.stringify(user));
+    user: function (userData) {
+        if (userData) {
+            localStorage.setItem("user", JSON.stringify(userData));
         } else {
-            var user = localStorage.getItem("user");
-            if (user) {
-                return JSON.parse(user);
+            var userData = localStorage.getItem("user");
+            if (userData) {
+                return JSON.parse(userData);
             }
             return {};
         }
@@ -37,6 +38,16 @@ var utils = {
         if (data === undefined)
             return data;
         if (data.constructor.name == 'String') {
+            //data = data.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2":');
+            data=data.replace(/:\s*"([^"]*)"/g, function(match, p1) {
+                return ': "' + p1.replace(/:/g, '@colon@') + '"';
+            })
+                .replace(/:\s*'([^']*)'/g, function(match, p1) {
+                    return ': "' + p1.replace(/:/g, '@colon@') + '"';
+                })
+                .replace(/(['"])?([a-z0-9A-Z_]+)(['"])?\s*:/g, '"$2": ')
+                .replace(/@colon@/g, ':')
+            ;
             data = data.replace(/\s/g, '');
             return JSON.parse(data);
         }
@@ -153,7 +164,7 @@ var utils = {
             if(href){
                 location.href=href;
             }else{
-                location.href=utils.config.ctx+'/dashboard';
+                location.href=utils.config.ctx+'/dashboard?t='+Date.now();
             }
         }
     }

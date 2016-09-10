@@ -93,7 +93,7 @@ public class Module {
     public List<InterfaceFolder> getFolders() {
         return this.folders;
     }
-    public void addInterface(InterfaceFolder in){
+    public void addInterfaceFolder(InterfaceFolder in){
         this.folders.add(in);
     }
 

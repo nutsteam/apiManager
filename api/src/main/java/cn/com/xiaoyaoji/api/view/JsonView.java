@@ -27,10 +27,12 @@ public class JsonView extends org.mangoframework.core.view.JsonView {
         if(e instanceof NotLoginException){
             super.setData(new Result<>(-2,"会话已过期"));
         }else {
+            String err= e.getMessage();
             if(!(e instanceof InvalidArgumentException)) {
                 e.printStackTrace();
+                err="系统错误";
             }
-            super.setData(new Result<>(false, e.getMessage()));
+            super.setData(new Result<>(false, err));
         }
         doRepresent(parameter);
     }

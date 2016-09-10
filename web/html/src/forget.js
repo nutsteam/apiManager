@@ -17,6 +17,7 @@ var app = new Vue({
             utils.post('/user/findpassword.json',{email:this.email},function(){
                 self.succeed = true;
             });
+            _czc.push(['_trackEvent', '找回密码', '找回密码']);
             //history.pushState(null,'找回密码成功','sendemail');
         },
         resend:function(){
@@ -26,6 +27,7 @@ var app = new Vue({
                 self.succeed = true;
                 self.resendtext='发送成功';
             });
+            _czc.push(['_trackEvent', '找回密码', '再次发生']);
         },
         go:function(){
             var domain =this.email.substring(this.email.indexOf('@')+1);

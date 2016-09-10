@@ -4,3 +4,6 @@ toastr.options.positionClass = 'toast-top-center';
 toastr.options.preventDuplicates=true;
 window.root='//www.xiaoyaoji.com.cn/api';
 window.ctx='';
+window._vue_={
+    history:false
+};

@@ -6,8 +6,8 @@ package cn.com.xiaoyaoji.api.cache;
  */
 public interface Cache {
 
-    void put(String token,String key,Object data,int expires);
+    void put(String token, String key, Object data, int expires);
 
-    Object get(String token,String key,int expires);
+    Object get(String token, String key, int expires);
 
 }

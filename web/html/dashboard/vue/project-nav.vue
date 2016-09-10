@@ -43,7 +43,7 @@
         </ul>
     </li>
     <li class="fr db-item db-msg">
-        <a v-on:click.stop.prevent="status.show='message'"><i class="iconfont icon-bell"></i> 消息 </a>
+        <!--<a v-on:click.stop.prevent="status.show='message'"><i class="iconfont icon-bell"></i> 消息 </a>-->
         <span class="db-subscript" v-if="messages && messages.length>0">{{messages.length}}</span>
         <ul class="db-item-sub" v-show="status.show=='message'" v-if="messages.length>0">
             <li class="db-item item-title">

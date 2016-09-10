@@ -24,23 +24,36 @@ gulp.task('html',['clean'],function(){
 					common: [rev()],
 					forget: [rev()],
 					register: [rev()],
+					stylecss: [rev()],
 					login: [rev()],
-					findpassword: [rev()]
+					findpassword: [rev()],
+					thirdparty:[rev()]
 				}))
 				.pipe(gulp.dest(targetPath))
 		}
 	});
+	fs.readdirSync('./html/dashboard').forEach(function(item){
+		if(item.match('.html$')){
+			gulp.src('./html/dashboard/'+item)
+				.pipe(usemin({
+					html: [ minifyHtml() ],
+					index: [rev()],
+					about: [rev()],
+					common: [rev()],
+					forget: [rev()],
+					register: [rev()],
+					stylecss: [rev()],
+					login: [rev()],
+					findpassword: [rev()],
+					thirdparty:[rev()]
+				}))
+				.pipe(gulp.dest(targetPath+'/dashboard'))
+		}
+	});
+	
 
-	gulp.src('./html/favicon.ico')
+	return  gulp.src('./html/favicon.ico')
 		.pipe(gulp.dest(targetPath));
-
-
-	return gulp.src(['./html/dashboard/index.html'])
-		.pipe(usemin({
-			html:[minifyHtml()],
-			common:[rev()]
-		}))
-		.pipe(gulp.dest(targetPath+'/dashboard'));
 });
 
 gulp.task('assets',['clean'],function(){
@@ -83,6 +96,7 @@ gulp.task('production',function(){
 	gulp.src(targetPath+'/assets/js/config.js',{read:false}).pipe(clean())
 	gulp.src('./config.js')
 		.pipe(gulp.dest(targetPath+'/assets/js/'));
+	gulp.src('extension/xiaoyaoji.crx').pipe(gulp.dest(targetPath+'/extension/'));
 })
 
 

@@ -125,6 +125,7 @@ public class ProjectController {
     }
 
 
+    //创建默认模块
     private Module createDefaultModule(String projectId) {
         Module module = new Module();
         module.setLastUpdateTime(new Date());
@@ -133,10 +134,26 @@ public class ProjectController {
         module.setProjectId(projectId);
         module.setName("默认模块");
         module.setHost("");
+        module.setDevHost("");
+        module.setDescription("### 使用说明");
         int rs = ServiceFactory.instance().create(module);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
+        module.addInterfaceFolder(createDefaultFolder(module.getId(),projectId));
         return module;
     }
+    //创建默认分类
+    private InterfaceFolder createDefaultFolder(String moduleId,String projectId){
+        InterfaceFolder folder = new InterfaceFolder();
+        folder.setId(StringUtils.id());
+        folder.setName("默认分类");
+        folder.setCreateTime(new Date());
+        folder.setModuleId(moduleId);
+        folder.setProjectId(projectId);
+        int rs = ServiceFactory.instance().create(folder);
+        AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
+        return folder;
+    }
+
 
     @Get("/{id}/users")
     public Object getUsers(@RequestParam("id") String id, Parameter parameter) {
@@ -160,9 +177,8 @@ public class ProjectController {
         AssertUtils.notNull(project.getName(), "missing name");
         //AssertUtils.notNull(project.getTeamId(),"missing teamId");
         AssertUtils.notNull(project.getUserId(), "missing userId");
-        int rs = ServiceFactory.instance().create(project);
+        int rs = ServiceFactory.instance().createProject(project);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
-        rs = ServiceFactory.instance().createProjectUserRelation(user.getId(),project.getId());
         return project.getId();
     }
     private void checkUserHasEditPermission(String projectId,Parameter parameter){
@@ -521,7 +537,7 @@ public class ProjectController {
                                 section.add(table);
                             }
                         }
-                        String responseArg = in.getRequestHeaders();
+                        String responseArg = in.getResponseArgs();
                         if(org.apache.commons.lang3.StringUtils.isNotBlank(responseArg)){
                             List<RequestResponseArgs> responseArgs = JSON.parseObject(responseArg, new TypeReference<List<RequestResponseArgs>>(){});
                             if(responseArgs.size()>0) {
@@ -627,41 +643,41 @@ public class ProjectController {
         table.setSpacingBefore(10);
     }
 
-    private java.util.List<Module> getModulesByProjectId(Project project,String token) {
+    private List<Module> getModulesByProjectId(Project project,String token) {
 
         if (project == null || !Project.Status.VALID.equals(project.getStatus())) {
             return null;
         }
         boolean has = ServiceFactory.instance().checkUserHasProjectPermission(MemoryUtils.getUser(token).getId(),project.getId());
         AssertUtils.isTrue(has,"无访问权限");
-        java.util.List<Module> modules = ServiceFactory.instance().getModules(project.getId());
-        java.util.List<InterfaceFolder> folders = null;
+        List<Module> modules = ServiceFactory.instance().getModules(project.getId());
+        List<InterfaceFolder> folders = null;
         if (modules.size() > 0) {
             // 获取该项目下所有文件夹
             folders = ServiceFactory.instance().getFoldersByProjectId(project.getId());
-            Map<String, java.util.List<InterfaceFolder>> folderMap = ResultUtils.listToMap(folders, new Handler<InterfaceFolder>() {
+            Map<String, List<InterfaceFolder>> folderMap = ResultUtils.listToMap(folders, new Handler<InterfaceFolder>() {
                 @Override
                 public String key(InterfaceFolder item) {
                     return item.getModuleId();
                 }
             });
             for (Module module : modules) {
-                java.util.List<InterfaceFolder> temp = folderMap.get(module.getId());
+                List<InterfaceFolder> temp = folderMap.get(module.getId());
                 if (temp != null) {
                     module.setFolders(temp);
                 }
             }
 
             // 获取该项目下所有接口
-            java.util.List<Interface> interfaces = ServiceFactory.instance().getInterfacesByProjectId(project.getId());
-            Map<String, java.util.List<Interface>> interMap = ResultUtils.listToMap(interfaces, new Handler<Interface>() {
+            List<Interface> interfaces = ServiceFactory.instance().getInterfacesByProjectId(project.getId());
+            Map<String, List<Interface>> interMap = ResultUtils.listToMap(interfaces, new Handler<Interface>() {
                 @Override
                 public String key(Interface item) {
                     return item.getFolderId();
                 }
             });
             for (InterfaceFolder folder : folders) {
-                java.util.List<Interface> temp = interMap.get(folder.getId());
+                List<Interface> temp = interMap.get(folder.getId());
                 if (temp != null) {
                     folder.setChildren(temp);
                 }

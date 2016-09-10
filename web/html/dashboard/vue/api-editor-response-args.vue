@@ -26,14 +26,18 @@
                     <option value="file">file</option>
                 </select>
             </li>
-            <li class="col-sm-2 input"><input type="text" class="text" v-model="item.description" value="{{item.description}}"></li>
+            <li class="col-sm-4 input"><input type="text" class="text" v-model="item.description" value="{{item.description}}"></li>
         </ul>
         </template>
         <template v-else>
-        <ul class="cb api-row-{{responseArgs.index}}">
-            <li class="col-sm-2 name">{{item.name}}</li>
-            <li class="col-sm-1">{{item.require || 'false'}}</li>
-            <li class="col-sm-9">{{item.description}}</li>
+        <ul class="cb">
+            <li class="col-sm-2 name">
+                <template v-if="item.type &&( item.type=='object' || item.type.indexOf('array')!=-1)">
+                    <i class="iconfont icon-my open" v-on:click="apiArgsColumnFold($event)"></i>
+                </template>
+                {{item.name}} </li>
+            <li class="col-sm-1"> {{item.require || 'false'}} </li>
+            <li class="col-sm-9"> {{item.description}} </li>
         </ul>
         </template>
 
@@ -50,6 +54,17 @@
             },
             insertResponseArgsRow:function(data){
                 data.children.push({require:'true',children:[],type:"string"})
+            },
+            apiArgsColumnFold:function(e){
+                var $dom = $(e.target);
+                var $next =$(e.target).parent().parent().next();
+                if($dom.hasClass('open')){
+                    $dom.removeClass('open');
+                    $next.slideUp();
+                }else{
+                    $dom.addClass('open');
+                    $next.slideDown();
+                }
             }
         }
     }

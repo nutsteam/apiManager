@@ -34,12 +34,16 @@
         </ul>
         </template>
         <template v-else>
-            <ul class="cb  api-row-{{requestArgs.index}}">
-                <li class="col-sm-2 name">{{item.name}}</li>
-                <li class="col-sm-1">{{item.require || 'false'}}</li>
-                <li class="col-sm-1">{{item.type}}</li>
-                <li class="col-sm-6">{{item.description}}</li>
-                <li class="col-sm-2">{{item.defaultValue}}</li>
+            <ul class="cb">
+                <li class="col-sm-2 name">
+                    <template v-if="item.type &&( item.type=='object' || item.type.indexOf('array')!=-1)">
+                        <i class="iconfont icon-my open" v-on:click="apiArgsColumnFold($event)"></i>
+                    </template>
+                    {{item.name}} </li>
+                <li class="col-sm-1"> {{item.require || 'false'}} </li>
+                <li class="col-sm-1"> {{item.type}} </li>
+                <li class="col-sm-6"> {{item.description}} </li>
+                <li class="col-sm-2"> {{item.defaultValue}} </li>
             </ul>
         </template>
         <div class="sub">
@@ -56,7 +60,18 @@
             insertRequestArgsRow(dom,index){
                 //console.log(dom)
                 dom.children.index = index;
-                dom.children.push({require:'true',children:[]})
+                dom.children.push({require:'true',type:'string',children:[]})
+            },
+            apiArgsColumnFold:function(e){
+                var $dom = $(e.target);
+                var $next =$(e.target).parent().parent().next();
+                if($dom.hasClass('open')){
+                    $dom.removeClass('open');
+                    $next.slideUp();
+                }else{
+                    $dom.addClass('open');
+                    $next.slideDown();
+                }
             }
         }
     }

@@ -23,6 +23,8 @@ document.addEventListener('request', function (e) {
             var args=params.data;
             for(var name in params.data){
                 var value = args[name];
+                if(value == undefined)
+                    continue;
                 if(value instanceof Array){
                     value.forEach(function(item){
                         fd.append(name,item);

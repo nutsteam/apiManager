@@ -7,8 +7,14 @@ var commonsPlugin = new webpack.optimize.CommonsChunkPlugin('common.js', [
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 // var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var jquery=require('jquery');
-var plugins=[commonsPlugin,new webpack.HotModuleReplacementPlugin(),
-    //new  webpack.optimize.UglifyJsPlugin({compress:{warnings:false}})
+var plugins=[commonsPlugin,
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: 'production'
+      }
+    }),
+    new  webpack.optimize.UglifyJsPlugin({compress:{warnings:false}})
 ];
 var fs =require('fs');
 var files = fs.readdirSync('./html');
@@ -33,10 +39,8 @@ files.forEach(function(item){
             }));
         }
     });
-
-
 //console.log("plugins.length:"+plugins.length)
-var isDev=true;
+var isDev=false;
 module.exports = {
     entry:{
         'dashboard':'./html/dashboard/app/index.js',
@@ -50,7 +54,7 @@ module.exports = {
         path: path.join(__dirname, 'built'),
         publicPath: '/built/',
         filename: '[name].js',
-        chunkFilename: '[id].js',
+        chunkFilename: '[id].[hash].js',
     },
     resolve:{
         extensions:['', '.js', 'css', 'vue']

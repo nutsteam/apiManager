@@ -15,7 +15,6 @@ public class Project {
     private String id;
     private String name;
     private String description;
-    private String teamId;
     private String userId;
     @Ignore
     private String userName;
@@ -53,14 +52,6 @@ public class Project {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getTeamId() {
-        return teamId;
-    }
-
-    public void setTeamId(String teamId) {
-        this.teamId = teamId;
     }
 
     public Date getCreateTime() {

@@ -60,10 +60,11 @@ export default {
         }
     },
     '/project/:id':{
-        component:function(resolve){
-            $('body').addClass('loading');
-            require(['../vue/api.vue'],resolve);
-        }
+        component:
+            function(resolve){
+                $('body').addClass('loading');
+                require(['../vue/api.vue'],resolve);
+            }
     }
     
 }
