@@ -91,6 +91,10 @@
     function load(self){
         utils.get('/project/list.json',{},function(rs){
             data.projects=rs.data.projects;
+        },null,function(rs){
+            if (location.href.indexOf('/project/demo') != -1)
+                return true;
+            return false;
         });
     }
     export default{

@@ -63,14 +63,15 @@ var utils = {
         params.url = url;
         $._ajax_(params);
     },
-    get: function (url, params, success, complete) {
+    get: function (url, params, success, complete,expired) {
         this.ajax({
             url: url,
             data: params,
             type: 'get',
             dataType: 'json',
             success: success,
-            complete: complete
+            complete: complete,
+            expired:expired
         });
     },
     post: function (url, params, success, error) {
@@ -184,15 +185,20 @@ $._ajax_ = function(params){
             complete.apply(this, arguments);
         }
     };
+    var expired = params.expired;
     params.success = function (rs) {
         if (rs.code == 0) {
             if (success) {
                 success.apply(this, arguments);
             }
         } else if (rs.code == -2) {
-            if (location.href.indexOf('/project/demo') != -1)
-                return false;
-
+            if(expired && expired(rs)){
+                return true;
+            }
+            if (location.href.indexOf('/project/demo') != -1){
+                toastr.error('请登陆后尝试');
+                return true;
+            }
             localStorage.setItem("token", "");
             localStorage.setItem("user", "");
             location.href = utils.config.ctx + '/login.html?status=expired&refer=' + encodeURIComponent(location.href);

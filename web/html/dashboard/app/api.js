@@ -133,11 +133,19 @@ export default{
             this.$parent.showProject = true;
             $('.dashboard').addClass('max');
             transition.next();
-
+            if (this.editing) {
+                if (!window.editor && this.showGuide) {
+                    var desc = this.currentModule.description;
+                    initEditor(desc, this);
+                }
+            } else {
+                renderViewBox(this.currentModule.description);
+            }
         },
         deactivate: function () {
             this.$parent.showProject = false;
             $('.dashboard').removeClass('max')
+            window.editor = null;
         }
     },
     computed: {
@@ -555,6 +563,7 @@ export default{
             this.currentModule = item;
             this.currentApi = {};
             this.showGuide = true;
+            renderViewBox(item.description);
         },
         moduleSave: function () {
             this.$validate(true);
@@ -991,7 +1000,7 @@ function getRequestHeaders() {
 }
 
 function initEditor(value) {
-    var width = 940;
+    var width = 904;
     if (document.documentElement.clientWidth >= 1800) {
         width = 1160;
     }
