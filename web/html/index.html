@@ -1,0 +1,128 @@
+<!--[if lt IE 9]> <script>location.href='unsupport.html?refer='+encodeURIComponent(location.href)</script> <![endif]-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>小幺鸡，简单好用的接口文档管理工具</title>
+    <!-- build:stylecss assets/css/style.css -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- endbuild -->
+    <link rel="alternate" hreflang="zh-hans" href="//www.xiaoyaoji.com.cn/" />
+    <meta name="keywords" content="小幺鸡,接口工具,接口平台,api,api管理,api测试,接口文档,接口演示,rest,restful,rest api,接口测试,postman,文档管理,websocket在线测试" />
+    <meta name="description" content="简单好用的在线文档管理工具，支持restapi、websocket在线测试,支持markdown编辑器,提升开发效率降低接口错误率。" />
+    <link rel="shortcut icon" type="image/x-ico" href="./favicon.ico">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <!--<script src="assets/js/browser.js"></script>-->
+</head>
+<body id="app">
+<header>
+    <div class="top">
+        <div class="cb mc">
+            <template v-if="user.id">
+                <div class="user-action logged fr">
+                    <a class="item" href="dashboard">进入工作台</a>
+                    <a class="item" v-on:click="logout">退出</a>
+                </div>
+            </template>
+            <template v-else>
+                <div class="user-action fr">
+                    <a class="item" href="login.html">登陆</a>
+                    <a class="item" href="register.html">注册</a>
+                    <a class="item thirdly" v-on:click="qq"><i class="iconfont icon-qq"></i></a>
+                    <a class="item thirdly" v-on:click="weibo"><i class="iconfont icon-weibo"></i></a>
+                    <a class="item thirdly" v-on:click="github"><i class="iconfont icon-github"></i></a>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    <div class="header mc cb">
+        <a href="index.html" class="logo fl"><img alt="小幺鸡" src="/built/cc7ad20ab73b9cf7a1377320ec8a6ab1.png"></a>
+        <nav class="fl">
+            <ul class="cb">
+                <li><a href="index.html">主页</a> </li>
+                <li><a href="dashboard/#!/project/demo">在线演示</a> </li>
+                <li><a href="http://git.oschina.net/zhoujingjie/apiManager" rel="nofollow" target="_blank">码云</a></li>
+                <li><a href="help.html">在线帮助</a> </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<section class="m-sec1">
+    <div class="m-sec1-desc ta-c">小幺鸡，简单好用的在线接口文档管理工具</div>
+    <div class="ta-c m-sec1-go"><a href="dashboard">立即使用</a></div>
+</section>
+<section class="m-sec2 cb mc">
+    <div class="fl">
+        <h3>在线接口测试</h3>
+        <p class="m-s-desc">在线测试，方便前后端开发，降低错误率。<br/>支持：xml、json、txt、binary、websocket、thrift、protobuff</p>
+    </div>
+    <div class="fl">
+        <h3>可视化编辑与分享</h3>
+        <p class="m-s-desc">可视化编辑器，完善的分享机制，多功能导出。让接口撰写变得十分简单。</p>
+    </div>
+    <div class="fl">
+        <h3>安全保障</h3>
+        <p class="m-s-desc">基于阿里云服务器，提供安全备份系统。多家公司使用，安全证明。</p>
+    </div>
+    <div class="fl">
+        <h3>代码开源</h3>
+        <p class="m-s-desc">可离线安装到内网服务器仅供公司内部使用。</p>
+    </div>
+</section>
+<section class="m-sec3 ta-c">
+    <div class="about-desc">
+        <p>如果你喜欢下面这些，那你一定会喜欢上“小幺鸡”</p>
+        <div class="about-list mc">
+            <p><i class="iconfont icon-yes"></i>接口在线测试，降低接口错误率</p>
+            <p><i class="iconfont icon-yes"></i>开放源码，支持任意修改</p>
+            <p><i class="iconfont icon-yes"></i>简洁明了的API</p>
+            <p><i class="iconfont icon-yes"></i>简单的维护更新</p>
+            <p><i class="iconfont icon-yes"></i>多种导出满足不同需求</p>
+            <p class="m-sec1-go"><a href="dashboard">立即使用</a></p>
+        </div>
+    </div>
+</section>
+<section class="m-sec-contact">
+    <ul class="cb mc">
+        <li>
+            <p><i class="iconfont icon-qqqun"></i></p>
+            <p>群:<a href="http://shang.qq.com/wpa/qunwpa?idkey=7e99bd0ada4c6586d8e4e609b28d997f86e07336124fca08ac7b02fbe9d07130">580084426</a> </p>
+        </li>
+        <li>
+            <p><i class="iconfont icon-weibo"></i></p>
+            <p><a href="http://weibo.com/2727734575" target="_blank">iAm凉粉</a> </p>
+        </li>
+        <li>
+            <p><i class="iconfont icon-email"></i></p>
+            <p><a href="mailto:cn_bboy@163.com">cn_bboy@163.com</a> </p>
+        </li>
+
+    </ul>
+</section>
+<footer class="ta-c">
+    <div>
+        <a href="index.html">首页</a>
+        <a href="http://git.oschina.net/zhoujingjie/apiManager">码云</a>
+        <a href="help.html">在线帮助</a>
+    </div>
+    小幺鸡@2016<a href="http://www.miitbeian.gov.cn/" target="_blank">蜀ICP备16012366号</a>
+    <div style="display: none">
+    <!-- build:thirdparty built/thirdparty.js -->
+    <script src="assets/jquery/jquery.min.js"></script>
+    <script src="assets/toastr/toastr.min.js"></script>
+    <script src="assets/pace/pace.min.js"></script>
+    <!-- endbuild -->
+    <script src="assets/js/config.js"></script>
+    <!-- build:common built/common.js -->
+    <script src="../built/common.js"></script>
+    <!-- endbuild -->
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260226777&web_id=1260226777" language="JavaScript"></script>
+</div>
+    <!-- build:index built/index.js -->
+    <script src="../built/index.js"></script>
+    <!-- endbuild -->
+</footer>
+</body>
+</html>

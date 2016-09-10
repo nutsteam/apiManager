@@ -1,0 +1,46 @@
+<ul class="pagination" style="visibility: visible;">
+
+    <li class="prev <%=page==1 ? 'disabled' : ''%>"><a href="javascript:;" title="First"><i class="fa fa-angle-double-left"></i></a></li>
+    <li class="prev <%=page==1 ? 'disabled' : ''%>"><a href="javascript:;" title="Prev"><i class="fa fa-angle-left"></i></a></li>
+
+    <%if(page == 1){%>
+    <li class="active"><a href="javascript:;">1</a></li>
+        <%for(var i=2;i<=pages;i++){%>
+            <%if(i<=5){%>
+    <li><a href="javascript:;"><%=i%></a></li>
+            <%}%>
+        <%}%>
+    <%}else if(page == 2){%>
+    <li ><a href="javascript:;">1</a></li>
+    <li class="active"><a href="javascript:;">2</a></li>
+    <%for(var i=3;i<=pages;i++){%>
+    <%if(i<=5){%>
+    <li><a href="javascript:;"><%=i%></a></li>
+    <%}%>
+    <%}%>
+    <%}else if(page == pages){%>
+    <%for(var i=pages - 4;i<pages;i++){%>
+        <%if(i>0){%>
+            <li ><a href="javascript:;"><%=i%></a></li>
+        <%}%>
+    <%}%>
+    <li class="active"><a href="javascript:;"><%=pages%></a></li>
+    <%}else if(page == pages - 1){%>
+
+    <%for(var i=pages - 4;i<pages-1;i++){%>
+    <%if(i>0){%>
+    <li ><a href="javascript:;"><%=i%></a></li>
+    <%}%>
+    <%}%>
+    <li class="active"><a href="javascript:;"><%=pages - 1%></a></li>
+    <li><a href="javascript:;"><%=pages%></a></li>
+    <%}else{%>
+    <li ><a href="javascript:;"><%=page - 2%></a></li>
+    <li ><a href="javascript:;"><%=page - 1%></a></li>
+    <li class="active"><a href="javascript:;"><%=page%></a></li>
+    <li><a href="javascript:;"><%=page +1%></a></li>
+    <li><a href="javascript:;"><%=page + 2%></a></li>
+    <%}%>
+    <li class="next <%=page==pages || pages==0 ? 'disabled' : ''%>"><a href="javascript:;" title="Next"><i class="fa fa-angle-right"></i></a></li>
+    <li class="next <%=page==pages || pages==0 ? 'disabled' : ''%>"><a href="javascript:;" title="Last"><i class="fa fa-angle-double-right"></i></a></li>
+</ul>
