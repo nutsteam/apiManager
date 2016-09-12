@@ -563,6 +563,7 @@ export default{
             this.currentModule = item;
             this.currentApi = {};
             this.showGuide = true;
+            initEditor(item.description);
             renderViewBox(item.description);
         },
         moduleSave: function () {
@@ -915,7 +916,7 @@ function xhrComplete(self, e) {
             return true;
         }
 
-        if (e.detail.status == XMLHttpRequest.UNSENT) {
+        if (e.detail.status == 0) {
             if (self.extVer) {
                 error = 'URL请求失败';
             } else {

@@ -27,6 +27,7 @@ gulp.task('html',['clean'],function(){
 					stylecss: [rev()],
 					login: [rev()],
 					findpassword: [rev()],
+					dashboard: [rev()],
 					thirdparty:[rev()]
 				}))
 				.pipe(gulp.dest(targetPath))
@@ -45,6 +46,7 @@ gulp.task('html',['clean'],function(){
 					stylecss: [rev()],
 					login: [rev()],
 					findpassword: [rev()],
+					dashboard: [rev()],
 					thirdparty:[rev()]
 				}))
 				.pipe(gulp.dest(targetPath+'/dashboard'))

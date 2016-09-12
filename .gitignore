@@ -3,3 +3,4 @@ api/.idea/
 *.iml
 releases
 web/built
+web/html/.idea/
