@@ -56,7 +56,7 @@
 
 
 ## 直接使用
-   * 下载附件中的最新版本的zip包
+   * 下载https://git.oschina.net/zhoujingjie/apiManager/tree/master/releases 中的最新版本的zip包(之前是放在附件中，附件上传速度太慢改为这了)
    * 包里面文件夹有
         * api: 接口
         * html: 静态页面
