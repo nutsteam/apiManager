@@ -207,40 +207,29 @@ $._ajax_ = function(params){
         }
     };
     $.ajax(params);
-};/*
-$._ajax_ = $.ajax;
-$.ajax = function (params) {
-    //Pace.restart();
-    var complete = params.complete;
-    var success = params.success;
-    params.complete = function (xhr, result) {
-        if (result == 'error') {
-            if (xhr.readyState == XMLHttpRequest.UNSENT) {
-                toastr.error('网络错误');
-            } else {
-                console.log(arguments)
-            }
-        }
-        if (complete) {
-            complete.apply(this, arguments);
-        }
-    };
-    params.success = function (rs) {
-        if (rs.code == 0) {
-            if (success) {
-                success.apply(this, arguments);
-            }
-        } else if (rs.code == -2) {
-            if (location.href.indexOf('/project/demo') != -1)
-                return false;
+};
 
-            localStorage.setItem("token", "");
-            localStorage.setItem("user", "");
-            location.href = utils.config.ctx + '/login.html?status=expired&refer=' + encodeURIComponent(location.href);
-        } else {
-            toastr.error(rs.errorMsg);
-        }
-    };
-    $._ajax_(params);
-};*/
+//fix id bug start
+$.support.cors = true;
+if (Function.prototype.name === undefined && Object.defineProperty !== undefined) {
+    Object.defineProperty(Function.prototype, 'name', {
+        get: function() {
+            var funcNameRegex = /function\s([^(]{1,})\(/;
+            var results = (funcNameRegex).exec((this).toString());
+            return (results && results.length > 1) ? results[1].trim() : "";
+        },
+        set: function(value) {}
+    });
+}
+(function () {
+    function CustomEvent ( event, params ) {
+        params = params || { bubbles: false, cancelable: false, detail: undefined };
+        var evt = document.createEvent( 'CustomEvent' );
+        evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+        return evt;
+    }
+    CustomEvent.prototype = window.Event.prototype;
+    window.CustomEvent = CustomEvent;
+})();
+//fix id bug end
 export default utils;

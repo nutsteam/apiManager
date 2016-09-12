@@ -7,7 +7,8 @@
     "48":"icon_48.png",
     "128":"icon_128.png"
   },
-  "version": "1.4",
+  "update_url":"http://clients2.google.com/service/update2/crx",
+  "version": "1.4.1",
   "homepage_url":"http://www.xiaoyaoji.com.cn",
   "browser_action": {
     "default_icon": "icon_128.png",
@@ -16,12 +17,12 @@
   },
   "content_scripts":[
   	 {
-      "matches": ["http://*.xiaoyaoji.com.cn/*","*://*/*","*://xiaoyaoji.com.cn/*"],
+      "matches": ["http://*.xiaoyaoji.com.cn/*","*://*/*","*://xiaoyaoji.com.cn/*","*://xiaoyaoji.cn/*","*://*.xiaoyaoji.cn/*"],
       "js": ["script/jquery.min.js","script/script.js"],
       "run_at":"document_end"
     },
     {
-      "matches":["*://*.xiaoyaoji.com.cn/*","*://xiaoyaoji.com.cn/*","http://localhost/*"],
+      "matches":["*://*.xiaoyaoji.com.cn/*","*://xiaoyaoji.com.cn/*","*://xiaoyaoji.cn/*","*://*.xiaoyaoji.cn/*","http://localhost/*"],
       "js":["script/site.js"],
       "run_at":"document_end"
     }

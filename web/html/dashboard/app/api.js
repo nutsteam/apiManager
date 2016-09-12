@@ -119,6 +119,12 @@ export default{
                         return document.querySelector('#api-result-content');
                     }
                 });
+                var headerClipboard = new Clipboard('#api-result-header-copy', {
+                    target: function () {
+                        return document.querySelector('#api-result-headers');
+                    }
+                });
+
                 clipboard.on('success', function (e) {
                     //console.log(e);
                 });
@@ -948,8 +954,14 @@ function Result() {
             gdata.currentApi.result = data;
         },
         XML(data){
+            if(!window.XMLDocument){
+                toastr.error('该浏览器不支持XMLDocument');
+                return false;
+            }
             if (data instanceof XMLDocument) {
                 data = new XMLSerializer().serializeToString(data)
+            }else{
+                data = data.xml;
             }
             gdata.currentApi.result = utils.escape(data);
         },
@@ -977,13 +989,13 @@ function getRequestArgs() {
                 args[name].push(temp);
             }
             if (type == 'file') {
-                args[name].push(this.files[0])
+                args[name].push(this.files[0] || null)
             } else {
                 args[name].push(this.value);
             }
         } else {
             if (type == 'file') {
-                args[name] = this.files[0];
+                args[name] = this.files[0] || null;
             } else {
                 args[name] = this.value;
             }

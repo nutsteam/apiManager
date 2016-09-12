@@ -620,24 +620,26 @@
                                         <a class="tab fr">Time: {{currentApi.resultRunTime}} ms</a>
                                         <a class="tab fr">StatusCode: {{currentApi.resultStatusCode}}</a>
                                     </div>
-                                    <div id="api-result" v-show="currentApi.result">
-                                        <i v-show="!!currentApi.result" id="api-result-copy" class="iconfont icon-copy"></i>
-                                        <pre v-show="flag.resultActive=='content'" id="api-result-content">{{{currentApi.result}}}</pre>
-                                        <div v-show="flag.resultActive=='headers'" id="api-result-headers">
-                                            <div class="api-result-headers-list" v-show="currentApi.resultHeaders">
-                                                {{{currentApi.resultHeaders | html}}}
-                                            </div>
-                                            <div v-else class="api-result-headers-list">
-                                                <div v-if="extVer>=1.4">
-                                                    No header for you
+                                    <div v-show="currentApi.result" class="api-result-box">
+                                        <i v-show="!!currentApi.result && (flag.resultActive=='content')" id="api-result-copy" class="iconfont icon-copy"></i>
+                                        <i v-show="!!currentApi.result && (flag.resultActive=='headers')" id="api-result-header-copy" class="iconfont icon-copy"></i>
+                                        <div id="api-result">
+                                            <pre v-show="flag.resultActive=='content'" id="api-result-content">{{{currentApi.result}}}</pre>
+                                            <div v-show="flag.resultActive=='headers'" id="api-result-headers">
+                                                <div class="api-result-headers-list" v-show="currentApi.resultHeaders">
+                                                    {{{currentApi.resultHeaders | html}}}
                                                 </div>
-                                                <div v-else>
-                                                    请下载或升级浏览器插件。
+                                                <div v-else class="api-result-headers-list">
+                                                    <div v-if="extVer>=1.4">
+                                                        No header for you
+                                                    </div>
+                                                    <div v-else>
+                                                        请下载或升级浏览器插件。
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="ta-c api-plugin-tip" v-if="!extVer">
                                         <i class="iconfont icon-chrome"></i><br/>
                                         <p>由于浏览器有跨域限制，如果您的服务器不支持CORS协议，需要安装我们开发的Chrome插件“小幺鸡”</p>
