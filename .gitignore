@@ -1,6 +1,5 @@
 web/node_modules
 api/.idea/
 *.iml
-releases
 web/built
 web/html/.idea/
