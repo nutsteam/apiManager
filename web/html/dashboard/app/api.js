@@ -956,7 +956,7 @@ function Result() {
         XML(data){
             if(!window.XMLDocument){
                 toastr.error('该浏览器不支持XMLDocument');
-                return false;
+                return;
             }
             if (data instanceof XMLDocument) {
                 data = new XMLSerializer().serializeToString(data)
