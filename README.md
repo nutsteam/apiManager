@@ -60,7 +60,7 @@
    * 包里面文件夹有
         * api: 接口
         * html: 静态页面
-### 需要修改的地
+### 需要修改的地方
 #### API
     * 导入api/sql/xiaoyaoji-MMdd.sql 到mysql中。mysql需要5.5以上
     * 修改api/WEB-INF/classes/config.properties中的数据库配置信息。
