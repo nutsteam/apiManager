@@ -4,10 +4,10 @@
         <ul class="cb">
             <li class="col-sm-1">
                 <i class="iconfont icon-close" v-on:click="removeRequestArgsRow(item,requestArgs)"></i>
-                <i class="iconfont icon-tianjia" v-show="item.type && (item.type=='object' || item.type.indexOf('array')!=-1) " v-on:click="insertRequestArgsRow(item,requestArgs.index+1)"></i>
+                <i class="iconfont icon-tianjia" v-show="item.type && ( item.type.indexOf('object')!=-1) " v-on:click="insertRequestArgsRow(item,requestArgs.index+1)"></i>
             </li>
             <li class="col-sm-3 input">
-                <input type="text" class="text name" v-model="item.name" value="{{item.name}}">
+                <input type="text" list="requestlist" class="text name" v-model="item.name" value="{{item.name}}">
             </li>
             <li class="col-sm-2"><select v-model="item.require">
                 <option value="true">true</option>
@@ -36,7 +36,7 @@
         <template v-else>
             <ul class="cb">
                 <li class="col-sm-2 name">
-                    <template v-if="item.type &&( item.type=='object' || item.type.indexOf('array')!=-1)">
+                    <template v-if="item.type &&(item.type.indexOf('object')!=-1)">
                         <i class="iconfont icon-my open" v-on:click="apiArgsColumnFold($event)"></i>
                     </template>
                     {{item.name}} </li>

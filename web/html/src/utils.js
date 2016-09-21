@@ -3,7 +3,9 @@ var utils = {
     config: {
         root: window.root,
         ctx: window.ctx,
-        vue:window._vue_
+        vue:false,
+        websocket:window._xyj_.ws,
+        version:window._xyj_.version
     },
     push: function (data, item) {
         if (data === undefined) {
@@ -93,6 +95,8 @@ var utils = {
         })
     },
     escape: function (str) {
+        if(!str)
+            return '';
         return str.replace(/\</g, '&lt;')
             .replace(/\>/g, '&gt;')
             .replace(/\"/g, "&quot;")
@@ -175,7 +179,7 @@ $._ajax_ = function(params){
     var success = params.success;
     params.complete = function (xhr, result) {
         if (result == 'error') {
-            if (xhr.readyState == XMLHttpRequest.UNSENT) {
+            if (xhr.readyState == 0) {
                 toastr.error('网络错误');
             } else {
                 console.log(arguments)
@@ -232,4 +236,30 @@ if (Function.prototype.name === undefined && Object.defineProperty !== undefined
     window.CustomEvent = CustomEvent;
 })();
 //fix id bug end
+
+
+//扩展
+if (!Array.prototype.findIndex) {
+    Array.prototype.findIndex = function(predicate) {
+        if (this === null) {
+            throw new TypeError('Array.prototype.findIndex called on null or undefined');
+        }
+        if (typeof predicate !== 'function') {
+            throw new TypeError('predicate must be a function');
+        }
+        var list = Object(this);
+        var length = list.length >>> 0;
+        var thisArg = arguments[1];
+        var value;
+
+        for (var i = 0; i < length; i++) {
+            value = list[i];
+            if (predicate.call(thisArg, value, i, list)) {
+                return i;
+            }
+        }
+        return -1;
+    };
+}
+
 export default utils;

@@ -43,7 +43,7 @@ gulp.task('html',['clean'],function(){
 					common: [rev()],
 					forget: [rev()],
 					register: [rev()],
-					stylecss: [rev()],
+					stylecss: [rev],
 					login: [rev()],
 					findpassword: [rev()],
 					dashboard: [rev()],
@@ -52,8 +52,6 @@ gulp.task('html',['clean'],function(){
 				.pipe(gulp.dest(targetPath+'/dashboard'))
 		}
 	});
-	
-
 	return  gulp.src('./html/favicon.ico')
 		.pipe(gulp.dest(targetPath));
 });

@@ -15,6 +15,12 @@ public class ProjectLog {
     private String userId;
     private Date createTime;
     private String log;
+    private String action;
+    private String projectId;
+
+    public ProjectLog() {
+    }
+
 
     public String getId() {
         return id;
@@ -46,5 +52,21 @@ public class ProjectLog {
 
     public void setLog(String log) {
         this.log = log;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
     }
 }

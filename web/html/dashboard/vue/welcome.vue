@@ -29,7 +29,7 @@
         </li>
         <li class="fl">
             <div class="cb">
-                <a target="_blank" href="/help.html">
+                <a target="_blank" href="http://www.xiaoyaoji.com.cn/help.html">
                     <i class="iconfont icon-feedback fl"></i>
                     <div class="fl db-wel-item">
                         <h3>反馈</h3>

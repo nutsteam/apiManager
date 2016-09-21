@@ -235,4 +235,18 @@ public class ServiceFactory {
     public int createProject(Project project) {
         return DataFactory.instance().createProject(project);
     }
+
+    public String getProjectName(String projectId) {
+        return DataFactory.instance().getProjectName(projectId);
+    }
+    public String getInterfaceFolderName(String folderId) {
+        return DataFactory.instance().getInterfaceFolderName(folderId);
+    }
+    public String getModuleName(String moduleId) {
+        return DataFactory.instance().getModuleName(moduleId);
+    }
+    public String getInterfaceName(String interfaceId) {
+        return DataFactory.instance().getInterfaceName(interfaceId);
+    }
+
 }

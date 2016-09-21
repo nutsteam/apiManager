@@ -21,6 +21,7 @@ public class Project {
     private Date createTime;
     private String status;
     private String permission;
+    private String environments;
     public interface Status{
         String VALID="VALID";
         String INVALID="INVALID";
@@ -30,6 +31,32 @@ public class Project {
         String PUBLIC="PUBLIC";
         String PRIVATE="PRIVATE";
     }
+    public interface Action{
+        String CREATE_PROJECT="project.create";
+        String UPDATE_PROJECT="project.update";
+        String DELETE_PROJECT="project.delete";
+        String TRANSFER_PROJECT="project.transfer";
+        String EXPORT_PROJECT="project.export";
+
+        String CREATE_FOLDER="folder.create";
+        String UPDATE_FOLDER="folder.update";
+        String DELETE_FOLDER="folder.delete";
+        String MOVE_FOLDER="folder.move";
+        String COPY_FOLDER="folder.copy";
+
+
+        String MOVE_INTERFACE="interface.move";
+        String COPY_INTERFACE="interface.copy";
+        String CREATE_INTERFACE="interface.create";
+        String UPDATE_INTERFACE="interface.update";
+        String DELETE_INTERFACE="interface.delete";
+
+
+        String CREATE_MODULE="module.create";
+        String UPDATE_MODULE="module.update";
+        String DELETE_MODULE="module.delete";
+    }
+
     public String getId() {
         return id;
     }
@@ -92,5 +119,13 @@ public class Project {
 
     public void setPermission(String permission) {
         this.permission = permission;
+    }
+
+    public String getEnvironments() {
+        return environments;
+    }
+
+    public void setEnvironments(String environments) {
+        this.environments = environments;
     }
 }

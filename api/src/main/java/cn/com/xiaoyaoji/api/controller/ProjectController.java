@@ -1,11 +1,13 @@
 package cn.com.xiaoyaoji.api.controller;
 
 import cn.com.xiaoyaoji.api.annotations.Ignore;
+import cn.com.xiaoyaoji.api.asynctask.AsyncTaskBus;
 import cn.com.xiaoyaoji.api.data.bean.*;
 import cn.com.xiaoyaoji.api.ex.Handler;
 import cn.com.xiaoyaoji.api.ex.Message;
 import cn.com.xiaoyaoji.api.ex._HashMap;
-import cn.com.xiaoyaoji.api.message.MessageBus;
+import cn.com.xiaoyaoji.api.asynctask.log.Log;
+import cn.com.xiaoyaoji.api.asynctask.message.MessageBus;
 import cn.com.xiaoyaoji.api.service.ServiceFactory;
 import cn.com.xiaoyaoji.api.utils.*;
 import cn.com.xiaoyaoji.api.utils.StringUtils;
@@ -105,7 +107,8 @@ public class ProjectController {
                 }
             }
         } else {
-            Module module = createDefaultModule(project.getId());
+            String token = parameter.getParamString().get("token");
+            Module module = createDefaultModule(token,project.getId());
             modules = new ArrayList<>();
             modules.add(module);
         }
@@ -126,7 +129,7 @@ public class ProjectController {
 
 
     //创建默认模块
-    private Module createDefaultModule(String projectId) {
+    private Module createDefaultModule(String token,String projectId) {
         Module module = new Module();
         module.setLastUpdateTime(new Date());
         module.setCreateTime(new Date());
@@ -135,14 +138,15 @@ public class ProjectController {
         module.setName("默认模块");
         module.setHost("");
         module.setDevHost("");
-        module.setDescription("### 使用说明");
+        module.setDescription("");
         int rs = ServiceFactory.instance().create(module);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
-        module.addInterfaceFolder(createDefaultFolder(module.getId(),projectId));
+        AsyncTaskBus.instance().push(Log.create(token, Log.CREATE_PROJECT,"默认模块",projectId));
+        module.addInterfaceFolder(createDefaultFolder(module.getId(),projectId,token));
         return module;
     }
     //创建默认分类
-    private InterfaceFolder createDefaultFolder(String moduleId,String projectId){
+    private InterfaceFolder createDefaultFolder(String moduleId,String projectId,String token){
         InterfaceFolder folder = new InterfaceFolder();
         folder.setId(StringUtils.id());
         folder.setName("默认分类");
@@ -151,6 +155,7 @@ public class ProjectController {
         folder.setProjectId(projectId);
         int rs = ServiceFactory.instance().create(folder);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
+        AsyncTaskBus.instance().push(Log.create(token, Log.CREATE_FOLDER,"默认分类",projectId));
         return folder;
     }
 
@@ -179,6 +184,7 @@ public class ProjectController {
         AssertUtils.notNull(project.getUserId(), "missing userId");
         int rs = ServiceFactory.instance().createProject(project);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
+        AsyncTaskBus.instance().push(Log.create(token, Log.CREATE_PROJECT,project.getName(),project.getId()));
         return project.getId();
     }
     private void checkUserHasEditPermission(String projectId,Parameter parameter){
@@ -199,18 +205,23 @@ public class ProjectController {
 
     @Post("{id}")
     public Object update(@RequestParam("id") String id, Parameter parameter) {
+        String token = parameter.getParamString().get("token");
         checkUserHasEditPermission(id,parameter);
         Project project = BeanUtils.convert(Project.class, parameter.getParamString());
         project.setId(id);
         project.setUserId(null);
         int rs = ServiceFactory.instance().update(project);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
+
+        String projectName = ServiceFactory.instance().getProjectName(id);
+        AsyncTaskBus.instance().push(Log.create(token, Log.UPDATE_PROJECT,projectName,id));
         return rs;
     }
 
     @Post("/{id}/transfer")
     public Object transfer(@RequestParam("id") String id, Parameter parameter) {
         String userId = parameter.getParamString().get("userId");
+        String token = parameter.getParamString().get("token");
         AssertUtils.isTrue(org.apache.commons.lang3.StringUtils.isNoneBlank(userId),"missing userId");
         checkUserHasOperatePermission(id,parameter);
         Project temp = new Project() ;
@@ -218,6 +229,8 @@ public class ProjectController {
         temp.setUserId(userId);
         int rs = ServiceFactory.instance().update(temp);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
+        String projectName = ServiceFactory.instance().getProjectName(id);
+        AsyncTaskBus.instance().push(Log.create(token, Log.TRANSFER_PROJECT,projectName,id));
         return rs;
     }
 
@@ -231,8 +244,11 @@ public class ProjectController {
     @Delete("{id}")
     public Object delete(@RequestParam("id") String id, Parameter parameter) {
         checkUserHasOperatePermission(id,parameter);
+        String token = parameter.getParamString().get("token");
         int rs = ServiceFactory.instance().deleteProject(id);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
+        String projectName = ServiceFactory.instance().getProjectName(id);
+        AsyncTaskBus.instance().push(Log.create(token, Log.DELETE_PROJECT,projectName,id));
         return rs;
     }
 
@@ -265,9 +281,12 @@ public class ProjectController {
         String folderId = parameter.getParamString().get("folderId");
         //
         String targetId = parameter.getParamString().get("targetId");
+        //
+        String projectId = parameter.getParamString().get("projectId");
         if(type.equals("api")){
             AssertUtils.notNull(folderId,"missing folderId");
         }
+        String token = parameter.getParamString().get("token");
         int rs = 0;
         if(action.equals("move")){
             //移动
@@ -276,17 +295,24 @@ public class ProjectController {
                 folder.setId(targetId);
                 folder.setModuleId(moduleId);
                 rs = ServiceFactory.instance().update(folder);
+                //String folderName = ServiceFactory.instance().getInterfaceFolderName(targetId);
+                //AsyncTaskBus.instance().push(Log.create(token, Log.MOVE_FOLDER,folderName,id));
             }else{
                 Interface in = new Interface();
                 in.setId(targetId);
                 in.setModuleId(moduleId);
                 in.setFolderId(folderId);
                 rs = ServiceFactory.instance().update(in);
+
+                //String interfaceName = ServiceFactory.instance().getInterfaceName(targetId);
+                //AsyncTaskBus.instance().push(Log.create(token, Log.MOVE_INTERFACE,interfaceName,id));
             }
         }else if(action.equals("copy")){
             //复制
             if(type.equals("folder")){
                 rs = ServiceFactory.instance().copyFolder(targetId,moduleId);
+                //String folderName = ServiceFactory.instance().getInterfaceFolderName(targetId);
+                //AsyncTaskBus.instance().push(Log.create(token, Log.COPY_FOLDER,folderName,id));
             }else{
                 //接口
                 Interface in = ServiceFactory.instance().getById(targetId,Interface.class);
@@ -296,7 +322,16 @@ public class ProjectController {
                 in.setModuleId(moduleId);
                 in.setCreateTime(new Date());
                 in.setLastUpdateTime(new Date());
+                if(in.getName()== null){
+                    in.setName("");
+                }
+                if(!in.getName().contains("COPY")) {
+                    in.setName(in.getName() + "_COPY");
+                }
                 rs = ServiceFactory.instance().create(in);
+                AsyncTaskBus.instance().push(projectId,Project.Action.COPY_INTERFACE,in.getId(),token,in.getFolderId());
+                //String interfaceName = ServiceFactory.instance().getInterfaceName(targetId);
+                //AsyncTaskBus.instance().push(Log.create(token, Log.COPY_INTERFACE,interfaceName,id));
             }
         }
         AssertUtils.isTrue(rs>0,"操作失败");
@@ -443,7 +478,6 @@ public class ProjectController {
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-
             PdfWriter writer = PdfWriter.getInstance(document, baos);
             writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);
             document.open();
@@ -569,6 +603,7 @@ public class ProjectController {
             }
             document.close();
             byte[] data = baos.toByteArray();
+            AsyncTaskBus.instance().push(Log.create(token, Log.EXPORT_PROJECT,project.getName(),project.getId()));
             return new PdfView(data,project.getName()+".pdf");
         } finally {
             //document.close();
@@ -643,41 +678,41 @@ public class ProjectController {
         table.setSpacingBefore(10);
     }
 
-    private List<Module> getModulesByProjectId(Project project,String token) {
+    private java.util.List<Module> getModulesByProjectId(Project project,String token) {
 
         if (project == null || !Project.Status.VALID.equals(project.getStatus())) {
             return null;
         }
         boolean has = ServiceFactory.instance().checkUserHasProjectPermission(MemoryUtils.getUser(token).getId(),project.getId());
         AssertUtils.isTrue(has,"无访问权限");
-        List<Module> modules = ServiceFactory.instance().getModules(project.getId());
-        List<InterfaceFolder> folders = null;
+        java.util.List<Module> modules = ServiceFactory.instance().getModules(project.getId());
+        java.util.List<InterfaceFolder> folders = null;
         if (modules.size() > 0) {
             // 获取该项目下所有文件夹
             folders = ServiceFactory.instance().getFoldersByProjectId(project.getId());
-            Map<String, List<InterfaceFolder>> folderMap = ResultUtils.listToMap(folders, new Handler<InterfaceFolder>() {
+            Map<String, java.util.List<InterfaceFolder>> folderMap = ResultUtils.listToMap(folders, new Handler<InterfaceFolder>() {
                 @Override
                 public String key(InterfaceFolder item) {
                     return item.getModuleId();
                 }
             });
             for (Module module : modules) {
-                List<InterfaceFolder> temp = folderMap.get(module.getId());
+                java.util.List<InterfaceFolder> temp = folderMap.get(module.getId());
                 if (temp != null) {
                     module.setFolders(temp);
                 }
             }
 
             // 获取该项目下所有接口
-            List<Interface> interfaces = ServiceFactory.instance().getInterfacesByProjectId(project.getId());
-            Map<String, List<Interface>> interMap = ResultUtils.listToMap(interfaces, new Handler<Interface>() {
+            java.util.List<Interface> interfaces = ServiceFactory.instance().getInterfacesByProjectId(project.getId());
+            Map<String, java.util.List<Interface>> interMap = ResultUtils.listToMap(interfaces, new Handler<Interface>() {
                 @Override
                 public String key(Interface item) {
                     return item.getFolderId();
                 }
             });
             for (InterfaceFolder folder : folders) {
-                List<Interface> temp = interMap.get(folder.getId());
+                java.util.List<Interface> temp = interMap.get(folder.getId());
                 if (temp != null) {
                     folder.setChildren(temp);
                 }

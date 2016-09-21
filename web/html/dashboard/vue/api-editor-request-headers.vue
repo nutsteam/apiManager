@@ -4,9 +4,8 @@
         <ul class="cb">
             <li class="col-sm-1">
                 <i class="iconfont icon-close" v-on:click="removeRequestHeadersRow(item,requestHeaders)"></i>
-                <!--<i class="iconfont icon-tianjia" v-on:click="insertRequestHeadersRow(item)"></i>-->
             </li>
-            <li class="col-sm-3 input"><input type="text" class="text name" v-model="item.name" value="{{item.name}}"></li>
+            <li class="col-sm-3 input"><input type="text" list="headerlist" class="text name" v-model="item.name" value="{{item.name}}"></li>
             <li class="col-sm-2"><select v-model="item.require">
                 <option value="true">true</option>
                 <option value="false">false</option>

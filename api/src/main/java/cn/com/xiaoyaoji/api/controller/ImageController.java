@@ -49,7 +49,7 @@ public class ImageController {
                 size = imageData.getSize();
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
-                String jsonstr = JSON.toJSONString(new _HashMap<>().add("state", "ERROR").add("msg", e.getMessage()));
+                String jsonstr = JSON.toJSONString(new _HashMap<>().add("state", "ERROR").add("message", e.getMessage()));
                 return new StringView(jsonstr);
             }
         }

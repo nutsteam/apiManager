@@ -4,8 +4,8 @@ import ResponseArgsVue from "../vue/api-editor-response-args.vue";
 import utils from "../../src/utils";
 import "../../assets/jsonformat/jsonFormater.js";
 import "../../assets/jsonformat/jsonFormater.css";
-
-
+//todo 浏览模式的环境切换样式
+//todo 编辑模式仿造postman
 RequestHeadersVue.name = 'request-headers-vue';
 RequestHeadersVue.props = ['requestHeaders', 'editing'];
 
@@ -21,10 +21,13 @@ var gdata = {
         folderModal: false,
         moduleModal: false,
         importModal: false,
+        envModal: false,
         loading: true,
         apiLoading: false,
         moveCopyModal: false,
-        moveCopyId: ''
+        moveCopyId: '' ,
+        showEnvs:false,
+        showEnvValues:false
     },
     ws: {
         instance: null,
@@ -43,21 +46,28 @@ var gdata = {
         }
     },
     flag: {
-        "import": null,
-        "actionId": null,
+        import: null,
+        actionId: null,
         move: null,
         moveCopyName: null,
         moveCopySelectModuleId: null,
         moveCopySelectFolderId: null,
         moveCopyId: null,
         resultActive: 'content',
-        env: 'dev'
+        tempEnv:{vars:[]}   ,
+        prefix:'$prefix$',
+        varname:'$变量名$',
+        tab:'body',
+        headers:["User-Agent","Accept","Accept-Charset","Accept-Encoding","Accept-Language","Accept-Datetime","Authorization","Cache-Control","Connection","Cookie","Content-Length","Content-MD5","Content-Type"],
+        requests:["name","id","password","email","createtime","datetime","createTime","dateTime","user","code","status","type","msg","message","time","image","file","token","accesstoken","access_token","province","city","area","description","remark","logo"],
+        responses:["name","id","password","email","createtime","datetime","createTime","dateTime","user","code","status","type","msg","message","error","errorMsg","test","fileAccess","image","require","token","accesstoken","accessToken","access_token","province","city","area","remark","description","logo"]
     },
     error: {
         projectNotExists: false,
         noModule: false,
         noInterface: false
     },
+    envs:null,
     importValue: null,
     editing: false,
     folderName: '',
@@ -68,10 +78,254 @@ var gdata = {
     currentApi: {result: null},
     currentModule: {},
     currentFolder: null,
+    currentEnv: null,
     id: '',
     extVer: false,
     collapse: false,
     results: {}
+};
+var page = {
+    listener:{
+        success:function (e) {
+            new Result().resolve(e.detail, gdata.currentApi.contentType);
+        },
+        error:  function (e) {
+            console.log("result.error");
+        },
+        complete:  function (e) {
+            xhrComplete(gdata, e);
+        }
+    },
+    updateInterface:function(id){
+        utils.get('/interface/'+id+'.json',{},function(rs){
+            gdata.modules.forEach(function(m){
+                m.folders.forEach(function(f){
+                    var index = -1;
+                    f.children.forEach(function(item,i){
+                        if(item.id == id){
+                            index = i;
+                            return true;
+                        }
+                    });
+                    if(index>=0){
+                        f.children.$set(index,rs.data.interface);
+                        return true;
+                    }
+                });
+            });
+        });
+    },
+    createInterface:function(newInterfaceId,folderId){
+        utils.get('/interface/'+newInterfaceId+'.json',{},function(rs){
+            gdata.modules.forEach(function(m){
+                let isBreak;
+                m.folders.forEach(function(item,i){
+                    if(item.id == folderId){
+                        item.children.push(rs.data.interface);
+                        isBreak = true;
+                        return true;
+                    }
+                });
+                if(isBreak){
+                    return true;
+                }
+            });
+        });
+    },
+    deleteInterface:function(id){
+        gdata.modules.forEach(function(m){
+            let isBreak;
+            m.folders.forEach(function(f){
+                var index = null;
+                f.children.forEach(function(item,i){
+                    if(item.id == id){
+                        index = item;
+                        isBreak=true;
+                        return true;
+                    }
+                });
+                if(index!=0){
+                    if(gdata.currentApi.id == index.id){
+                        gdata.showGuide = true;
+                    }
+                    f.children.$remove(index);
+                    return true;
+                }
+            });
+            if(isBreak){
+                return true;
+            }
+        });
+    },
+    createFolder:function(newfolderId,moduleId){
+        utils.get('/interfacefolder/'+newfolderId+'.json',{},function(rs){
+            gdata.modules.forEach(function(item){
+                if(item.id == moduleId){
+                    item.folders.push(rs.data.folder);
+                    return true;
+                }
+            });
+        });
+    },
+    updateFolder:function(id){
+        utils.get('/interfacefolder/'+id+'.json',{},function(rs){
+            gdata.modules.forEach(function(m){
+                let isBreak;
+                m.folders.forEach(function(item,index){
+                    if(item.id == id){
+                        rs.data.folder.children = item.children;
+                        let folder = $.extend(item,rs.data.folder);
+                        m.folders.$set(index,folder);
+                        isBreak= true;
+                        return true;
+                    }
+                });
+                if(isBreak){
+                    return true;
+                }
+            });
+        });
+    },
+    deleteFolder:function(folderId){
+        gdata.modules.forEach(function(m){
+            let folder = null;
+            m.folders.forEach(function(item,index){
+                if(item.id == folderId){
+                    folder = item;
+                    return true;
+                }
+            });
+            if(folder!=null){
+                if(gdata.currentApi.folderId == folder.id){
+                    gdata.showGuide = true;
+                }
+                m.folders.$remove(folder);
+                return true;
+            }
+        });
+    },
+    createModule:function(moduleId){
+        utils.get('/module/'+moduleId+'.json',{},function(rs){
+            gdata.modules.push(rs.data.module);
+        });
+
+    },
+    updateModule:function(moduleId){
+        utils.get('/module/'+moduleId+'.json',{},function(rs){
+            gdata.modules.forEach(function(item,index){
+                if(item.id == moduleId){
+                    rs.data.module.folders = item.folders;
+                    let module = $.extend(item,rs.data.module);
+                    gdata.modules.$set(index,module);
+                }
+            });
+        });
+    },
+    deleteModule:function(moduleId){
+        let module;
+        gdata.modules.forEach(function(item){
+            if(item.id == moduleId){
+                module = item;
+                return true;
+            }
+        });
+        if(module){
+            if(gdata.currentModule.id == module.id){
+                if (gdata.modules.length > 0) {
+                    gdata.currentModule = gdata.modules[0];
+                    gdata.showGuide = true;
+                    if(gdata.editing && window.editor){
+                        window.editor.setValue(gdata.currentModule.description || '');
+                    }else{
+                        renderViewBox(gdata.currentModule.description || '')
+                    }
+                } else {
+                    gdata.error.noModule = true;
+                }
+            }
+            gdata.modules.$remove(module);
+        }
+    },
+    task:{
+        instance:null,
+        num:0,
+        init:function(){
+            var ws = new WebSocket(utils.config.websocket+'/message');
+            this.instance = ws;
+            var self = this;
+            function reconnect(){
+                if(self.num<3){
+                    ws = new WebSocket(utils.config.websocket+'/message');
+                    console.log('reconnect');
+                }
+            }
+            ws.onopen = function (evt) {
+                ws.send("projectId:"+gdata.id);
+                setInterval(function(){
+                    if(ws.readyState == ws.OPEN){
+                        ws.send("projectId:"+gdata.id);
+                    }
+                },55000);
+            };
+            ws.onclose = function (evt) {
+                switch (evt.code){
+                    case 1006:
+                    case 1001:
+                        setTimeout(reconnect,5000);
+                        break
+                }
+
+            };
+            ws.onmessage = function (evt) {
+                var data = utils.toJSON(evt.data);
+                if(data.projectId != gdata.id){
+                    return;
+                }
+                if(data.token.substring(0,10) == utils.token().substring(0,10)){
+                    return ;
+                }
+                //todo 还有判断当前的folder和interface
+                switch (data.action){
+                    case "interface.update":
+                        page.updateInterface(data.interfaceId);
+                        break;
+                    case "interface.create":
+                    case "interface.copy":
+                        page.createInterface(data.interfaceId,data.ext[0]);
+                        break;
+                    case "interface.delete":
+                        page.deleteInterface(data.interfaceId);
+                        break;
+                    case "folder.create":
+                        page.createFolder(data.folderId,data.ext[0]);
+                        break;
+                    case "folder.update":
+                        page.updateFolder(data.folderId);
+                        break;
+                    case "folder.delete":
+                        page.deleteFolder(data.folderId);
+                        break;
+                    case "module.create":
+                        page.createModule(data.moduleId);
+                        break;
+                    case "module.update":
+                        page.updateModule(data.moduleId);
+                        break;
+                    case "module.delete":
+                        page.deleteModule(data.moduleId);
+                        break;
+
+                }
+            };
+            ws.onerror = function (evt) {
+                console.log('onerror');
+            };
+        },
+        destroy:function(){
+            this.instance.close();
+            this.instance = null;
+        }
+    }
 };
 export default{
     components: {
@@ -86,8 +340,6 @@ export default{
         data: function (transition) {
             this.$parent.$data.pageName = '接口列表';
             this.id = transition.to.params.id;
-            this.flag.env = localStorage.getItem('env') || 'product';
-
             var self = this;
             //如果实时会出现获取不到的问题
             setTimeout(function () {
@@ -97,21 +349,11 @@ export default{
                 }
                 console.log('extVer:' + self.extVer);
             }, 1000);
-            document.addEventListener('result.success', function (e) {
-                new Result().resolve(e.detail, self.currentApi.contentType);
-            });
-            document.addEventListener('result.complete', function (e) {
-                xhrComplete(self, e);
-            });
-            //ajax请求错误时触发
-            document.addEventListener('result.error', function (e) {
-                // do whatever is necessary
-                console.log("result.error");
-            });
 
             //
             $(document).click(function () {
                 self.flag.actionId = null;
+                self.status.showEnvs=false;
             });
             (function () {
                 var clipboard = new Clipboard('#api-result-copy', {
@@ -134,11 +376,25 @@ export default{
             })();
 
 
+            (function(){
+                $('body').undelegate('.xyj-dropdown-toggle','click').delegate('.xyj-dropdown-toggle','click',function(e){
+                    $(this).next().toggle();
+                    e.stopPropagation();
+                }).click(function(){
+                    $('.xyj-dropdown-list').hide();
+                });
+
+            })();
+
         },
         activate: function (transition) {
             this.$parent.showProject = true;
             $('.dashboard').addClass('max');
             transition.next();
+            document.addEventListener('result.success', page.listener.success);
+            document.addEventListener('result.complete',page.listener.complete);
+            document.addEventListener('result.error',page.listener.error);
+
             if (this.editing) {
                 if (!window.editor && this.showGuide) {
                     var desc = this.currentModule.description;
@@ -147,20 +403,30 @@ export default{
             } else {
                 renderViewBox(this.currentModule.description);
             }
+            page.task.init();
         },
         deactivate: function () {
             this.$parent.showProject = false;
-            $('.dashboard').removeClass('max')
+            $('.dashboard').removeClass('max');
             window.editor = null;
+            document.removeEventListener('result.success',page.listener.success,false);
+            document.removeEventListener('result.error',page.listener.error,false);
+            document.removeEventListener('result.complete',page.listener.complete);
+            page.task.destroy();
         }
     },
     computed: {
-        "requestURL": function () {
-            if (this.flag.env == 'dev') {
-                return (this.currentModule.devHost || '') + (this.currentApi.url || '');
-            } else {
-                return (this.currentModule.host || '') + (this.currentApi.url || '');
+        requestURL: function () {
+            let temp = this.currentApi.url;
+            if(!temp){return '';}
+            if(this.currentEnv && this.currentEnv.vars){
+                this.currentEnv.vars.forEach(function(item){
+                    let reg=new RegExp('\\$'+item.name+'\\$','g');
+                     temp = temp.replace(reg,item.value);
+                });
+                return temp;
             }
+            return "";
         }
     },
     watch: {
@@ -194,6 +460,13 @@ export default{
             }
         },
         "status.importModal": function (value) {
+            if (value) {
+                $("body").addClass("modal-open");
+            } else {
+                $("body").removeClass("modal-open");
+            }
+        },
+        "status.envModal":function(value){
             if (value) {
                 $("body").addClass("modal-open");
             } else {
@@ -261,8 +534,10 @@ export default{
                 this.results[this.currentApi.id].headers = value;
             }
         },
-        "flag.env": function (value) {
-            localStorage.setItem('env', value);
+        "currentEnv": function (value) {
+            if(value){
+                localStorage.setItem(this.id+'_env', value.id);
+            }
         }
     },
     data: function () {
@@ -274,6 +549,100 @@ export default{
             this.currentFolder = {children: []};
             this.currentApi = {};
             this.ws.destroy();
+        },
+        envOver:function(data,e){
+            this.status.showEnvValues=true;
+            this.flag.tempEnv = $.extend(true,{},data);
+            var top= $(e.target).offset().top - $(e.target).parent().offset().top;
+            $('#api-env-content').css('top',top).show();
+        },
+        envClick:function(e){
+            $('#api-env-details').css('left',$(e.currentTarget).offset().left);
+            this.status.showEnvs=true;
+        },
+        envEdit:function(){
+            this.status.envModal=true;
+            this.flag.tempEnv.vars.push({});
+        },
+        envNewLine:function(index){
+            if(index == this.flag.tempEnv.vars.length-1){
+                this.flag.tempEnv.vars.push({});
+            }
+        },
+        createEnv:function () {
+            this.status.envModal=true;
+            this.editing= true;
+            this.flag.tempEnv={vars:[{}]};
+        },
+        envSave:function(){
+            let self= this;
+            if(!this.flag.tempEnv.name){
+                toastr.error('请输入环境名称');
+                return false;
+            }
+            if(this.flag.tempEnv.vars){
+                this.flag.tempEnv.vars = this.flag.tempEnv.vars.filter(function(item){
+                    return item.name!=undefined && item.name != null && item.name != '';
+                });
+            }
+            if(!this.flag.tempEnv.vars){
+                this.flag.tempEnv.vars=[];
+            }
+            if(this.flag.tempEnv.t){
+                let t = this.flag.tempEnv.t;
+                let index =this.envs.findIndex(function(item){
+                    return item.t ==t;
+                });
+                if(index!=-1){
+                    this.envs.$set(index,this.flag.tempEnv);
+                }
+            }else{
+                this.flag.tempEnv.t = Date.now();
+                this.envs.push(this.flag.tempEnv);
+            }
+            this.envs = this.envs.map(function(item){
+                return {name:item.name,t:item.t,vars:item.vars}
+            });
+            utils.post('/project/'+this.id+'.json',{environments:JSON.stringify(this.envs)},function(rs){
+               toastr.success('保存成功');
+                self.status.envModal = false;
+                if(self.envs.length == 1){
+                    self.currentEnv = self.envs[0];
+                }else{
+                    self.envs.forEach(function(item){
+                        if(item.t==self.flag.tempEnv.t){
+                            self.currentEnv = item;
+                        }
+                    })
+                }
+            });
+        },
+        envRemove:function(){
+            let self = this;
+            let t= this.flag.tempEnv.t;
+            let index = this.envs.findIndex(function(item){
+                return item.t == self.flag.tempEnv.t;
+            });
+            this.envs.$remove(this.envs[index]);
+            utils.post('/project/'+this.id+'.json',{environments:JSON.stringify(this.envs)},function(rs){
+                toastr.success('移除成功');
+                if(self.envs.length == 0){
+                    self.currentEnv = {name:'环境切换',vars:[]};
+                }else{
+                    if(self.currentEnv.t == t){
+                        self.currentEnv=self.envs[0];
+                    }
+                }
+            });
+        },
+        envCopy:function(){
+            var vars = $.extend(true,[],this.flag.tempEnv.vars);
+            var temp = {t:Date.now(),name:this.flag.tempEnv.name+'copy',vars:vars};
+            this.envs.push(temp);
+            let self = this;
+            utils.post('/project/'+this.id+'.json',{environments:JSON.stringify(this.envs)},function(rs){
+                toastr.success('复制成功');
+            });
         },
         folderNew: function (event) {
             this.status.folderModal = true;
@@ -372,7 +741,11 @@ export default{
         },
         apiDelete: function (item, arr, event) {
             event.stopPropagation();
+            let self = this;
             utils.delete('/interface/' + item.id + ".json", function (rs) {
+                if(item.id == self.currentApi.id){
+                    defaultView(self);
+                }
                 arr.$remove(item);
             });
         },
@@ -419,7 +792,8 @@ export default{
         apiSubmit: function () {
             _czc.push(["_trackEvent",'接口','测试',this.currentApi.name,this.currentApi.id]);
             var self = this;
-            var url = this.requestURL;
+            //var url = this.requestURL;
+            var url = $('#requestURL').val();
             var args = getRequestArgs();
             for (let name in args) {
                 let key = self.currentApi.id + ':args:' + name;
@@ -538,14 +912,53 @@ export default{
                 $.ajax(params);
             }
         },
+        apiMock: function () {
+            _czc.push(["_trackEvent",'接口','mock',this.currentApi.name,this.currentApi.id]);
+            var self = this;
+            //如果是图片或二进制
+            if(self.currentApi.contentType == 'IMAGE'){
+                window.open('http://www.xiaoyaoji.com.cn/test/image/test.jpg');
+                return true;
+            }else if(self.currentApi.contentType == 'BINARY'){
+                window.open('http://www.xiaoyaoji.com.cn/test/binary/blank.exe');
+                return true;
+            }
+            console.log(self.currentApi.responseArgs);
+            let rs;
+            switch (self.currentApi.contentType){
+                case "JSON":
+                case "JSONP":
+                    rs = mockJSON(self.currentApi.responseArgs);
+                    break;
+                case "TEXT":
+                    rs = "欢迎使用小幺鸡接口文档管理工具。";
+                    break;
+                case "HTML":
+                    rs = "<html><head><title>标题</title></head><body>欢迎使用小幺鸡接口文档管理工具。</body></html>";
+                    break;
+                case "XML":
+                    rs =mockJSON(self.currentApi.responseArgs);
+                    rs = new X2JS().json2xml_str(rs);
+                    break;
+            }
+            new Result().resolve(rs, self.currentApi.contentType);
+
+        },
         moduleDelete: function (item) {
+            if(this.modules.length<=1){
+                toastr.error('至少需要保留一个模块');
+                return false;
+            }
+
             if (!confirm('是否确认删除?')) {
                 return false;
             }
             this.modules.$remove(item);
+            utils.delete('/module/' + item.id + '.json');
             if (this.modules.length > 0) {
                 this.currentModule = this.modules[0];
-                utils.delete('/module/' + item.id + '.json')
+                this.showGuide = true;
+                editor.setValue(this.currentModule.description);
             } else {
                 this.error.noModule = true;
             }
@@ -569,8 +982,11 @@ export default{
             this.currentModule = item;
             this.currentApi = {};
             this.showGuide = true;
-            initEditor(item.description);
-            renderViewBox(item.description);
+            if(this.editing && window.editor){
+                window.editor.setValue(item.description || "");
+            }else{
+                renderViewBox(item.description || "");
+            }
         },
         moduleSave: function () {
             this.$validate(true);
@@ -660,7 +1076,8 @@ export default{
             this.status.importModal = false
         },
         wsConnect(){
-            var url = this.ws.url;
+            //var url = this.ws.url;
+            var url =$('#websocketRequestURL').val()
             var ws = new WebSocket(url);
             this.ws.instance = ws;
             var self = this;
@@ -711,19 +1128,19 @@ export default{
                         action: 'move',
                         moduleId: this.flag.moveCopySelectModuleId,
                         folderId: this.flag.moveCopySelectFolderId
-                    });
+                    },this);
                 }
             } else {
                 //copy
                 if (this.flag.moveCopyName == '分类') {
-                    copyMove({type: 'folder', action: 'copy', moduleId: this.flag.moveCopySelectModuleId});
+                    copyMove({type: 'folder', action: 'copy', moduleId: this.flag.moveCopySelectModuleId},this);
                 } else {
                     copyMove({
                         type: 'api',
                         action: 'copy',
                         moduleId: this.flag.moveCopySelectModuleId,
                         folderId: this.flag.moveCopySelectFolderId
-                    });
+                    },this);
                 }
             }
         }
@@ -787,7 +1204,7 @@ function initInterface(self, item) {
     if (match != null && match.length > 0) {
         item.urlArgs = match;
         item.urlArgs = item.urlArgs.map(function (d) {
-            return d.substring(1, d.length - 1);
+            return d.substring(1, d.length-1);
         });
     }
     item.requestArgs.forEach(function (d) {
@@ -904,7 +1321,57 @@ function parseImportData(data, temp) {
         }
     }
 }
-
+//
+function mockJSON(data){
+    let rs={};
+    if(!data){
+        return [];
+    }
+     data.forEach(function(item){
+         switch (item.type){
+             case 'string':
+                 rs[item.name]='mock';
+                 break;
+             case 'number':
+                 rs[item.name]=parseInt(Math.random() * 100);
+                 break;
+             case 'boolean':
+                 rs[item.name]=true;
+                 break;
+             case 'object':
+                 if(item.children && item.children.length>0){
+                     rs[item.name] = mockJSON(item.children);
+                 }else{
+                     rs[item.name]={};
+                 }
+                 break;
+             case 'array':
+                 rs[item.name]=[];
+                 break;
+             case 'array[number]':
+                 rs[item.name]=[1,2,3,4,5];
+                 break;
+             case 'array[string]':
+                 rs[item.name]=['1','2','3','4','5'];
+                 break;
+             case 'array[boolean]':
+                 rs[item.name]=[true,false];
+                 break;
+             case 'array[object]':
+                 if(item.children && item.children.length>0){
+                     rs[item.name] = [mockJSON(item.children)];
+                 }else{
+                     rs[item.name]=[{}];
+                 }
+                 break;
+             case 'array[array]':
+                 rs[item.name]=[[1,2,3],[4,5,6]];
+                 break;
+         }
+     });
+    return rs;
+}
+//
 function xhrComplete(self, e) {
 
     self.status.apiLoading = false;
@@ -960,8 +1427,6 @@ function Result() {
             }
             if (data instanceof XMLDocument) {
                 data = new XMLSerializer().serializeToString(data)
-            }else{
-                data = data.xml;
             }
             gdata.currentApi.result = utils.escape(data);
         },
@@ -1013,6 +1478,9 @@ function getRequestHeaders() {
 }
 
 function initEditor(value) {
+    if(!value){
+        value = "";
+    }
     var width = 904;
     if (document.documentElement.clientWidth >= 1800) {
         width = 1160;
@@ -1061,24 +1529,26 @@ function initEditor(value) {
         imageUploadURL: "./php/upload.php",
         onload: function () {
             var self = this;
-            setTimeout(function () {
+            /*setTimeout(function () {
                 self.gotoLine(1);
-            }, 100);
+            }, 100);*/
         }
     });
 }
 
 function renderViewBox(value) {
     $('#view-box').html('');
-    editormd.markdownToHTML('view-box', {
-        htmlDecode: "style,script,iframe",  // you can filter tags decode
-        markdown: value,
-        emoji: false,
-        taskList: false,
-        tex: false,  // 默认不解析
-        flowChart: false,  // 默认不解析
-        sequenceDiagram: false  // 默认不解析
-    });
+    setTimeout(function(){
+        editormd.markdownToHTML('view-box', {
+            htmlDecode: "style,script,iframe",  // you can filter tags decode
+            markdown: (value || ''),
+            emoji: false,
+            taskList: false,
+            tex: false,  // 默认不解析
+            flowChart: false,  // 默认不解析
+            sequenceDiagram: false  // 默认不解析
+        });
+    },10)
 }
 
 function saveModule(data) {
@@ -1092,6 +1562,7 @@ function saveModule(data) {
 function copyMove(data, self) {
     data.targetId = gdata.flag.moveCopyId;
     gdata.status.moveCopyModal = false;
+    data.projectId = gdata.id;
     utils.post('/project/' + gdata.id + '/copymove.json', data, function () {
         toastr.success('操作成功', '', {timeOut: 2000, "positionClass": "toast-top-right"});
         reget(self);
@@ -1113,7 +1584,44 @@ function reget(self) {
                 self.error.projectNotExists = true;
                 return;
             }
-            gdata.project = rs.data.project;
+            self.project = rs.data.project;
+            if(self.project.environments){
+                self.envs = utils.toJSON(self.project.environments);
+                if(!self.envs){
+                    self.envs=[];
+                }
+                if(!Array.isArray(self.envs)){
+                    self.envs=[];
+                }
+                var envId = localStorage.getItem(self.id+'_env');
+                if(envId){
+                    let temp;
+                    self.envs.forEach(function(item){
+                        if(item.id == envId){
+                            temp = item;
+                            return true;
+                        }
+                    });
+                    if(!temp){
+                        temp = self.envs[0];
+                    }
+
+                    self.currentEnv = temp;
+                }else{
+                   self.currentEnv = self.envs[0];
+                }
+                if(!self.currentEnv){
+                    self.currentEnv = {name:'环境切换',vars:[]};
+                }
+                if(!self.currentEnv.vars){
+                    self.currentEnv.vars =[];
+                }
+
+
+            }else{
+                self.envs=[];
+                self.currentEnv = {name:'环境切换',vars:[]};
+            }
             if (rs.data.modules.length > 0) {
                 gdata.modules = rs.data.modules;
                 gdata.currentModule = gdata.modules[0];
@@ -1133,4 +1641,9 @@ function reget(self) {
     }, function () {
         self.status.loading = false;
     });
+}
+
+//
+function defaultView(self){
+    self.showGuide = true;
 }

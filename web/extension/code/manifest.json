@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "小幺鸡",
-  "description": "简单好用的在线接口文档管理系统",
+  "description": "简单好用的在线接口文档管理工具",
   "icons":{
     "16":"icon_16.png",
     "48":"icon_48.png",
@@ -13,7 +13,7 @@
   "browser_action": {
     "default_icon": "icon_128.png",
 	"default_popup": "popup.html",
-    "default_title":"小幺鸡接口管理"
+    "default_title":"小幺鸡"
   },
   "content_scripts":[
   	 {

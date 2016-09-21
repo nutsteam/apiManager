@@ -14,7 +14,7 @@
             <br/>
             <ul>
                 <li class="db-item"><a v-link="{path:'/add'}" class="bd-add">
-                    <i class="iconfont icon-add-circle"></i>添加项目</a></li>
+                    <i class="iconfont icon-add-circle"></i>创建项目</a></li>
                 <li class="line"></li>
                 <li class="bd-project-title">我的项目</li>
                 <li class="db-item" v-for="item in projects | filterBy filter in 'name'">
@@ -70,7 +70,7 @@
             <br/>
             <ul>
                 <li class="db-item"><a v-link="{path:'/add'}" class="bd-add"><i
-                        class="iconfont icon-add-circle"></i>添加项目</a></li>
+                        class="iconfont icon-add-circle"></i>创建项目</a></li>
                 <li class="line"></li>
                 <li class="bd-project-title">我的项目</li>
                 <li class="db-item" v-for="item in projects | filterBy filter in 'name'">

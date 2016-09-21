@@ -1,7 +1,7 @@
 package cn.com.xiaoyaoji.api;
 
-import cn.com.xiaoyaoji.api.message.MessageBus;
-import cn.com.xiaoyaoji.api.message.MessageNotify;
+import cn.com.xiaoyaoji.api.asynctask.message.MessageBus;
+import cn.com.xiaoyaoji.api.asynctask.message.MessageNotify;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 

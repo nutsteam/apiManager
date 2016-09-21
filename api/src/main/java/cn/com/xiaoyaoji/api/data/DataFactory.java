@@ -54,7 +54,7 @@ public class DataFactory implements Data {
         return instance;
     }
 
-    private <T> T process(Handler<T> handler) {
+    private  <T> T process(Handler<T> handler) {
         Connection connection = null;
         try {
             connection = JdbcUtils.getConnect();
@@ -225,7 +225,7 @@ public class DataFactory implements Data {
                 if(rs == 1)
                     return rs;
                 //删除第三方
-                rs = qr.update(connection,"delete from "+TableNames.USER_THIRD+" where type=? and id=?",thirdparty.getType(),thirdparty.getId());
+                rs = qr.update(connection,"delete from "+TableNames.USER_THIRD+" where  id=?",thirdparty.getId());
                 // 创建第三方
                 StringBuilder thirdSql = new StringBuilder("insert into ");
                 thirdSql.append(TableNames.USER_THIRD);
@@ -658,6 +658,12 @@ public class DataFactory implements Data {
                 folder.setId(StringUtils.id());
                 folder.setCreateTime(new Date());
                 folder.setModuleId(moduleId);
+                if(folder.getName()== null){
+                    folder.setName("");
+                }
+                if(!folder.getName().contains("COPY")) {
+                    folder.setName(folder.getName() + "_COPY");
+                }
                 SQLBuildResult sb = SqlUtils.generateInsertSQL(folder);
                 int rs= qr.update(connection,sb.getSql(),sb.getParams());
 
@@ -703,6 +709,46 @@ public class DataFactory implements Data {
                 sb = SqlUtils.generateInsertSQL(pu);
                 rs += qr.update(connection,sb.getSql(),sb.getParams());
                 return rs;
+            }
+        });
+    }
+
+    @Override
+    public String getProjectName(final String projectId) {
+        return process(new Handler<String>() {
+            @Override
+            public String handle(Connection connection, QueryRunner qr) throws SQLException {
+                return qr.query(connection,"select name from "+TableNames.PROJECT+" where id = ?",new StringResultHandler(),projectId);
+            }
+        });
+    }
+
+    @Override
+    public String getInterfaceFolderName(final String folderId) {
+        return process(new Handler<String>() {
+            @Override
+            public String handle(Connection connection, QueryRunner qr) throws SQLException {
+                return qr.query(connection,"select name from "+TableNames.INTERFACE_FOLDER+" where id = ?",new StringResultHandler(),folderId);
+            }
+        });
+    }
+
+    @Override
+    public String getModuleName(final String moduleId) {
+        return process(new Handler<String>() {
+            @Override
+            public String handle(Connection connection, QueryRunner qr) throws SQLException {
+                return qr.query(connection,"select name from "+TableNames.MODULES+" where id = ?",new StringResultHandler(),moduleId);
+            }
+        });
+    }
+
+    @Override
+    public String getInterfaceName(final String interfaceId) {
+        return process(new Handler<String>() {
+            @Override
+            public String handle(Connection connection, QueryRunner qr) throws SQLException {
+                return qr.query(connection,"select name from "+TableNames.INTERFACES+" where id = ?",new StringResultHandler(),interfaceId);
             }
         });
     }
