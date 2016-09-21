@@ -1,5 +1,4 @@
-# 小幺鸡接口管理页面
-   ![LOGO](http://www.xiaoyaoji.com.cn/assets/img/logo/full.png)
+![LOGO](http://www.xiaoyaoji.com.cn/assets/img/logo/full.png)
 
 ### 特点
    * 在线接口测试 目前支持 json,text,html,xml,jsonp,Websocket
@@ -53,6 +52,7 @@
   * 修改html/assets/js/config.js配置
       * window.root : 接口地址
       * window.ctx : 静态页面相对路径
+      * window._xyj_.ws 地址为ws://你的ip:端口/api
 
 
 ### 直接使用
@@ -69,7 +69,7 @@
     * 如果需要使用第三方登录,需要配置对应的地址
     * 如果需要使用邮件发送,需要配置sendcloud邮箱配置信息
 #### WEB
-    * 复制html内容到本地服务器中根目录，修改 /assets/js/config.js 里面的window.root的地址为你部署api后的访问地址
+    * 复制html内容到本地服务器中根目录，修改 /assets/js/config.js 里面的window.root的地址为你部署api后的访问地址 和window._xyj_.ws 地址为ws://你的ip:端口/api
 
 
 
