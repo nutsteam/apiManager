@@ -66,6 +66,7 @@
                     self.loading=false;
                 });
                 self.$parent.projectId=this.$route.params.id;
+                _czc.push(["_trackEvent",'接口','项目设置']);
             }
         },
         data:function(){

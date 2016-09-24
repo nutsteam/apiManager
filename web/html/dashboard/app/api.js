@@ -85,6 +85,7 @@ var gdata = {
     results: {}
 };
 var page = {
+    x2js:new X2JS(),
     listener:{
         success:function (e) {
             new Result().resolve(e.detail, gdata.currentApi.contentType);
@@ -234,11 +235,6 @@ var page = {
                 if (gdata.modules.length > 0) {
                     gdata.currentModule = gdata.modules[0];
                     gdata.showGuide = true;
-                    if(gdata.editing && window.editor){
-                        window.editor.setValue(gdata.currentModule.description || '');
-                    }else{
-                        renderViewBox(gdata.currentModule.description || '')
-                    }
                 } else {
                     gdata.error.noModule = true;
                 }
@@ -322,8 +318,10 @@ var page = {
             };
         },
         destroy:function(){
-            this.instance.close();
-            this.instance = null;
+            if(this.instance){
+                this.instance.close();
+                this.instance = null;
+            }
         }
     }
 };
@@ -385,7 +383,8 @@ export default{
                 });
 
             })();
-
+            page.task.destroy();
+            page.task.init();
         },
         activate: function (transition) {
             this.$parent.showProject = true;
@@ -394,16 +393,6 @@ export default{
             document.addEventListener('result.success', page.listener.success);
             document.addEventListener('result.complete',page.listener.complete);
             document.addEventListener('result.error',page.listener.error);
-
-            if (this.editing) {
-                if (!window.editor && this.showGuide) {
-                    var desc = this.currentModule.description;
-                    initEditor(desc, this);
-                }
-            } else {
-                renderViewBox(this.currentModule.description);
-            }
-            page.task.init();
         },
         deactivate: function () {
             this.$parent.showProject = false;
@@ -424,9 +413,26 @@ export default{
                     let reg=new RegExp('\\$'+item.name+'\\$','g');
                      temp = temp.replace(reg,item.value);
                 });
+                if(this.currentApi.urlArgs && this.currentApi.urlArgs.length>0){
+                    this.currentApi.urlArgs.forEach(function(item){
+                        let name = '{'+item.name+'}';
+                        let reg = new RegExp(name,'g');
+                        temp = temp.replace(reg,item.value || name)
+                    });
+                }
                 return temp;
             }
             return "";
+        },
+        xmlpreview:function(){
+            let args = utils.toJSON(this.currentApi.requestArgs);
+            let text='<?xml version="1.0" encoding="UTF-8"?>\n<xml>\n';
+            args.forEach(function(item){
+                var name = item.name.replace(/\s/g,'');
+                text += '    <'+name+'>' +' '+'</'+name+'>\n';
+            });
+            text+= '</xml>';
+            return text;
         }
     },
     watch: {
@@ -490,9 +496,9 @@ export default{
                     window.editor.editor.remove();
                     window.editor = null;
                 }
-                var value = this.currentModule.description;
+                var value = this.project.details;
                 if (this.editing && this.showGuide && !window.editor) {
-                    initEditor(this.currentModule.description, this);
+                    initEditor(this.project.details, this);
                 }
                 if (!this.editing) {
                     renderViewBox(value);
@@ -503,17 +509,17 @@ export default{
             _czc.push(["_trackEvent", "接口", "切换模式",value+""]);
             if (value) {
                 if (!window.editor && this.showGuide) {
-                    var desc = this.currentModule.description;
+                    var desc = this.project.details;
                     initEditor(desc, this);
                 }
             } else {
-                renderViewBox(this.currentModule.description);
+                renderViewBox(this.project.details);
             }
         },
         "showGuide": function (value) {
             if (value && this.editing) {
                 if (!window.editor) {
-                    var desc = this.currentModule.description;
+                    var desc = this.project.details;
                     initEditor(desc, this);
                 }
             }
@@ -544,6 +550,12 @@ export default{
         return gdata;
     },
     methods: {
+        updateProject: function () {
+            this.project.details = window.editor.getMarkdown();
+            utils.post('/project/'+this.id+'.json',{details:this.project.details},function(){
+                toastr.success('修改成功');
+            })
+        },
         apiDescClick: function () {
             this.showGuide = true;
             this.currentFolder = {children: []};
@@ -559,10 +571,12 @@ export default{
         envClick:function(e){
             $('#api-env-details').css('left',$(e.currentTarget).offset().left);
             this.status.showEnvs=true;
+            _czc.push(["_trackEvent",'接口','环境变量点击']);
         },
         envEdit:function(){
             this.status.envModal=true;
             this.flag.tempEnv.vars.push({});
+            _czc.push(["_trackEvent",'接口','环境变量编辑']);
         },
         envNewLine:function(index){
             if(index == this.flag.tempEnv.vars.length-1){
@@ -571,8 +585,8 @@ export default{
         },
         createEnv:function () {
             this.status.envModal=true;
-            this.editing= true;
             this.flag.tempEnv={vars:[{}]};
+            _czc.push(["_trackEvent",'接口','环境变量创建']);
         },
         envSave:function(){
             let self= this;
@@ -634,6 +648,7 @@ export default{
                     }
                 }
             });
+            _czc.push(["_trackEvent",'接口','环境变量移除']);
         },
         envCopy:function(){
             var vars = $.extend(true,[],this.flag.tempEnv.vars);
@@ -643,6 +658,7 @@ export default{
             utils.post('/project/'+this.id+'.json',{environments:JSON.stringify(this.envs)},function(rs){
                 toastr.success('复制成功');
             });
+            _czc.push(["_trackEvent",'接口','环境变量复制']);
         },
         folderNew: function (event) {
             this.status.folderModal = true;
@@ -650,6 +666,7 @@ export default{
             this.folderName = '';
             event.stopPropagation();
             focusFolderName();
+            _czc.push(["_trackEvent",'接口','创建分类']);
         },
         folderEdit: function (item, event) {
             this.status.folderModal = true;
@@ -657,6 +674,7 @@ export default{
             this.folderName = item.name;
 
             event.stopPropagation();
+            _czc.push(["_trackEvent",'接口','编辑分类']);
         },
         folderSave: function () {
             this.$validate(true);
@@ -696,6 +714,7 @@ export default{
             gdata.status.folderModal = false;
             //this.currentFolder=null;
             this.folderName = null;
+            _czc.push(["_trackEvent",'接口','修改分类']);
         },
         folderDelete: function (item, event) {
             var self = this;
@@ -703,6 +722,7 @@ export default{
                 self.$data.currentModule.folders.$remove(item);
             });
             event.stopPropagation();
+            _czc.push(["_trackEvent",'接口','删除分类']);
         },
         folderNewApi: function (item, event) {
             event.stopPropagation();
@@ -722,11 +742,13 @@ export default{
             if (document.documentElement.scrollTop > 100) {
                 document.documentElement.scrollTop = 110;
             }
+            _czc.push(["_trackEvent",'接口','新建api']);
         },
         folderClick: function (event) {
             var $dom = $(event.currentTarget);
             $dom.toggleClass("open");
             $dom.next().slideToggle()
+            _czc.push(["_trackEvent",'接口','文件夹点击']);
         },
         apiClick: function (item, folder) {
             _czc.push(["_trackEvent",'接口','点击',this.currentApi.name,this.currentApi.id]);
@@ -740,6 +762,7 @@ export default{
             }
         },
         apiDelete: function (item, arr, event) {
+            _czc.push(["_trackEvent",'接口','接口删除']);
             event.stopPropagation();
             let self = this;
             utils.delete('/interface/' + item.id + ".json", function (rs) {
@@ -780,14 +803,7 @@ export default{
                     self.currentFolder.children.push(data);
                 }
             });
-        },
-        apiSaveHostDescription: function () {
-            this.currentModule.description = window.editor.getMarkdown();
-            saveModule({
-                host: this.currentModule.host,
-                devHost: this.currentModule.devHost,
-                description: window.editor.getMarkdown()
-            });
+            _czc.push(["_trackEvent",'接口','接口保存']);
         },
         apiSubmit: function () {
             _czc.push(["_trackEvent",'接口','测试',this.currentApi.name,this.currentApi.id]);
@@ -802,14 +818,6 @@ export default{
                     localStorage.setItem(key, value);
                 }
             }
-
-            //替换id
-            if (this.currentApi.urlArgs != null && this.currentApi.urlArgs.length > 0) {
-                this.currentApi.urlArgs.forEach(function (item) {
-                    url = url.replace(new RegExp('{' + item + '}'), args[item]);
-                    delete args[item];
-                });
-            }
             //如果是图片或二进制
             if (self.currentApi.contentType == "IMAGE" || self.currentApi.contentType == 'BINARY') {
                 var params = '';
@@ -819,16 +827,6 @@ export default{
                 window.open(url + '?' + params);
                 var params = undefined;
                 return true;
-            }
-
-            //获取rest地址url参数
-            this.currentApi.urlArgs = [];
-            var match = (this.currentModule.host + this.currentApi.url).match(/(\{[a-zA-Z0-9_]+\})/g);
-            if (match != null && match.length > 0) {
-                this.currentApi.urlArgs = match;
-                this.currentApi.urlArgs = this.currentApi.urlArgs.map(function (d) {
-                    return d.substring(1, d.length - 1);
-                });
             }
 
             var headers = getRequestHeaders();
@@ -938,7 +936,7 @@ export default{
                     break;
                 case "XML":
                     rs =mockJSON(self.currentApi.responseArgs);
-                    rs = new X2JS().json2xml_str(rs);
+                    rs = page.x2js.json2xml_str(rs);
                     break;
             }
             new Result().resolve(rs, self.currentApi.contentType);
@@ -958,10 +956,10 @@ export default{
             if (this.modules.length > 0) {
                 this.currentModule = this.modules[0];
                 this.showGuide = true;
-                editor.setValue(this.currentModule.description);
             } else {
                 this.error.noModule = true;
             }
+            _czc.push(["_trackEvent",'接口','模块删除']);
         },
         moduleEdit: function (item) {
             this.status.moduleModal = true;
@@ -975,18 +973,13 @@ export default{
             this.moduleName = '';
         },
         moduleClick: function (item) {
-            _czc.push(["_trackEvent",'接口','模块',item.name,item.id]);
+            _czc.push(["_trackEvent",'接口','模块点击',item.name,item.id]);
             if (!item.folders) {
                 item.folders = [];
             }
             this.currentModule = item;
             this.currentApi = {};
             this.showGuide = true;
-            if(this.editing && window.editor){
-                window.editor.setValue(item.description || "");
-            }else{
-                renderViewBox(item.description || "");
-            }
         },
         moduleSave: function () {
             this.$validate(true);
@@ -1026,6 +1019,7 @@ export default{
             gdata.status.moduleModal = false;
             this.moduleName = '';
             this.moduleId = '';
+            _czc.push(["_trackEvent",'接口','模块保存']);
         },
         insertNewResponseArgsRow: function () {
             gdata.currentApi.responseArgs.push({require: "true", children: [], type: 'string'});
@@ -1074,6 +1068,7 @@ export default{
                 }
             });
             this.status.importModal = false
+            _czc.push(["_trackEvent",'接口','导入json']);
         },
         wsConnect(){
             //var url = this.ws.url;
@@ -1095,6 +1090,7 @@ export default{
             ws.onerror = function (evt) {
                 self.ws.log += '\nonError:' + (evt.data || '');
             };
+            _czc.push(["_trackEvent",'接口','websocket测试']);
         },
         wsDisconnect(){
             this.ws.instance.close()
@@ -1112,6 +1108,7 @@ export default{
             this.flag.move = (move == 'move');
             this.status.moveCopyModal = true;
             this.flag.moveCopyId = id;
+            _czc.push(["_trackEvent",'接口','复制移动'+type]);
         },
         copyMoveOk: function () {
             if (this.flag.move) {
@@ -1200,11 +1197,11 @@ function initInterface(self, item) {
     initDefaultData(item.responseArgs);
     //从地址上获取
     item.urlArgs = [];
-    var match = (self.currentModule.host + self.currentApi.url).match(/(\{[a-zA-Z0-9_]+\})/g);
+    var match = (self.requestURL).match(/(\{[a-zA-Z0-9_]+\})/g);
     if (match != null && match.length > 0) {
         item.urlArgs = match;
         item.urlArgs = item.urlArgs.map(function (d) {
-            return d.substring(1, d.length-1);
+            return {name:d.substring(1, d.length-1),value:null};
         });
     }
     item.requestArgs.forEach(function (d) {
@@ -1549,14 +1546,6 @@ function renderViewBox(value) {
             sequenceDiagram: false  // 默认不解析
         });
     },10)
-}
-
-function saveModule(data) {
-    var id = data.id || gdata.currentModule.id;
-    data.id = undefined;
-    utils.post('/module/' + id + '.json', data, function () {
-        toastr.success('保存成功', '', {timeOut: 2000, "positionClass": "toast-top-right"});
-    });
 }
 
 function copyMove(data, self) {

@@ -27,7 +27,7 @@
             <div class="item">
                 <div class="col-sm-2 label"></div>
                 <div class="col-sm-2">
-                    <input type="button" class="btn btn-primary full-width" v-on:click="ok" v-bind:disabled="!userId" value="确认">
+                    <input type="button" class="btn btn-primary" v-on:click="ok" v-bind:disabled="!userId" value="确认">
                 </div>
             </div>
         </template>
@@ -72,7 +72,8 @@
                     self.fileAccess = rs.data.fileAccess;
                 },function(){
                     self.loading=false;
-                })
+                })   ;
+                _czc.push(["_trackEvent",'接口','项目转移']);
             }
         },
         methods:{

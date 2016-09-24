@@ -1,5 +1,0 @@
-1.修改样式
-2.增加环境变量
-	如: $host$ = http://www.qq.com/ 
-	则：$host$test.html = http://www.qq.com/test.html
-3.增加协作开发实时更新功能

@@ -19,9 +19,6 @@ public class Module {
 
     private String id;
     private String name;
-    private String host;
-    private String devHost;
-    private String description;
     private Date lastUpdateTime;
     private Date createTime;
     private String projectId;
@@ -43,22 +40,6 @@ public class Module {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Date getLastUpdateTime() {
@@ -101,11 +82,4 @@ public class Module {
         this.folders = folders;
     }
 
-    public String getDevHost() {
-        return devHost;
-    }
-
-    public void setDevHost(String devHost) {
-        this.devHost = devHost;
-    }
 }

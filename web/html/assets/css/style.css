@@ -157,7 +157,7 @@ body.modal-open{
 
 }
 .env-modal .hint{
-    color: #3c763d!important;
+    color: #01A304!important;
     background-color: #dff0d8;
     padding: 10px;
 }
@@ -885,7 +885,7 @@ section{
 }
 .api-env-details{
     position: absolute;
-    z-index: 10;
+    z-index: 11;
 }
 .api-env-details ul.api-env-items{
     background: #fff;
@@ -1209,6 +1209,9 @@ section{
     display: none
 }
 
+.api-details-xml{
+    font-family: 'Consolas';
+}
 .api-result-tabs{
     background: #F3F3F3;
     border: 1px solid #E5E5E5;
@@ -1264,7 +1267,6 @@ section{
 }
 .api-error-tip{
     margin-top: 100px; color: #9F9F9F;
-    width: 680px;
 }
 .api-error-tip i{
     font-size: 80px;

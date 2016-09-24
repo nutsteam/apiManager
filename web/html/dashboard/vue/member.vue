@@ -126,6 +126,7 @@
                 }, function () {
                     self.status.loading = false;
                 });
+                _czc.push(["_trackEvent",'接口','成员管理']);
             }
         },
         data: function () {

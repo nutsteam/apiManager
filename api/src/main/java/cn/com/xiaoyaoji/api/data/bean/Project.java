@@ -13,15 +13,24 @@ import java.util.Date;
 @Alias("project")
 public class Project {
     private String id;
+    //项目名称
     private String name;
+    //简单描述
     private String description;
     private String userId;
     @Ignore
     private String userName;
+    //创建时间
     private Date createTime;
+    //状态
     private String status;
+    //权限
     private String permission;
+    //环境 json
     private String environments;
+    //详细说明
+    private String details;
+
     public interface Status{
         String VALID="VALID";
         String INVALID="INVALID";
@@ -127,5 +136,13 @@ public class Project {
 
     public void setEnvironments(String environments) {
         this.environments = environments;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
     }
 }

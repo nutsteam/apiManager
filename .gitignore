@@ -3,3 +3,4 @@ api/.idea/
 *.iml
 web/built
 web/html/.idea/
+api/target/

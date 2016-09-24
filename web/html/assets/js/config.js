@@ -7,8 +7,8 @@ window.root='//www.xiaoyaoji.com.cn/api';
 window.ctx='';
 window._xyj_={
     history:false,
-    version:'1.5',
-    //ws:'ws://localhost:8888/api'
-    ws:'ws://www.xiaoyaoji.com.cn/api'
+    version:'1.5.1',
+    ws:'ws://localhost:8888/api'
+    //ws:'ws://www.xiaoyaoji.com.cn/api'
 };
 console.log('version:'+_xyj_.version);

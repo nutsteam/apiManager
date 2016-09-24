@@ -33,11 +33,9 @@
                         <li class="col-sm-4">变量</li>
                         <li class="col-sm-8">
                             <div class="cb">值
-                                <template v-if="editing">
-                                    <i v-on:click.stop="envRemove" style="padding-right: 5px" class="fr iconfont icon-close"></i>
-                                    <i v-on:click.stop="envCopy" style="padding-right: 5px" class="fr iconfont icon-copy"></i>
-                                    <i v-on:click.stop="envEdit" style="padding-right: 5px" class="fr iconfont icon-edit"></i>
-                                </template>
+                                <i v-on:click.stop="envRemove" style="padding-right: 5px" class="fr iconfont icon-close"></i>
+                                <i v-on:click.stop="envCopy" style="padding-right: 5px" class="fr iconfont icon-copy"></i>
+                                <i v-on:click.stop="envEdit" style="padding-right: 5px" class="fr iconfont icon-edit"></i>
                             </div>
                         </li>
                     </ul>
@@ -56,7 +54,7 @@
                             <li>
                                 <div class="api-name api-description cb" v-bind:class="{'active':showGuide}"
                                      v-on:click="apiDescClick">
-                                    <span>接口描述</span>
+                                    <span>文档说明</span>
                                     <span class="fr api-actions">
                                         <i class="iconfont icon-list" v-on:click.stop="collapse=!collapse"></i>
                                     </span>
@@ -103,12 +101,10 @@
                     </div>
                     <div class="api-content fl">
                         <div id="api-edit-description" class="api-doc-desc" v-bind:class="{'hide':!showGuide}">
-                            <div class="api-details-title">接口描述</div>
-                            <!--<script type="text/plain" id="myEditor" style="width:960px;height:500px;"></script>-->
                             <div id="editorBox"></div>
 
                             <div class="api-btn-save ta-c">
-                                <button class="btn btn-orange" v-on:click="apiSaveHostDescription">保存修改</button>
+                                <button class="btn btn-orange" v-on:click="updateProject">保存修改</button>
                             </div>
                         </div>
                         <div id="api-edit-details" v-bind:class="{'hide':showGuide}">
@@ -180,6 +176,8 @@
                                                 <input type="radio" id="dt-BINARY" value="BINARY"
                                                        v-model="currentApi.dataType">
                                                 <label for="dt-BINARY">BINARY</label>
+                                                <label><input type="radio" value="XML"
+                                                              v-model="currentApi.dataType"> XML</label>
                                             </template>
                                         </div>
                                     </div>
@@ -219,6 +217,7 @@
                                               v-model="currentApi.description">{{currentApi.description}}</textarea>
                                     </div>
                                 </div>
+                                <template v-if="currentApi.protocol == 'HTTP'">
                                 <div class="tabs">
                                     <a class="tab" v-on:click="flag.tab='header'" v-bind:class="{'active':flag.tab=='header'}">请求头(Header)</a>
                                     <a class="tab" v-on:click="flag.tab='body'" v-bind:class="{'active':flag.tab=='body'}">请求参数(Body)</a>
@@ -319,9 +318,11 @@
                                         </button>
                                     </div>
                                 </div>
+
                                 <p class="api-details-title">示例数据</p>
-                            <textarea class="api-example api-field" v-model="currentApi.example"
+                                <textarea class="api-example api-field" v-model="currentApi.example"
                                       placeholder="请添加一些示例数据">{{currentApi.example}}</textarea>
+                                </template>
                             </div>
                             <!--<div class="item">
                                 <button class="btn btn-primary" v-on:click="apiSave">保存修改</button>
@@ -444,46 +445,6 @@
                         </div>
                     </div>
                 </div>
-            <div class="modal env-modal" v-cloak v-if="status.envModal">
-                    <div class="modal-header">
-                        <i class="iconfont icon-close modal-close" v-on:click="status.envModal=false"></i>
-                    </div>
-                    <div class="modal-content">
-                        <div class="modal-layout1 form" style="width: 500px">
-                            <p class="title" style="margin-bottom: 20px">添加新环境</p>
-                             <div class="hint">
-                                 环境变量运行在URL中,你可以配置多个(线上、灰度、开发)环境变量。在URL中使用方式{{flag.varname}},例：<br/>
-                                 线上环境：prefix => http://www.xiaoyaoji.com.cn<br/>
-                                 则<br/>
-                                 请求URL：{{flag.prefix}}/say => http://www.xiaoyaoji.com.cn/say
-                             </div>
-                            <p class="title"></p>
-                            <div class="item">
-                                <div class="col-sm-12">
-                                    <input type="text" class="text" v-model="flag.tempEnv.name" placeholder="请输入环境名称">
-                                </div>
-                            </div>
-                            <div class="item" v-for="(index,item) in flag.tempEnv.vars">
-                                <div class="col-sm-4"><input type="text" v-model=item.name class="text" v-on:focus="envNewLine(index)" placeholder="变量名称" value="{{item.name}}"></div>
-                                <div class="col-sm-6">
-                                    <input type="text" class="text" v-model="item.value" placeholder="变量值" value="{{item.value}}">
-                                </div>
-                                <div class="col-sm-2 full-text">
-                                    <i class="iconfont icon-close" v-on:click="flag.tempEnv.vars.$remove(item)"></i>
-                                </div>
-                            </div>
-
-                            <div class="ta-c actions">
-                                <button class="btn btn-default-box middle" tabindex="3"
-                                        v-on:click="status.envModal=false">
-                                    取消
-                                </button>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <button class="btn btn-primary middle" v-on:click="envSave" tabindex="2">确定</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
         </div>
         <div v-show="!editing">
@@ -495,7 +456,7 @@
                                 <li>
                                     <div class="api-name api-description" v-bind:class="{'active':showGuide}"
                                          v-on:click="apiDescClick">
-                                        <span>接口描述</span>
+                                        <span>文档说明</span>
                                         <span class="fr api-actions">
                                         <i class="iconfont icon-list" v-on:click.stop="collapse=!collapse"></i>
                                     </span>
@@ -521,14 +482,14 @@
                         </div>
                         <div class="api-content fl">
                             <div class="cb">
-                                <!--<h3 class="apis-module-name fl" id="api-headline">接口描述</h3>-->
+                                <h2 class="fl">文档说明</h2>
                                 <span class="api-update-time fr">更新时间: <span id="api-update-time">{{currentModule.lastUpdateTime}}</span></span>
                             </div>
                             <div id="api-doc-desc" class="api-doc-desc" v-show="showGuide">
-                                <div id="view-box" v-show="currentModule.description"></div>
-                                <div v-show="!currentModule.description" class="ta-c api-error-tip">
+                                <div id="view-box" v-show="project.details"></div>
+                                <div v-show="!project.details" class="ta-c api-error-tip">
                                     <i class="iconfont icon-info"></i>
-                                    <p>该模块还没有描述信息</p>
+                                    <p>项目还未书写文档说明。</p>
                                     <!--<div class="cb ta-c api-quick-create">
                                         <a class="fl">
                                             <i class="iconfont icon-tianjia"></i>
@@ -626,7 +587,7 @@
                                         </form>
                                     </template>
 
-                                    <form class="form" id="args-form" v-on:submit.prevent>
+                                    <div class="form">
                                         <div class="item">
                                             <div class="col-sm-2 label second">请求地址</div>
                                             <div class="col-sm-8">
@@ -643,31 +604,47 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <template v-if="currentApi.urlArgs && currentApi.urlArgs.length>0">
-                                            <p class="api-details-title second">地址参数</p>
-                                            <div class="item" v-for="item in currentApi.urlArgs">
-                                                <div class="col-sm-2 label">{{item}}</div>
-                                                <div class="col-sm-8">
-                                                    <input data-type="text" type="text"
-                                                           name="{{item}}" placeholder="替换URL上的参数"
-                                                           class="text">
-                                                </div>
+                                    <template v-if="currentApi.urlArgs && currentApi.urlArgs.length>0">
+                                        <p class="api-details-title second">地址参数</p>
+                                        <div class="item" v-for="item in currentApi.urlArgs">
+                                            <div class="col-sm-2 label">{{item.name}}</div>
+                                            <div class="col-sm-8">
+                                                <input data-type="text" v-model="item.value" type="text"
+                                                       name="{{item}}" placeholder="替换URL上的参数"
+                                                       class="text">
                                             </div>
-                                        </template>
+                                        </div>
+                                    </template>
+                                    </div>
+                                    <form class="form" id="args-form" v-on:submit.prevent>
+
+
                                         <template v-if="currentApi.requestArgs && currentApi.requestArgs.length>0">
-                                            <p class="api-details-title second">请求参数</p>
-                                            <div class="item" v-for="item in currentApi.requestArgs">
-                                                <div class="col-sm-2 label">{{item.name}}</div>
-                                                <div class="col-sm-8" v-bind:class="{'full-text':item.type=='file'}">
-                                                    <input data-type="{{item.type}}"
-                                                           type="{{item.type=='file'?'file':'text'}}"
-                                                           name="{{item.name}}"
-                                                           value="{{item.testValue || item.defaultValue}}"
-                                                           placeholder="{{item.description}}"
-                                                           v-bind:class="{'text':item.type!='file'}">
+                                            <div class="cb">
+                                                <div>
+                                                    <p class="api-details-title second">Body</p>
+
+                                                    <template v-if="currentApi.dataType=='XML'">
+                                                        <textarea rows="10" class="text api-details-xml">{{xmlpreview}}</textarea>
+                                                    </template>
+                                                    <template v-else>
+                                                        <div class="item"  v-for="item in currentApi.requestArgs">
+                                                            <div class="col-sm-2 label">{{item.name}}</div>
+                                                            <div class="col-sm-8" v-bind:class="{'full-text':item.type=='file'}">
+                                                                <input data-type="{{item.type}}"
+                                                                       type="{{item.type=='file'?'file':'text'}}"
+                                                                       name="{{item.name}}"
+                                                                       class="api-request-args-item"
+                                                                       value="{{item.testValue || item.defaultValue}}"
+                                                                       placeholder="{{item.description}}"
+                                                                       v-bind:class="{'text':item.type!='file'}">
+                                                            </div>
+                                                        </div>
+                                                    </template>
                                                 </div>
                                             </div>
                                         </template>
+
                                         <template v-if="currentApi.dataType=='RAW'">
                                             <p class="api-details-title second">请求数据</p>
                                             <div class="item">
@@ -693,9 +670,9 @@
                                             <div class="item">
                                                 <div class="col-sm-2 label"></div>
                                                 <div class="col-sm-8">
-                                                    <input type="submit" id="api-submit" v-on:click.stop="apiSubmit"
+                                                    <input type="button" id="api-submit" v-on:click.stop="apiSubmit"
                                                            class="btn btn-primary" value="{{status.apiLoading?'加载中':'发送'}}">
-                                                    <input type="submit" v-on:click.stop="apiMock"
+                                                    <input type="button" v-on:click.stop="apiMock" v-show="currentApi.responseArgs && currentApi.responseArgs.length>0"
                                                            class="btn btn-orange" value="mock">
 
                                                 </div>
@@ -794,6 +771,7 @@
                     <div class="ta-c api-error-tip" v-cloak v-else>
                         <i class="iconfont icon-api" style="font-size: 120px"></i>
                         <p style="font-size: 24px">该模块下接口列表为空</p>
+                        <p style="font-size: 12px">编辑模式可管理接口</p>
                     </div>
                 </div>
 
@@ -805,6 +783,49 @@
                 </div>
             </template>
         </div>
+
+
+        <div class="modal env-modal" v-cloak v-if="status.envModal">
+            <div class="modal-header">
+                <i class="iconfont icon-close modal-close" v-on:click="status.envModal=false"></i>
+            </div>
+            <div class="modal-content">
+                <div class="modal-layout1 form" style="width: 500px">
+                    <p class="title" style="margin-bottom: 20px">添加新环境</p>
+                    <div class="hint">
+                        环境变量运行在URL中,你可以配置多个(线上、灰度、开发)环境变量。在URL中使用方式{{flag.varname}},例：<br/>
+                        线上环境：prefix => http://www.xiaoyaoji.com.cn<br/>
+                        则<br/>
+                        请求URL：{{flag.prefix}}/say => http://www.xiaoyaoji.com.cn/say
+                    </div>
+                    <p class="title"></p>
+                    <div class="item">
+                        <div class="col-sm-12">
+                            <input type="text" class="text" v-model="flag.tempEnv.name" placeholder="请输入环境名称">
+                        </div>
+                    </div>
+                    <div class="item" v-for="(index,item) in flag.tempEnv.vars">
+                        <div class="col-sm-5"><input type="text" v-model=item.name class="text" v-on:focus="envNewLine(index)" placeholder="变量名称" value="{{item.name}}"></div>
+                        <div class="col-sm-6">
+                            <input type="text" class="text" v-model="item.value" placeholder="变量值" value="{{item.value}}">
+                        </div>
+                        <div class="col-sm-1 full-text">
+                            <i class="iconfont icon-close" v-on:click="flag.tempEnv.vars.$remove(item)"></i>
+                        </div>
+                    </div>
+
+                    <div class="ta-c actions">
+                        <button class="btn btn-default-box middle" tabindex="3"
+                                v-on:click="status.envModal=false">
+                            取消
+                        </button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button class="btn btn-primary middle" v-on:click="envSave" tabindex="2">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </template>
 
     <template v-if="status.loading">

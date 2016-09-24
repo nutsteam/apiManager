@@ -169,7 +169,7 @@ var utils = {
             if(href){
                 location.href=href;
             }else{
-                location.href=utils.config.ctx+'/dashboard?t='+Date.now();
+                location.href=utils.config.ctx+'/dashboard';
             }
         }
     }

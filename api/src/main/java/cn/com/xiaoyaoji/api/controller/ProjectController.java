@@ -13,6 +13,8 @@ import cn.com.xiaoyaoji.api.utils.*;
 import cn.com.xiaoyaoji.api.utils.StringUtils;
 import cn.com.xiaoyaoji.api.view.PdfView;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
@@ -136,9 +138,6 @@ public class ProjectController {
         module.setId(StringUtils.id());
         module.setProjectId(projectId);
         module.setName("默认模块");
-        module.setHost("");
-        module.setDevHost("");
-        module.setDescription("");
         int rs = ServiceFactory.instance().create(module);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
         AsyncTaskBus.instance().push(Log.create(token, Log.CREATE_PROJECT,"默认模块",projectId));
@@ -438,6 +437,8 @@ public class ProjectController {
         Project project = ServiceFactory.instance().getProject(id);
         AssertUtils.notNull(project,"项目不存在");
         AssertUtils.isTrue(!project.getUserId().equals(userId),"不能移除自己");
+        User temp = MemoryUtils.getUser(parameter);
+        AssertUtils.isTrue(temp.getId().equals(project.getUserId()),"无操作权限");
         int rs = ServiceFactory.instance().deleteProjectUser(id, userId);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
         return rs;
@@ -492,15 +493,45 @@ public class ProjectController {
             document.add(Chunk.NEWLINE);
             temp.setAlignment(Element.ALIGN_CENTER);
             document.add(temp);
+            if(org.apache.commons.lang3.StringUtils.isNotBlank(project.getDetails())) {
+                document.add(new Paragraph(project.getDetails(),apiFont));
+            }
+            if(org.apache.commons.lang3.StringUtils.isNoneBlank(project.getEnvironments())){
+                try {
+                    JSONArray arr= JSON.parseArray(project.getEnvironments());
+                    if(arr.size()>0) {
+                        document.add(new Paragraph("全局环境变量",apiName));
+                        document.add(new Paragraph("环境变量运行在URL中,你可以配置多个(线上、灰度、开发)环境变量。在URL中使用方式$变量名$,例：\n" +
+                                "线上环境：prefix => http://www.xiaoyaoji.com.cn\n" +
+                                "则\n" +
+                                "请求URL：$prefix$/say => http://www.xiaoyaoji.com.cn/say\n\n",apiFont));
+                        for (int i = 0; i < arr.size(); i++) {
+                            JSONObject item = arr.getJSONObject(i);
+                            String environmentName = item.getString("name");
+                            Paragraph p = new Paragraph(environmentName,subtitle);
+                            p.setPaddingTop(10);
+                            document.add(p);
+                            try {
+                                JSONArray vars = item.getJSONArray("vars");
+                                if(vars.size()>0){
+                                    for(int v=0;v<vars.size();v++){
+                                        JSONObject var = vars.getJSONObject(v);
+                                        document.add(new Paragraph(var.getString("name")+"    "+var.getString("value"),apiFont));
+                                    }
+                                }
+                            } catch (Exception e) {
+                              //  e.printStackTrace();
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                   // e.printStackTrace();
+                }
+            }
             for(int m=0;m<modules.size();m++){
                 Module module = modules.get(m);
                 document.add(new Paragraph(module.getName(),moduleFont));
                 createUpdateTimeCell(document,DateUtils.toStr(module.getLastUpdateTime()),apiFont);
-
-                if(org.apache.commons.lang3.StringUtils.isNotBlank(module.getDescription())) {
-                    document.add(new Paragraph(module.getDescription(),apiFont));
-                }
-
 
                 Paragraph cTitle = new Paragraph(module.getName(), moduleFont);
                 Chapter chapter = new Chapter(cTitle, m+1);
@@ -521,22 +552,12 @@ public class ProjectController {
                         section.add(new Paragraph("基本信息",subtitle));
                         createUpdateTimeCell(section,DateUtils.toStr(in.getLastUpdateTime()),apiFont);
                         section.add(new Paragraph("请求类型："+in.getProtocol(),apiFont));
-                        if(org.apache.commons.lang3.StringUtils.isNotBlank(in.getUrl())) {
-                            if (module.getHost() == null && module.getDevHost() == null) {
-                                section.add(new Paragraph("请求地址：" + in.getUrl(), apiFont));
-                            } else {
-                                if (org.apache.commons.lang3.StringUtils.isNotBlank(module.getHost())) {
-                                    section.add(new Paragraph("线上环境地址：" + module.getHost() + in.getUrl(), apiFont));
-                                }
-                                if (org.apache.commons.lang3.StringUtils.isNotBlank(module.getDevHost())) {
-                                    section.add(new Paragraph("开发环境地址：" + module.getDevHost() + in.getUrl(), apiFont));
-                                }
-                            }
+                        section.add(new Paragraph("请求地址：" + in.getUrl(), apiFont));
+                        if("HTTP".equals(in.getProtocol())) {
+                            section.add(new Paragraph("请求方式：" + in.getRequestMethod(), apiFont));
+                            section.add(new Paragraph("数据类型：" + in.getDataType(), apiFont));
+                            section.add(new Paragraph("响应类型：" + in.getContentType(), apiFont));
                         }
-                        section.add(new Paragraph("请求方式："+in.getRequestMethod(),apiFont));
-                        section.add(new Paragraph("数据类型："+in.getDataType(),apiFont));
-                        section.add(new Paragraph("响应类型："+in.getContentType(),apiFont));
-
 
                         String requestHeader = in.getRequestHeaders();
                         if(org.apache.commons.lang3.StringUtils.isNotBlank(requestHeader)){
@@ -576,10 +597,11 @@ public class ProjectController {
                             List<RequestResponseArgs> responseArgs = JSON.parseObject(responseArg, new TypeReference<List<RequestResponseArgs>>(){});
                             if(responseArgs.size()>0) {
                                 section.add(new Paragraph("响应数据",subtitle));
-                                PdfPTable table = new PdfPTable(3);
+                                PdfPTable table = new PdfPTable(4);
                                 decorateTable(table);
                                 table.addCell(createHeaderCell("参数名称",apiFont));
                                 table.addCell(createHeaderCell("是否必须",apiFont));
+                                table.addCell(createHeaderCell("数据类型",apiFont));
                                 table.addCell(createHeaderCell("描述",apiFont));
                                 addCells(table, responseArgs, "responseArgs",apiFont);
                                 section.add(table);
@@ -656,7 +678,7 @@ public class ProjectController {
                 table.addCell(createCell(item.getRequire(),font));
                 //table.addCell(new Phrase(getText(item.getRequire()),font));
             }
-            if(type.equals("requestArgs")){
+            if(type.equals("requestArgs") || type.equals("responseArgs")){
                 table.addCell(createCell(item.getType(),font));
             }
             table.addCell(createCell(item.getDescription(),font));

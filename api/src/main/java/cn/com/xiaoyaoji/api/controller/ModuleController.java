@@ -108,7 +108,7 @@ public class ModuleController {
         AssertUtils.notNull(user,"无操作权限");
         Project project = ServiceFactory.instance().getProject(projectId);
         AssertUtils.notNull(project,"项目不存在");
-        AssertUtils.notNull(user.getId().equals(project.getUserId()),"无操作权限");
+        AssertUtils.isTrue(user.getId().equals(project.getUserId()),"无操作权限");
     }
 
 
