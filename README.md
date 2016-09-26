@@ -71,7 +71,8 @@
 #### WEB
     * 复制html内容到本地服务器中根目录，修改 /assets/js/config.js 里面的window.root的地址为你部署api后的访问地址 和window._xyj_.ws 地址为ws://你的ip:端口/api
 
-
+### 注意
+    * 离线部署版本 暂时需要使用localhost或者其他域名访问，使用ip访问插件暂时不能用。
 
 ### 效果
 ![基本](img/basic.png)
