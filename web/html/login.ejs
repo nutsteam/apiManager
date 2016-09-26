@@ -31,6 +31,16 @@
       <div class="item">
         <input type="submit" v-on:click="submit" tabindex="3" id="login-btn" class="btn" value="登陆"/>
       </div>
+      <div class="item">
+        <div class="col-sm-8">
+          <a href="forget.html">忘记密码</a>
+          <a href="register.html">免费注册</a>
+        </div>
+        <div class="col-sm-4">
+          <label><input v-model="remember" type="checkbox"> 记住密码</label>
+        </div>
+      </div>
+
     </form>
   </validator>
   <div class="long-line"></div>
@@ -39,10 +49,6 @@
     <a v-on:click="weibo"><i class="iconfont icon-weibo"></i></a>
     <a v-on:click="github"><i class="iconfont icon-github"></i></a>
   </div><br/>
-  <div class="ta-c">
-    <a href="forget.html">忘记密码</a>
-    <a href="register.html">免费注册</a>
-  </div>
 </div>
 ${require('./includes/js.html')}
 <!-- build:login built/login.js -->

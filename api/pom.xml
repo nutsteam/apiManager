@@ -106,7 +106,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>api</finalName>
+        <finalName>xiaoyaoji</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -148,7 +148,7 @@
                     <reload>manual</reload>
                     <scanIntervalSeconds>5</scanIntervalSeconds>
                     <webApp>
-                        <contextPath>/api</contextPath>
+                        <contextPath>/</contextPath>
                         <defaultsDescriptor>${project.basedir}/src/main/webapp/etc/webdefault.xml</defaultsDescriptor>
                     </webApp>
                     <httpConnector>

@@ -99,20 +99,29 @@ var page = {
     },
     updateInterface:function(id){
         utils.get('/interface/'+id+'.json',{},function(rs){
+            let isBreak;
             gdata.modules.forEach(function(m){
                 m.folders.forEach(function(f){
-                    var index = -1;
+                    let index = -1;
+                    let originalFolderId;
                     f.children.forEach(function(item,i){
                         if(item.id == id){
                             index = i;
+                            originalFolderId=item.folderId;
                             return true;
                         }
                     });
-                    if(index>=0){
-                        f.children.$set(index,rs.data.interface);
-                        return true;
+                    if(rs.data.interface.folderId == originalFolderId){
+                        if(index>=0){
+                            f.children.$set(index,rs.data.interface);
+                            isBreak = true;
+                            return true;
+                        }
                     }
                 });
+                if(isBreak){
+                    return true;
+                }
             });
         });
     },
@@ -280,7 +289,6 @@ var page = {
                 if(data.token.substring(0,10) == utils.token().substring(0,10)){
                     return ;
                 }
-                //todo 还有判断当前的folder和interface
                 switch (data.action){
                     case "interface.update":
                         page.updateInterface(data.interfaceId);
@@ -336,6 +344,10 @@ export default{
     },
     route: {
         data: function (transition) {
+            //初始化
+            this.currentFolder=null;
+            this.currentModule = {};
+            this.currentApi={result:null}
             this.$parent.$data.pageName = '接口列表';
             this.id = transition.to.params.id;
             var self = this;
@@ -480,14 +492,14 @@ export default{
             }
         },
         "id": function (value) {
-            if (window._czc) {
-                _czc.push(["_trackPageview", location.pathname + (location.hash), document.referrer]);
-            }
             this.$parent.projectId = value;
             this.showGuide= true;
             var self = this;
 
             reget(self);
+            if (window._czc) {
+                _czc.push(["_trackPageview", location.pathname + (location.hash), document.referrer]);
+            }
         },
         "status.loading": function (value) {
             if (!value) {
@@ -506,7 +518,6 @@ export default{
             }
         },
         "editing": function (value) {
-            _czc.push(["_trackEvent", "接口", "切换模式",value+""]);
             if (value) {
                 if (!window.editor && this.showGuide) {
                     var desc = this.project.details;
@@ -515,6 +526,7 @@ export default{
             } else {
                 renderViewBox(this.project.details);
             }
+            _czc.push(["_trackEvent", "接口", "切换模式",value+""]);
         },
         "showGuide": function (value) {
             if (value && this.editing) {
@@ -728,15 +740,23 @@ export default{
             event.stopPropagation();
             this.flag.actionId = null;
             this.showGuide = false;
+            if(item == null){
+                if(this.currentFolder){
+                    item = this.currentFolder;
+                }else{
+                    item = this.currentModule.folders[0];
+                }
+            }
             this.currentApi = {
-                protocol: 'HTTP',
-                requestMethod: 'GET',
-                dataType: 'X-WWW-FORM-URLENCODED',
-                contentType: 'JSON',
+                protocol: localStorage.getItem('form.protocol') || 'HTTP',
+                requestMethod: localStorage.getItem('form.requestMethod') || 'GET',
+                dataType: localStorage.getItem('form.dataType') || 'X-WWW-FORM-URLENCODED',
+                contentType: localStorage.getItem('form.contentType') ||'JSON',
                 requestHeaders: [],
                 requestArgs: [],
                 responseArgs: [],
-                result: ''
+                result: '',
+                folderId:item.id
             };
             this.currentFolder = item;
             if (document.documentElement.scrollTop > 100) {
@@ -747,7 +767,7 @@ export default{
         folderClick: function (event) {
             var $dom = $(event.currentTarget);
             $dom.toggleClass("open");
-            $dom.next().slideToggle()
+            $dom.next().slideToggle();
             _czc.push(["_trackEvent",'接口','文件夹点击']);
         },
         apiClick: function (item, folder) {
@@ -762,7 +782,7 @@ export default{
             }
         },
         apiDelete: function (item, arr, event) {
-            _czc.push(["_trackEvent",'接口','接口删除']);
+
             event.stopPropagation();
             let self = this;
             utils.delete('/interface/' + item.id + ".json", function (rs) {
@@ -771,42 +791,70 @@ export default{
                 }
                 arr.$remove(item);
             });
+            _czc.push(["_trackEvent",'接口','接口删除']);
         },
         apiSave: function () {
-            var data = this.currentApi;//$.extend({},this.currentApi);
+            let data = this.currentApi;//$.extend({},this.currentApi);
             if (!data.id) {
                 data.moduleId = this.currentModule.id;
                 data.projectId = this.currentModule.projectId;
-                data.folderId = this.currentFolder.id;
+                //data.folderId = this.currentFolder.id;
             }
-            var temp = $.extend({}, data);
+            let temp = $.extend({}, data);
             temp.urlArgs = undefined;
             temp.requestArgs = JSON.stringify(temp.requestArgs);
             temp.responseArgs = JSON.stringify(temp.responseArgs);
             temp.requestHeaders = JSON.stringify(temp.requestHeaders);
-            var self = this;
+            let self = this;
+            let tempFolder = self.currentFolder;
+            let tempModule = self.currentModule;
             utils.post('/interface/save.json', temp, function (rs) {
                 toastr.success('保存成功', '', {timeOut: 2000, "positionClass": "toast-top-right"});
+                let folder;
+                tempModule.folders.forEach(function(item){
+                    if(item.id == data.folderId){
+                        folder = item;
+                        return true;
+                    }
+                });
+                //放置到folder中
                 if (data.id) {
                     var index = -1;
-                    self.currentFolder.children.forEach(function (item, i) {
+                    tempFolder.children.forEach(function (item, i) {
                         if (item.id == data.id) {
                             index = i;
                             return true;
                         }
                     });
-                    if (index != -1) {
-                        self.currentFolder.children.$set(index, data);
+                    if(tempFolder.id == data.folderId){
+                        if (index != -1) {
+                            folder.children.$set(index, data);
+                        }
+                    }else{
+                        folder.children.push(data);
+                        tempFolder.children.$remove(tempFolder.children[index]);
+                        if(tempFolder.id == self.currentFolder.id){
+                            self.currentFolder = folder;
+                        }
                     }
                 } else {
                     data.id = rs.data;
-                    self.currentFolder.children.push(data);
+                    folder.children.push(data);
                 }
+                //设置默认值
+                localStorage.setItem('form.protocol',data.protocol);
+                localStorage.setItem('form.requestMethod',data.requestMethod);
+                localStorage.setItem('form.dataType',data.dataType);
+                localStorage.setItem('form.contentType',data.contentType);
             });
             _czc.push(["_trackEvent",'接口','接口保存']);
         },
+        apiVarsClick:function(name,e){
+            
+            this.currentApi.url = this.currentApi.url+('$'+name+'$')
+        },
         apiSubmit: function () {
-            _czc.push(["_trackEvent",'接口','测试',this.currentApi.name,this.currentApi.id]);
+
             var self = this;
             //var url = this.requestURL;
             var url = $('#requestURL').val();
@@ -825,7 +873,7 @@ export default{
                     params += (p + '=' + args[p] + '&');
                 }
                 window.open(url + '?' + params);
-                var params = undefined;
+                params = undefined;
                 return true;
             }
 
@@ -849,6 +897,10 @@ export default{
                     xhr.beginTime = Date.now();
                 },
                 dataType: self.currentApi.contentType,
+                crossDomain:true,
+                xhrFields: {
+                    withCredentials: true
+                },
                 jsonpCallback: self.currentApi.contentType == 'JSONP' ? 'callback' : undefined,
                 complete(xhr, status){
                     var e = {
@@ -874,6 +926,8 @@ export default{
                     new Result().resolve(rs, self.currentApi.contentType);
                     //self.result = rs;
                 }
+
+
             };
             switch (this.currentApi.dataType) {
                 case "FORM-DATA":
@@ -909,9 +963,10 @@ export default{
             } else {
                 $.ajax(params);
             }
+            _czc.push(["_trackEvent",'接口','测试',this.currentApi.name,this.currentApi.id]);
         },
         apiMock: function () {
-            _czc.push(["_trackEvent",'接口','mock',this.currentApi.name,this.currentApi.id]);
+
             var self = this;
             //如果是图片或二进制
             if(self.currentApi.contentType == 'IMAGE'){
@@ -940,7 +995,7 @@ export default{
                     break;
             }
             new Result().resolve(rs, self.currentApi.contentType);
-
+            _czc.push(["_trackEvent",'接口','mock',this.currentApi.name,this.currentApi.id]);
         },
         moduleDelete: function (item) {
             if(this.modules.length<=1){
@@ -973,13 +1028,14 @@ export default{
             this.moduleName = '';
         },
         moduleClick: function (item) {
-            _czc.push(["_trackEvent",'接口','模块点击',item.name,item.id]);
+
             if (!item.folders) {
                 item.folders = [];
             }
             this.currentModule = item;
             this.currentApi = {};
             this.showGuide = true;
+            _czc.push(["_trackEvent",'接口','模块点击',item.name,item.id]);
         },
         moduleSave: function () {
             this.$validate(true);
@@ -1047,7 +1103,7 @@ export default{
                 toastr.error('导入内容为空');
                 return false;
             }
-            _czc.push(["_trackEvent", "接口", "导入JSON"]);
+
             var data = null;
             try {
                 data = utils.toJSON(this.importValue)
@@ -1140,6 +1196,12 @@ export default{
                     },this);
                 }
             }
+        },
+        openNewWindow:function(){
+            let win = window.open('','new');
+            win.document.documentElement.innerHTML='';
+            win.document.write(utils.unescape(this.currentApi.result));
+            win.document.close();
         }
     }
 }
@@ -1190,6 +1252,9 @@ function initInterface(self, item) {
     }
     if (!item.contentType) {
         item.contentType = 'JSON';
+    }
+    if (!item.url) {
+        item.url = "";
     }
 
     initDefaultData(item.requestHeaders);
@@ -1427,8 +1492,8 @@ function Result() {
             }
             gdata.currentApi.result = utils.escape(data);
         },
-        HTML(){
-            gdata.currentApi.result = data;
+        HTML(data){
+            gdata.currentApi.result =utils.escape(data) ;
         }
     };
 

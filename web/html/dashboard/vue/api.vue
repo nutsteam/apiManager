@@ -6,7 +6,7 @@
         </div>
         <div class="api-modules">
             <div class="cb api-modules-container">
-                <ul >
+                <ul>
                     <li data-id="{{item.id}}" v-for="item in modules"
                         class="api-module fl api-module-item"
                         v-bind:class="{'active':currentModule.id == item.id}">
@@ -50,6 +50,10 @@
             <div id="api-edit-box" class="apis">
                 <div class="cb api-container">
                     <div class="fl apis-left">
+                        <div class="cb api-fn-actions">
+                            <div class="fl" v-on:click="folderNew"><i class="icon-tianjia iconfont"></i> 添加分类</div>
+                            <div class="fl" v-on:click="folderNewApi(null,$event)"><i class="icon-tianjia iconfont"></i> 添加接口</div>
+                        </div>
                         <ul class="apis-nav" id="api-edit-nav">
                             <li>
                                 <div class="api-name api-description cb" v-bind:class="{'active':showGuide}"
@@ -94,9 +98,9 @@
                                     <div v-on:click="folderDelete(item,$event)"><i class="iconfont icon-move"></i> 删除</div>
                                 </div>
                             </li>
-                            <li v-on:click="folderNew">
+                            <!--<li v-on:click="folderNew">
                                 <div class="api-name api-folder-new"><i class="icon-tianjia iconfont"></i> 创建分类</div>
-                            </li>
+                            </li>-->
                         </ul>
                     </div>
                     <div class="api-content fl">
@@ -110,39 +114,86 @@
                         <div id="api-edit-details" v-bind:class="{'hide':showGuide}">
                             <div id="api-edit-content" class="form">
                                 <p class="api-details-title">基本信息</p>
+                                <div class="item api-chose-list">
+                                    <div>
+                                        <select v-model="currentApi.folderId">
+                                            <option value="{{item.id}}" v-for="item in currentModule.folders">{{item.name}}</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                    <select v-model="currentApi.protocol">
+                                        <option value="HTTP">HTTP</option>
+                                        <option value="WEBSOCKET">WEBSOCKET</option>
+                                    </select>
+                                    </div>
+                                    <template v-if="currentApi.protocol=='HTTP'">
+                                       <div><select v-model="currentApi.requestMethod">
+                                            <option value="GET">GET</option>
+                                            <option value="POST">POST</option>
+                                            <option value="PUT">PUT</option>
+                                            <option value="DELETE">DELETE</option>
+                                            <option value="PATCH">PATCH</option>
+                                            <option value="COPY">COPY</option>
+                                            <option value="OPTIONS">OPTIONS</option>
+                                        </select>
+                                       </div>
+                                        <div>
+                                        <select v-model="currentApi.dataType">
+                                            <option value="X-WWW-FORM-URLENCODED">X-WWW-FORM-URLENCODED</option>
+                                            <template v-if="currentApi.requestMethod == 'POST'">
+                                                <option value="FORM-DATA">FORM-DATA</option>
+                                                <option value="RAW">RAW</option>
+                                                <option value="BINARY">BINARY</option>
+                                                <option value="XML">XML</option>
+                                            </template>
+                                        </select>
+                                        </div>
+                                        <div>
+                                        <select v-model="currentApi.contentType">
+                                            <option value="JSON">JSON</option>
+                                            <option value="JSONP">JSONP</option>
+                                            <option value="TEXT">TEXT</option>
+                                            <option value="XML">XML</option>
+                                            <option value="HTML">HTML</option>
+                                            <option value="IMAGE">IMAGE</option>
+                                            <option value="BINARY">BINARY</option>
+                                        </select>
+                                        </div>
+                                    </template>
+                                </div>
                                 <div class="item">
-                                    <div class="col-sm-2 label">接口名称</div>
-                                    <div class="col-sm-10">
+                                    <div class="col-sm-1 label">接口名称</div>
+                                    <div class="col-sm-11">
                                         <input type="text" class="text" maxlength="20" placeholder="请输入接口名称"
                                                v-model="currentApi.name" value="{{currentApi.name}}">
                                     </div>
                                 </div>
                                 <div class="item">
-                                    <div class="col-sm-2 label">请求类型</div>
-                                    <div class="col-sm-10 full-text">
+                                    <div class="col-sm-1 label">请求地址</div>
+                                    <div class="col-sm-11">
+                                        <input type="text" placeholder="如:/api/test" v-model="currentApi.url" class="text"
+                                               value="{{currentApi.url}}">
+                                        <template v-if="currentEnv.vars && currentEnv.vars.length>0">
+                                            <p class="hint">实际请求地址:{{requestURL}}</p>
+                                            <p class="api-env-vars">
+                                                变量：<span v-on:click="apiVarsClick(item.name,$event)" v-for="item in currentEnv.vars">{{item.name}}</span>
+                                            </p>
+                                        </template>
+                                    </div>
+                                </div>
+                               <!-- <div class="item">
+                                    <div class="col-sm-1 label">请求类型</div>
+                                    <div class="col-sm-11 full-text">
                                         <input type="radio" id="rt-http" value="HTTP" v-model="currentApi.protocol">
                                         <label for="rt-http">HTTP</label>
                                         <input type="radio" id="rt-ws" value="WEBSOCKET" v-model="currentApi.protocol">
                                         <label for="rt-ws">WEBSOCKET</label>
                                     </div>
                                 </div>
-                                <div class="item">
-                                    <div class="col-sm-2 label">请求地址</div>
-                                    <div class="col-sm-10">
-                                        <input type="text" placeholder="如:/api/test" v-model="currentApi.url" class="text"
-                                               value="{{currentApi.url}}">
-                                        <template v-if="currentEnv.vars && currentEnv.vars.length>0">
-                                            <p class="hint">实际请求地址:{{requestURL}}</p>
-                                            <p class="api-env-vars">
-                                                变量：<span v-on:click="currentApi.url = currentApi.url+('$'+item.name+'$')" v-for="item in currentEnv.vars">{{item.name}}</span>
-                                            </p>
-                                        </template>
-                                    </div>
-                                </div>
                                 <div v-show="currentApi.protocol=='HTTP'">
                                     <div class="item">
-                                        <div class="col-sm-2 label">请求方法</div>
-                                        <div class="col-sm-10 full-text">
+                                        <div class="col-sm-1 label">请求方法</div>
+                                        <div class="col-sm-11 full-text">
                                             <input type="radio" id="rm-GET" value="GET"
                                                    v-model="currentApi.requestMethod">
                                             <label for="rm-GET">GET</label>
@@ -158,8 +209,8 @@
                                         </div>
                                     </div>
                                     <div class="item">
-                                        <div class="col-sm-2 label">请求数据类型</div>
-                                        <div class="col-sm-10 full-text">
+                                        <div class="col-sm-1 label">请求数据类型</div>
+                                        <div class="col-sm-11 full-text">
                                         <span>
                                             <input type="radio" id="dt-X" value="X-WWW-FORM-URLENCODED"
                                                    v-model="currentApi.dataType">
@@ -183,8 +234,8 @@
                                     </div>
 
                                     <div class="item">
-                                        <div class="col-sm-2 label">响应数据类型</div>
-                                        <div class="col-sm-10 full-text">
+                                        <div class="col-sm-1 label">响应数据类型</div>
+                                        <div class="col-sm-11 full-text">
                                             <input type="radio" id="ct-JSON" value="JSON"
                                                    v-model="currentApi.contentType">
                                             <label for="ct-JSON">JSON</label>
@@ -208,22 +259,23 @@
                                             <label for="ct-BINARY">BINARY</label>
                                         </div>
                                     </div>
-
                                 </div>
+                                -->
                                 <div class="item">
-                                    <div class="col-sm-2 label">接口描述</div>
-                                    <div class="col-sm-10">
+                                    <div class="col-sm-1 label">接口描述</div>
+                                    <div class="col-sm-11">
                                     <textarea class="text"
                                               v-model="currentApi.description">{{currentApi.description}}</textarea>
                                     </div>
                                 </div>
                                 <template v-if="currentApi.protocol == 'HTTP'">
+                                    <p class="api-details-title">发送数据</p>
                                 <div class="tabs">
-                                    <a class="tab" v-on:click="flag.tab='header'" v-bind:class="{'active':flag.tab=='header'}">请求头(Header)</a>
-                                    <a class="tab" v-on:click="flag.tab='body'" v-bind:class="{'active':flag.tab=='body'}">请求参数(Body)</a>
+                                    <a class="tab" v-on:click="flag.tab='header'" v-bind:class="{'active':(flag.tab=='header') ||  (currentApi.dataType=='BINARY')}">请求头(Header)</a>
+                                    <a class="tab" v-on:click="flag.tab='body'" v-bind:class="{'active':flag.tab=='body'}"  v-if="currentApi.dataType!='BINARY'">请求参数(Body)</a>
                                 </div>
                                 <!-- 请求头参数 -->
-                                <div class="tab-content" v-bind:class="{'active':flag.tab=='header'}">
+                                <div class="tab-content" v-bind:class="{'active':(flag.tab=='header') ||  (currentApi.dataType=='BINARY') }">
                                     <div class="div-table editing">
                                         <ul class="div-table-header div-table-line cb">
                                             <li class="col-sm-1">操作</li>
@@ -257,8 +309,8 @@
 
 
                                 <!-- 请求参数 -->
-                                <div class="tab-content" v-bind:class="{'active':flag.tab=='body'}">
-                                    <div class="div-table editing" v-if="currentApi.dataType!='BINARY'">
+                                <div class="tab-content" v-bind:class="{'active':flag.tab=='body'}" v-if="currentApi.dataType!='BINARY'">
+                                    <div class="div-table editing">
                                         <ul class="div-table-header div-table-line cb">
                                             <li class="col-sm-1">操作</li>
                                             <li class="col-sm-3">参数名称</li>
@@ -269,21 +321,6 @@
                                         </ul>
                                         <request-args-vue v-bind:request-args="currentApi.requestArgs"
                                                           v-bind:editing="editing"></request-args-vue>
-                                    </div>
-                                    <div class="div-table" v-else>
-                                        <ul class="div-table-header div-table-line cb">
-                                            <li class="col-sm-1">操作</li>
-                                            <li class="col-sm-11">参数名称</li>
-                                        </ul>
-                                        <ul class="div-table-line cb" v-for="item in currentApi.requestArgs">
-                                            <li class="col-sm-1">
-                                                <i class="iconfont icon-close"
-                                                   v-on:click="currentApi.requestArgs.$remove(item)"></i>
-                                                <i class="iconfont icon-tianjia"
-                                                   v-on:click="currentApi.requestArgs.push({children:[]})"></i>
-                                            </li>
-                                            <li class="col-sm-11">{{item.name}}</li>
-                                        </ul>
                                     </div>
                                     <div class="item">
                                         <button class="btn btn-default btn-sm" v-on:click="insertNewRequestArgsRow">
@@ -600,6 +637,7 @@
                                                         <li v-for="item in envs" v-bind:class="{'active':item.t==currentEnv.t}"
                                                             v-on:click="currentEnv=item"
                                                             v-on:mouseover="envOver(item,$event)">{{item.name}}</li>
+                                                        <li v-on:click="createEnv" class="api-env-create">添加环境</li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -688,6 +726,7 @@
                                     </div>
                                     <div v-show="currentApi.result" class="api-result-box">
                                         <i v-show="!!currentApi.result && (flag.resultActive=='content')" id="api-result-copy" class="iconfont icon-copy"></i>
+                                        <i v-show="!!currentApi.result && (flag.resultActive=='content')" class="iconfont icon-openwindow" v-on:click="openNewWindow"></i>
                                         <i v-show="!!currentApi.result && (flag.resultActive=='headers')" id="api-result-header-copy" class="iconfont icon-copy"></i>
                                         <div id="api-result">
                                             <pre v-show="flag.resultActive=='content'" id="api-result-content">{{{currentApi.result}}}</pre>

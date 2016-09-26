@@ -103,6 +103,15 @@ var utils = {
             .replace(/\'/g, "&apos;")
 
     },
+    unescape: function (str) {
+        if(!str)
+            return '';
+        return str.replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, "\"")
+            .replace(/&apos;/g, "'")
+
+    },
     getQueryParams(qs) {
         qs = qs.split('+').join(' ');
         var params = {},

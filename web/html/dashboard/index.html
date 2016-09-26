@@ -59,7 +59,7 @@
     <!-- build:common ../built/common.js -->
     <script src="../../built/common.js"></script>
     <!-- endbuild -->
-    <script src="https://s95.cnzz.com/z_stat.php?id=1260226777&web_id=1260226777" language="JavaScript"></script>
+    <script src="http://s95.cnzz.com/z_stat.php?id=1260226777&web_id=1260226777" language="JavaScript"></script>
 </div>
 
 <script src="../assets/editor.md/editormd.min.js"></script>
@@ -67,7 +67,11 @@
 <script src="../assets/editor.md/lib/prettify.min.js"></script>
 <script src="../assets/clipboard/clipboard.min.js"></script>
 <script src="../assets/xml2json/xml2json.min.js"></script>
-
+<script>
+    if(!window._cnc_){
+        window._cnc={push:function(){}}
+    }
+</script>
 <!-- build:dashboard ../built/dashboard.js -->
 <script src="../../built/dashboard.js"></script>
 <!-- endbuild -->

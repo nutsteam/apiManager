@@ -55,7 +55,11 @@ ${require('../includes/js1.html')}
 <script src="../assets/editor.md/lib/prettify.min.js"></script>
 <script src="../assets/clipboard/clipboard.min.js"></script>
 <script src="../assets/xml2json/xml2json.min.js"></script>
-
+<script>
+    if(!window._cnc_){
+        window._cnc={push:function(){}}
+    }
+</script>
 <!-- build:dashboard ../built/dashboard.js -->
 <script src="../../built/dashboard.js"></script>
 <!-- endbuild -->

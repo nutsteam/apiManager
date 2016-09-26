@@ -1,4 +1,4 @@
-@import "//at.alicdn.com/t/font_1474292664_7751257.css";
+@import "//at.alicdn.com/t/font_1474898243_9090984.css";
 @import "button.css";
 @import "../toastr/toastr.min.css";
 @import "../pace/pace.min.css";
@@ -926,6 +926,47 @@ section{
     border-radius: 4px;
     margin-right: 5px;
 }
+.api-fn-actions{
+    padding-left: 3px;
+    margin-bottom: 10px;
+}
+.api-fn-actions>div{
+    width: 49%;
+    height: 30px;
+    padding: 0 10px;
+    background-color: #e0e0e0;
+    margin-right: 2%;
+    line-height: 30px;
+    cursor: pointer;
+}
+.api-fn-actions>div:hover{
+    background: #ddecf4;
+    color: #00B290;
+}
+.api-fn-actions>div:last-child{
+    margin-right: 0;
+}
+.api-chose-list{
+    padding-left: 20px!important;
+}
+.api-chose-list>div{
+    border: 1px solid #e0e0e0;
+    display: inline-block;
+    border-radius: 2px;
+}
+.api-chose-list>div:hover{
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+.api-chose-list select{
+    padding: 3px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    height: 25px;
+    line-height: 25px;
+    min-width: 90px;
+}
 .api-modules-tab{
     position: fixed;
     z-index: 2;
@@ -1127,6 +1168,9 @@ section{
     .api-content{
         width: 1200px;
     }
+    .api-chose-list{
+        padding-left: 45px!important;
+    }
 }
 .api-content .xx:after{
     content: ' ';
@@ -1240,6 +1284,9 @@ section{
     position: absolute;
     right: 10px;
     top:0;
+}
+.api-result-box .icon-openwindow{
+    right: 30px;
 }
 #api-result{
     background: #fff;
