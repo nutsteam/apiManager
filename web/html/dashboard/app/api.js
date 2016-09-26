@@ -570,7 +570,7 @@ export default{
         },
         apiDescClick: function () {
             this.showGuide = true;
-            this.currentFolder = {children: []};
+            //this.currentFolder = {children: []};
             this.currentApi = {};
             this.ws.destroy();
         },
@@ -746,6 +746,11 @@ export default{
                 }else{
                     item = this.currentModule.folders[0];
                 }
+            }
+            if(!item){
+                toastr.error('请先添加一个分类。');
+                this.showGuide = true;
+                return false;
             }
             this.currentApi = {
                 protocol: localStorage.getItem('form.protocol') || 'HTTP',
@@ -1028,12 +1033,12 @@ export default{
             this.moduleName = '';
         },
         moduleClick: function (item) {
-
             if (!item.folders) {
                 item.folders = [];
             }
             this.currentModule = item;
             this.currentApi = {};
+            this.currentFolder = null;
             this.showGuide = true;
             _czc.push(["_trackEvent",'接口','模块点击',item.name,item.id]);
         },
