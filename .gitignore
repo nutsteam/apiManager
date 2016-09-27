@@ -4,3 +4,5 @@ api/.idea/
 web/built
 web/html/.idea/
 api/target/
+*.class
+/target/
