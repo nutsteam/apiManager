@@ -34,6 +34,7 @@
     * config.properties未单独做中文编码处理，为防止乱码，中文需要改为unicode
  * 导入api/sql/xiaoyaoji.sql 文件导入到mysql中，
  * 启动tomcat，浏览器运行 http://localhost:端口/index.html 能正常显示则表示可用。
+
 ### 申明一下：如果只是需要离线部署，请直接看 『直接使用』下面的介绍，如果是需要二次开发，api是java代码，web是静态代码。
 
 #### API 依赖jar  org.mangoframework.core 1.2.3
