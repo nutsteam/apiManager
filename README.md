@@ -33,8 +33,9 @@
     * 如果需要使用邮件发送,需要配置sendcloud邮箱配置信息
     * config.properties未单独做中文编码处理，为防止乱码，中文需要改为unicode
  * 导入api/sql/xiaoyaoji.sql 文件导入到mysql中，
- * 启动tomcat，浏览器运行 http://localhost:端口/api/index.html 能正常显示Hello XiaoYaoJi API 则表示可用。
- 
+ * 启动tomcat，浏览器运行 http://localhost:端口/index.html 能正常显示则表示可用。
+### 申明一下：如果只是需要离线部署，请直接看 『直接使用』下面的介绍，如果是需要二次开发，api是java代码，web是静态代码。
+
 #### API 依赖jar  org.mangoframework.core 1.2.3
      项目及使用说明都在这：http://git.oschina.net/zhoujingjie/mangoframework
      或者直接下载附件中的jar
