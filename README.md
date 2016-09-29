@@ -61,11 +61,11 @@
    *  下载https://git.oschina.net/zhoujingjie/apiManager/tree/master/releases 中的最新版本的zip包(之前是放在附件中，附件上传速度太慢改为这了)
    * 复制解压的内容到tomcat/webapps/ROOT 目录下
    * 需求修改的地方
-        * 导入api/sql/xiaoyaoji-MMdd.sql 到mysql中。mysql需要5.5以上
-        * 修改/WEB-INF/classes/config.properties中的数据库配置信息。
-        * 修改 /assets/js/config.js 里面的window.root的地址为你部署api后的访问地址 和window._xyj_.ws 地址为ws://你的ip:端口/api
-        * 如果需要使用第三方登录,需要配置对应的地址
-        * 如果需要使用邮件发送,需要配置sendcloud邮箱配置信息
+       *  导入api/sql/xiaoyaoji-MMdd.sql 到mysql中。mysql需要5.5以上
+       *  修改/WEB-INF/classes/config.properties中的数据库配置信息。
+       *  修改 /assets/js/config.js 里面的window.root的地址为你部署api后的访问地址 和window._xyj_.ws 地址为ws://你的ip:端口/api
+       *  如果需要使用第三方登录,需要配置对应的地址
+       *  如果需要使用邮件发送,需要配置sendcloud邮箱配置信息
 
 ### 注意（插件1.4.2已解决）
     * 离线部署版本 暂时需要使用localhost或者其他域名访问，使用ip访问插件暂时不能用。
