@@ -1,15 +1,16 @@
 package cn.com.xiaoyaoji.api.websocket;
 
-import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+
+import javax.websocket.*;
+import javax.websocket.server.ServerEndpoint;
 
 /**
  * @author zhoujingjie
  * @date 2016-07-26
  */
-@ServerEndpoint(value = "/message")
+@ServerEndpoint(value = "/api/message")
 public class MessageWs {
     //timeout 1分钟
     private static int timeout = 1*60*1000;
@@ -40,7 +41,7 @@ public class MessageWs {
         //sendMessage("onMessage: the server has received a message ->"+message,session);
     }
 
-    private void sendMessage(String message,Session session) throws IOException {
+    private void sendMessage(String message, Session session) throws IOException {
         session.getBasicRemote().sendText(message);
     }
 }
