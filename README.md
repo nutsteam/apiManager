@@ -1,5 +1,7 @@
 ![LOGO](http://www.xiaoyaoji.com.cn/assets/img/logo/full.png)
 
+> 本项目fork 于 http://git.oschina.net/zhoujingjie/apiManager
+
 ### 特点
    * 在线接口测试 目前支持 json,text,html,xml,jsonp,Websocket
    * markdown编辑器
@@ -75,4 +77,13 @@
 ![基本](img/third1.png)
 ![基本](img/third2.png)
 ![基本](img/ws.png)
+
+### Yum安装tomcat命令
+
+```shell
+sudo yum install tomcat tomcat-webapps tomcat-admin-webapps -y
+echo hello > /var/lib/tomcat/webapps/ROOT/index.html
+sudo service start tomcat
+curl -is http://127.0.0.1:8080/index.html
+```
     
