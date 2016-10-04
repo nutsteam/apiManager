@@ -16,28 +16,6 @@
                 </a>
             </div>
         </li>
-        <li class="fl">
-            <div class="cb">
-                <a target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=7e99bd0ada4c6586d8e4e609b28d997f86e07336124fca08ac7b02fbe9d07130">
-                    <i class="iconfont icon-qqqun fl"></i>
-                    <div class="fl db-wel-item">
-                        <h3>加入组织</h3>
-                        <p class="db-wel-item-desc">580084426</p>
-                    </div>
-                </a>
-            </div>
-        </li>
-        <li class="fl">
-            <div class="cb">
-                <a target="_blank" href="http://www.xiaoyaoji.com.cn/help.html">
-                    <i class="iconfont icon-feedback fl"></i>
-                    <div class="fl db-wel-item">
-                        <h3>反馈</h3>
-                        <p class="db-wel-item-desc">bug,建议都来这儿。</p>
-                    </div>
-                </a>
-            </div>
-        </li>
     </ul>
 </div>
 </template>

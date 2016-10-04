@@ -8,7 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
     <artifactId>api</artifactId>
-    <description>小幺鸡,简单好用的在线接口文档管理工具</description>
+    <description>线接口文档管理工具</description>
     <url>http://www.xiaoyaoji.com.cn</url>
     <developers>
         <developer>
